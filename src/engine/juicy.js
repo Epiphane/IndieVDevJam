@@ -142,8 +142,14 @@
       var nextTime = new Date().getTime();
       var updated  = false;
       var dt = (nextTime - this.lastTime) / 1000;
-      if (this.state)
-         updated = !this.state.update(dt);
+      // Limit to 60 FPS
+      if (dt < 1 / 60)
+         return;
+
+      if (this.state) {
+         updated = !this.state.update(dt, this.input) || this.state.updated;
+         this.state.updated = false;
+      }
       this.lastTime = nextTime;
 
       if (updated || !this.state.__hasRendered) {
@@ -193,17 +199,18 @@
    /* 
     * new Scene() - Construct new scene
     *  [Constructor]
-    *    init   ()        - Run every time the scene is swapped to.
+    *    init   ()          - Run every time the scene is swapped to.
     *  [Useful]
-    *    click  (evt)     - When the user clicks the scene
-    *    update (dt)      - Run before rendering. Use for logic.
-    *                       IMPORTANT: return true if you don't want to re-render
-    *    render (context) - Run after  update.    Use for graphics
+    *    click  (evt)       - When the user clicks the scene
+    *    update (dt, input) - Run before rendering. Use for logic.
+    *                         IMPORTANT: return true if you don't want to re-render
+    *    render (context)   - Run after  update.    Use for graphics
     */
    var Scene = Juicy.Scene   = function() { this.entities = []; };
    Scene.prototype.init      = function() {};
    Scene.prototype.click     = function(x, y) {};
-   Scene.prototype.update    = function(dt) {};
+   Scene.prototype.onKey     = {};
+   Scene.prototype.update    = function(dt, input) {};
    Scene.prototype.render    = function(context) {};
 
    /* -------------------- Game Entity ----------------------- */
@@ -234,7 +241,10 @@
       for (var i = 0; i < components.length; i ++) {
          this.addComponent(components[i]);
       }
+
+      this.init();
    };
+   Entity.prototype.init = function() {};
    Entity.prototype.components = [];
    Entity.prototype.addComponent = function(c, name) {
       if (typeof(c) === 'function')
@@ -272,7 +282,7 @@
    Entity.prototype.update = function(dt, name) {
       if (name) {
          this.updated[name] = 1;
-         this.components[name].update(dt);
+         this.components[name].update(dt, this.input);
          this.updated[name] = 2;
       }
       else { // Update all
@@ -356,19 +366,25 @@
       this.keyState = {};
       this.keyCallbacks = {};
 
+      // Reverse of KEYS
+      this.CODES = {};
+      for (var key in keys) {
+         this.CODES[keys[key]] = key;
+      }
+
       this.init(document);
 
       return this; // Enable chaining
    };
 
    Input.prototype.setKeys = function(keys) {
-      KEYS = keys;
+      this.KEYS = keys;
 
       return this; // Enable chaining
    };
 
    Input.prototype.setControls = function(controls) {
-      CONTROLS = controls;
+      this.CONTROLS = controls;
 
       return this; // Enable chaining
    };
@@ -399,22 +415,30 @@
 
          var cb = self.keyCallbacks[evt.keyCode];
          for(var i in cb) {
-            cb[i]();
+            cb[i](self.CODES[evt.keyCode]);
          }
       });
 
       return this; // Enable chaining
    };
 
-   Input.prototype.on = function(action, key, callback) {
+   Input.prototype.on = function(action, keys, callback) {
       var self = this;
+
       if (action === 'key') {
-         this.keyCallbacks[this.KEYS[key]]
-          = this.keyCallbacks[this.KEYS[key]] || [];
-         this.keyCallbacks[this.KEYS[key]].push(callback);
+         if (typeof(keys) !== 'object')
+            keys = [keys];
+
+         for (var i = 0; i < keys.length; i ++) {
+            var key = keys[i];
+            console.log('callback for',key,this.KEYS[key]);
+
+            this.keyCallbacks[this.KEYS[key]] = this.keyCallbacks[this.KEYS[key]] || [];
+            this.keyCallbacks[this.KEYS[key]].push(callback);
+         }
       }
       else {
-         this.document.addEventListener(action, key);
+         this.document.addEventListener(action, keys);
       }
 
       return this; // Enable chaining
@@ -618,6 +642,8 @@
 
       this.context.fillText(this.text, 0, 0);//size.height);
 
+      this.updated = true;
+
       return this;
    };
 
@@ -634,6 +660,8 @@
       }
 
       context.drawImage.apply(context, arguments);
+
+      this.updated = false;
    };
 
    return Juicy;
