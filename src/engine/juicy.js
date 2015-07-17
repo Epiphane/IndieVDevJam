@@ -10,17 +10,14 @@
    }
 })(this, function() {
    /* -------------------- Animation frames ----------------- */
-   window = window || {};
-   var requestAnimationFrame = (function() {
-      return  window.requestAnimationFrame  || 
-         window.webkitRequestAnimationFrame || 
-         window.mozRequestAnimationFrame    || 
-         window.oRequestAnimationFrame      || 
-         window.msRequestAnimationFrame     || 
-         function(/* function */ callback, /* DOMElement */ element){
-            window.setTimeout(callback, 1000 / 60);
-         };
-   })();
+   window.requestAnimFrame = (function() {
+	 return  window.requestAnimationFrame       ||
+	 window.webkitRequestAnimationFrame ||
+	 window.mozRequestAnimationFrame    ||
+	 function( callback ) {
+	 window.setTimeout(callback, 1000 / 60);
+      };
+      })();
 
    /* Base object */
    var Juicy = {};
@@ -137,7 +134,7 @@
          return;
 
       var self = this;
-      requestAnimationFrame(function() {
+      window.requestAnimationFrame(function() {
          self.update();
       });
       var nextTime = new Date().getTime();
@@ -148,9 +145,7 @@
         return;
       }
 
-      // Limit to 60 FPS and skip long frames
-      if (dt < 1 / 60)
-         return;
+      // Skip long frames
 
       try {
 
