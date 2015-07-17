@@ -4,7 +4,7 @@ Juicy.Component.create('Button', {
 
    checkMouseOver: function(mousePoint) {
       if (this.entity.transform.contains(mousePoint.x, mousePoint.y)) {
-	 console.log("YOU BETCHA");
+	 
       } 
    },
 

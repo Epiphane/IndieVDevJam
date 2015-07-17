@@ -2,10 +2,18 @@ var Level = Juicy.State.extend({
    height: 16,
    width: 32,
    constructor: function() {
-      this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics']);
+      this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics', 'Particles']);
       this.player.transform.width = 0.9;
       this.player.transform.height = 0.9;
       this.player.getComponent('Box').fillStyle = 'green';
+
+      this.player.getComponent('Particles').setParticleType("butts", 5, function(particle) {
+	 particle.life--;
+	 particle.x += 0.1;
+	 particle.y += 0.1;
+      });
+
+      this.player.getComponent('Particles').startParticles();
 
       this.obstacles = [];
 
