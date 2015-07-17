@@ -1,9 +1,3 @@
-requirejs([
-   './src/engine/juicy.js',
-   './src/components/platformer.js',
-   './src/components/player.js'
-]);
-
 var Level = Juicy.State.extend({
    constructor: function() {
       this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics']);

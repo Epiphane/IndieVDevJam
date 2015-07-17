@@ -1,7 +1,3 @@
-require([
-   './src/engine/lib/SAT.js'
-]);
-
 Juicy.Component.create('Physics', {
    constructor: function() {
       this.bounding = new SAT.Box(new SAT.Vector(0, 0), 0, 0);
