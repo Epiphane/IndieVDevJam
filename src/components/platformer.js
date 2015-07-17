@@ -7,7 +7,7 @@ Juicy.Component.create('Physics', {
       if (this.onGround) {
          this.dy = -30;
          this.onGround = false;
-	 this.entity.getComponent('Particles').startParticles();
+         this.entity.getComponent('Particles').startParticles();
       }
    },
    update: function(dt, input) {

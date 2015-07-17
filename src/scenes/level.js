@@ -9,11 +9,9 @@ var Level = Juicy.State.extend({
 
       this.player.getComponent('Particles').setParticleType("butts", 5, function(particle) {
          particle.life--;
-         particle.x += 0.1;
-         particle.y += 0.1;
+         particle.x += Math.random() - 0.5;
+         particle.y += Math.random();
       });
-
-      this.player.getComponent('Particles').startParticles();
 
       this.obstacles = [];
       this.addPlatforms();
