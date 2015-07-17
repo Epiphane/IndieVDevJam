@@ -8,6 +8,11 @@ Juicy.Component.create('Physics', {
          this.dy = -30;
          this.onGround = false;
          this.entity.getComponent('Particles').startParticles();
+	 
+	 var animator = this.entity.getComponent('Animations');
+	 if (animator) {
+	    animator.currAnimations.push(xScaleAnimation(0.4, 1.0, 0.2));
+	 }
       }
    },
    update: function(dt, input) {

@@ -2,7 +2,7 @@ var Level = Juicy.State.extend({
    height: 15,
    width: 20,
    constructor: function() {
-      this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics', 'Particles']);
+      this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics', 'Particles', 'Animations']);
       this.player.transform.width = 0.7;
       this.player.transform.height = 0.9;
       this.player.getComponent('Box').fillStyle = 'green';
