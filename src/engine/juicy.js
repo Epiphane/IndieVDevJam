@@ -575,6 +575,14 @@
       
          this.children = [];
       },
+      testCollision: function(other) {
+         var isLeft  = other.position.x >= this.position.x + this.width;
+         var isRight = other.position.x + other.width <= this.position.x;
+         var isAbove = other.position.y >= this.position.y + this.height;
+         var isBelow = other.position.y + other.height <= this.position.y;
+
+         return !isLeft && !isRight && !isAbove && !isBelow;
+      },
       contains: function(x, y) {
          var pos = this.getPosition();
          var scale = this.getScale();

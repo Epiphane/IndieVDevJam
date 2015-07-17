@@ -15,69 +15,70 @@ Juicy.Component.create('Physics', {
             }
         }
     },
-    update: function(dt, input) {
-        this.dy += 120 * dt;
 
-        var transform = this.entity.transform;
+update: function(dt, input) {
+      this.dy += 120 * dt;
 
-        var next = {
-            x: transform.position.x + this.dx * dt,
-            y: transform.position.y + this.dy * dt
-        };
+      var transform = this.entity.transform;
 
-        var obstacles = this.entity.scene.obstacles;
-        for (var i = 0; i < obstacles.length; i++) {
-            var obstacle = obstacles[i].transform;
+      var prev = {
+         x: transform.position.x,
+         y: transform.position.y
+      };
 
-            var isLeft = obstacle.position.x >= next.x + transform.width;
-            var isRight = obstacle.position.x + obstacle.width <= next.x;
-            var isAbove = obstacle.position.y >= next.y + transform.height;
-            var isBelow = obstacle.position.y + obstacle.height <= next.y;
+      transform.position.x += this.dx * dt
+      transform.position.y += this.dy * dt
 
-            if (!isLeft && !isRight && !isAbove && !isBelow) {
-                var wasLeft = obstacle.position.x >= transform.position.x + transform.width;
-                var wasRight = obstacle.position.x + obstacle.width <= transform.position.x;
-                var wasAbove = obstacle.position.y >= transform.position.y + transform.height;
-                var wasBelow = obstacle.position.y + obstacle.height <= transform.position.y;
+      var obstacles = this.entity.scene.obstacles;
+      for (var i = 0; i < obstacles.length; i ++) {
+         var obstacle = obstacles[i].transform;
 
-                if (wasAbove) {
-                    if (this.onGround == false) {
-                        var animator = this.entity.getComponent('Animations');
-                        if (animator) {
-                            animator.play(yScaleAnimation(0.7, 1.0, 1.0, 0.2), "vertical_squish");
-                        }
-                    }
+         if (transform.testCollision(obstacle)) {
+            var wasLeft  = obstacle.position.x >= prev.x + transform.width;
+            var wasRight = obstacle.position.x + obstacle.width <= prev.x;
+            var wasAbove = obstacle.position.y >= prev.y + transform.height;
+            var wasBelow = obstacle.position.y + obstacle.height <= prev.y;
 
-                    next.y = obstacle.position.y - transform.height;
-                    this.dy = 0;
-                    this.onGround = true;
-                } else if (wasLeft) {
-                    next.x = obstacle.position.x - transform.width;
-                } else if (wasBelow) {
-                    next.y = obstacle.position.y + obstacle.height;
-                    this.dy = 0;
+            if (wasAbove) {
+               if (this.onGround == false) {
+                  var animator = this.entity.getComponent('Animations');
+                  if (animator) {
+                     animator.play(yScaleAnimation(0.7, 1.0, 1.0, 0.2));
+                  }
+               }
 
-					var animator = this.entity.getComponent('Animations');
-					if (animator) {
-						animator.play(yScaleAnimation(0.7, 1.0, 0.0, 0.2), "vertical_squish");
-					}
-                } else if (wasRight) {
-                    next.x = obstacle.position.x + obstacle.width;
-                }
+               transform.position.y = obstacle.position.y - transform.height;
+               this.dy = 0;
+               this.onGround = true;
             }
-        }
+            else if (wasLeft) {
+               transform.position.x = obstacle.position.x - transform.width;
+            }
+            else if (wasBelow) {
+               transform.position.y = obstacle.position.y + obstacle.height;
+               this.dy = 0;
+               
+				var animator = this.entity.getComponent('Animations');
+				if (animator) {
+					animator.play(yScaleAnimation(0.7, 1.0, 0.0, 0.2), "vertical_squish");
+				}
+            }
+            else if (wasRight) {
+               transform.position.x = obstacle.position.x + obstacle.width;
+            }
+         }
+      }
 
-        transform.position.x = next.x;
-        transform.position.y = next.y;
+      if (transform.position.x + transform.width < 0)
+         transform.position.x += this.entity.scene.width + 1;
+      if (transform.position.x > this.entity.scene.width)
+         transform.position.x -= this.entity.scene.width + 1;
 
-        if (transform.position.x + transform.width < 0)
-            transform.position.x += this.entity.scene.width + 1;
-        if (transform.position.x > this.entity.scene.width)
-            transform.position.x -= this.entity.scene.width + 1;
+      this.dx = 0;
+      if (Math.abs(this.dy) >= 10)
+         this.onGround = false;
+   },
 
-        this.dx = 0;
-        if (Math.abs(this.dy) >= 10)
-            this.onGround = false;
-    },
+
     render: function(context) {}
 });
