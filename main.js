@@ -1,9 +1,8 @@
 
-var WINDOW_WIDTH = 1024;
-var WINDOW_HEIGHT = 768;
-
+var GAME_HEIGHT = 768;
+var GAME_WIDTH = 1024;
 // function(Juicy) {
-   var Game = new Juicy.Game(document.getElementById('game-canvas'), 1024, 768);
+   var Game = new Juicy.Game(document.getElementById('game-canvas'), GAME_WIDTH, GAME_HEIGHT);
    Game.setInput(new Juicy.Input(document, {
       LEFT: 37,
       UP: 38,
@@ -23,6 +22,6 @@ var WINDOW_HEIGHT = 768;
    };
 
    document.addEventListener('DOMContentLoaded', function() {
-      Game.setState(new TitleScreen()).run();
+      Game.setState(new Level()).run();
    }, false);
 // });
