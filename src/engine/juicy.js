@@ -551,9 +551,9 @@
 	    context.save();
 
 	    // This centers the scale on the character.  We might want to change this later
-	    context.translate(w/2, h/2);
+	    context.translate(w/2, h);//h/2);
 	    context.scale(animator.scaleX, animator.scaleY);
-	    context.translate(-w/2, -h/2);
+	    context.translate(-w/2, -h);//-h/2);
 	 }
 
          context.fillStyle = this.fillStyle;

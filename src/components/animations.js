@@ -11,6 +11,18 @@ function xScaleAnimation(startScale, endScale, duration) {
    }
 }
 
+function yScaleAnimation(startScale, endScale, duration) {
+   return {
+      type: "scaleY",
+      begin: startScale,
+      end:   endScale,
+      duration: duration,
+
+      nextAnimation: null,
+
+      currTime: 0
+   }
+}
 
 Juicy.Component.create('Animations', {
    constructor: function() {

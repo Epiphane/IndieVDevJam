@@ -44,6 +44,10 @@ Juicy.Component.create('Physics', {
                next.y = obstacle.position.y - transform.height;
                this.dy = 0;
                this.onGround = true;
+	       	 var animator = this.entity.getComponent('Animations');
+		 if (animator) {
+		    animator.currAnimations.push(yScaleAnimation(0.8, 1.0, 0.2));
+		 }
             }
             else if (wasLeft) {
                next.x = obstacle.position.x - transform.width;

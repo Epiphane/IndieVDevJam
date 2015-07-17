@@ -60,7 +60,7 @@ var Level = Juicy.State.extend({
       if (this.spawnCooldown <= 0) {
          this.spawnCooldown = this.spawnTime;
 
-         var enemy = new Juicy.Entity(this, ['Box', 'Enemy', 'Physics']);
+         var enemy = new Juicy.Entity(this, ['Box', 'Enemy', 'Physics', 'Animations']);
          enemy.getComponent('Box').fillStyle = 'red';
          enemy.transform.width = 0.7;
          enemy.transform.height = 0.9;
