@@ -15,25 +15,6 @@ constructor: function() {
    // calls NEW_STATE.init()
    // You can start referencing this.game at this point
    init: function() {
-
-
-      // We can also add components later on too!
-      // These components are never used, but you can add them
-      // by name (if they're created already), or you can
-      // design a brand spankin' new component on the fly too
-      this.dudeWithComponent.addComponent('Box');
-      this.dudeWithComponent.addComponent(Juicy.Component.extend({
-         constructor: function() { console.log('I got initialized later!'); }
-      }));
-
-
-      // Random variable for use later
-      this.lastButton = '';
-
-
-      // Now we set up input. Notice I use a 'self' variable so that when we enter
-      // the callback we're still referring to the correct `this`
-      // (JS encapsulation is literally the worst) 
       var self = this;
 
       // Define a callback to be used whenever 'W', 'A', 'S', or 'D' is pressed
@@ -75,39 +56,7 @@ constructor: function() {
    update: function(dt, input) {
 
 
-
-      // Check every frame to see whether UP is pressed
-      // 'UP' is defined in main.js, when the input is created.
-      // This is good for continuous things, such as movement.
-      if (input.keyDown('UP')) {
-         this.lastButton = '^';
-         this.updated = true;
-
-         // Get the Custom component on dudeWithComponent and call a function
-         this.dudeWithComponent.getComponent('Custom').increment();
-      }
-
-      // Tell an entire entity to update! This would call update()
-      // on each component. (Parameters: dt, input) just like this update
-      this.dudeWithComponent.update(dt);
-
-
-      // Now, we don't actually need to check whether this.update is true.
-      // I do this for performance, because there's no point re-rendering
-      // it every time.
-      if (this.updated) {
-
-         // Text is buffered on a separate slate, so this actually renders it
-         // in the background.
-         this.title.set({
-            text: 'Hello! You pressed ' + this.lastButton
-         });
-      }
-
-      // If we returned true here, then that would tell the game engine
-      // nothing changed. By default, it assumes you mean false and just
-      // calls a render anyway. I wouldn't worry about it too much
-      // return !this.updated;
+      this.pic.transform.position.x += 1;
    },
 
 
@@ -118,16 +67,10 @@ constructor: function() {
       // Everything is transformed relative to the player, so if
       // your dude is at x=1000, then everything will be drawn
       // at x=1000 with no extra work on your part!
-      this.dude.render(context);
       this.pic.render(context);
 
    
       // Draw our text
-      this.title.draw(context, this.game.width / 2, 100);
-      this.sub.draw(context, 200, 160);
-
-
-      // Draw another dude.
-      this.dudeWithComponent.render(context);
+      // this.title.draw(context, this.game.width / 2, 100);
    }
 });
