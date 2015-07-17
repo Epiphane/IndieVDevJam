@@ -1,9 +1,13 @@
 requirejs([
    './src/engine/juicy.js',
-   './src/scenes/game_screen.js'
+   './src/scenes/level.js'
 ]);
+
+var GAME_HEIGHT = 768;
+var GAME_WIDTH = 1024;
+
 // function(Juicy) {
-   var Game = new Juicy.Game(document.getElementById('game-canvas'), 1024, 768);
+   var Game = new Juicy.Game(document.getElementById('game-canvas'), GAME_WIDTH, GAME_HEIGHT);
    Game.setInput(new Juicy.Input(document, {
       LEFT: 37,
       UP: 38,
@@ -23,6 +27,6 @@ requirejs([
    };
 
    document.addEventListener('DOMContentLoaded', function() {
-      Game.setState(new GameScreen()).run();
+      Game.setState(new Level()).run();
    }, false);
 // });

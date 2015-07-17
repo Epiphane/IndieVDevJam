@@ -142,19 +142,26 @@
       var nextTime = new Date().getTime();
       var updated  = false;
       var dt = (nextTime - this.lastTime) / 1000;
-      // Limit to 60 FPS
-      if (dt < 1 / 60)
+      // Limit to 60 FPS and skip long frames
+      if (dt < 1 / 60 || dt > 0.2)
          return;
 
-      if (this.state) {
-         updated = !this.state.update(dt, this.input) || this.state.updated;
-         this.state.updated = false;
-      }
-      this.lastTime = nextTime;
+      try {
 
-      if (updated || !this.state.__hasRendered) {
-         this.render();
-         this.state.__hasRendered = true;
+         if (this.state) {
+            updated = !this.state.update(dt, this.input) || this.state.updated;
+            this.state.updated = false;
+         }
+         this.lastTime = nextTime;
+
+         if (updated || !this.state.__hasRendered) {
+            this.render();
+            this.state.__hasRendered = true;
+         }
+      }
+      catch (e) {
+         console.error(e);
+         this.running = false;
       }
    };
 
@@ -283,7 +290,7 @@
    Entity.prototype.update = function(dt, name) {
       if (name) {
          this.updated[name] = 1;
-         this.components[name].update(dt, this.input);
+         this.components[name].update(dt, this.scene.game.input);
          this.updated[name] = 2;
       }
       else { // Update all
