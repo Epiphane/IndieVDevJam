@@ -1,7 +1,3 @@
-requirejs([
-   './src/engine/juicy.js',
-   './src/scenes/level.js'
-]);
 
 var GAME_HEIGHT = 768;
 var GAME_WIDTH = 1024;
@@ -27,6 +23,6 @@ var GAME_WIDTH = 1024;
    };
 
    document.addEventListener('DOMContentLoaded', function() {
-      Game.setState(new Level()).run();
+      Game.setState(new TitleScreen()).run();
    }, false);
 // });
