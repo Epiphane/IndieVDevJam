@@ -8,9 +8,52 @@ var Level = Juicy.State.extend({
       this.player.getComponent('Box').fillStyle = 'green';
 
       this.obstacles = [];
-
       this.addPlatform(0, this.height - 1, GAME_WIDTH, 1);
+      this.addPlatforms();
 
+      this.objects = [];
+   },
+   init: function() {
+      var self = this;
+      this.game.input.on('key', 'SPACE', function() {
+         self.game.setState(new Pause(self));
+      });
+   },
+   addObject: function(obj) {
+      this.objects.push(obj);
+   },
+   update: function(dt, input) {
+      var original = {
+         x: this.player.transform.position.x,
+         y: this.player.transform.position.y
+      };
+      this.player.update(dt);
+
+      return this.paused;
+   },
+   render: function(context) {
+      context.save();
+      var sc = GAME_HEIGHT / this.height;
+      context.scale(sc, sc);
+
+      this.player.render(context);
+
+      for (var i = 0; i < this.obstacles.length; i ++) {
+         this.obstacles[i].render(context);
+      }
+
+      context.restore();
+   },
+   addPlatform: function(x, y, w, h) {
+      var platform = new Juicy.Entity(this, ['Box']);
+          platform.transform.position.x = x;
+          platform.transform.position.y = y;
+          platform.transform.width = w;
+          platform.transform.height = h;
+
+      this.obstacles.push(platform);
+   },
+   addPlatforms: function() {
       // Add some random platforms
       var available = [];
       for (var row = 0; row < this.height; row ++) {
@@ -29,10 +72,9 @@ var Level = Juicy.State.extend({
       for (var platformx = 0; platformx < available[0].length; platformx ++) {
          var platformw = Juicy.rand(2, 6);
 
-         var x = platformx;// * this.tilesize;
-         var y = platformy;// * this.tilesize;
-         var w = platformw;// * this.tilesize;
-         var h = 1;//;//this.tilesize;
+         var x = platformx;
+         var y = platformy;
+         var w = platformw;
 
          var avail = true;
          for (var col = platformx; avail && col < platformx + platformw; col ++) {
@@ -42,7 +84,7 @@ var Level = Juicy.State.extend({
          }
 
          if (avail) {
-            this.addPlatform(x, y, w, h);
+            this.addPlatform(x, y, w, 1);
 
             for (var col = platformx - 2; avail && col <= platformx + platformw + 1; col ++) {
                for (var row = platformy; avail && row <= platformy; row ++) {
@@ -58,37 +100,5 @@ var Level = Juicy.State.extend({
          if (platformy < 3) platformy = 3;
          if (platformy >= available.length) platformy = available.length - 1;
       }
-   },
-   addPlatform: function(x, y, w, h) {
-      var platform = new Juicy.Entity(this, ['Box']);
-          platform.transform.position.x = x;
-          platform.transform.position.y = y;
-          platform.transform.width = w;
-          platform.transform.height = h;
-
-      this.obstacles.push(platform);
-   },
-   update: function(dt, input) {
-      var original = {
-         x: this.player.transform.position.x,
-         y: this.player.transform.position.y
-      };
-      this.player.update(dt);
-
-      return original.x === this.player.transform.position.x
-          && original.y === this.player.transform.position.y;
-   },
-   render: function(context) {
-      context.save();
-      var sc = GAME_HEIGHT / this.height;
-      context.scale(sc, sc);
-
-      this.player.render(context);
-
-      for (var i = 0; i < this.obstacles.length; i ++) {
-         this.obstacles[i].render(context);
-      }
-
-      context.restore();
    }
 });
