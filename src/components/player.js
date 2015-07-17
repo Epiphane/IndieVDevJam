@@ -1,6 +1,6 @@
 Juicy.Component.create('Player', {
    update: function(dt, input) {
-      var speed = 500;
+      var speed = 8;
 
       var physics = this.entity.getComponent('Physics');
       if (!physics)
