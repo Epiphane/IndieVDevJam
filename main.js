@@ -1,7 +1,7 @@
-requirejs([
-   './src/engine/juicy.js',
-   './src/scenes/game_screen.js'
-]);
+
+var WINDOW_WIDTH = 1024;
+var WINDOW_HEIGHT = 768;
+
 // function(Juicy) {
    var Game = new Juicy.Game(document.getElementById('game-canvas'), 1024, 768);
    Game.setInput(new Juicy.Input(document, {
