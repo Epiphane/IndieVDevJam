@@ -531,18 +531,13 @@
          arguments[0] = this.image;
 
 	 var animator = this.entity.getComponent('Animations');
+	 context.save();
 	 if (animator) {
-	    context.save();
-	    context.translate(this.entity.transform.width/2, this.entity.transform.height/2);
-	    context.scale(animator.scaleX, animator.scaleY);
-	    context.translate(-this.entity.transform.width/2, -this.entity.transform.height/2);
+	    animator.transformCanvas(context);
 	 }
 
          context.drawImage.apply(context, arguments);
-
-	 if (animator) {
-	    context.restore();
-	 }
+	 context.restore();
       }
    });
 
@@ -553,13 +548,9 @@
       render: function(context, x, y, w, h) {
 
 	 var animator = this.entity.getComponent('Animations');
+	 context.save();
 	 if (animator) {
-	    context.save();
-
-	    // This centers the scale on the character.  We might want to change this later
-	    context.translate(w/2, h);//h/2);
-	    context.scale(animator.scaleX, animator.scaleY);
-	    context.translate(-w/2, -h);//-h/2);
+	    animator.transformCanvas(context);
 	 }
 
          context.fillStyle = this.fillStyle;
@@ -571,9 +562,7 @@
          //                  h || sc.y * transform.height);
          context.fillRect(x, y, w, h);
 
-	 if (animator) {
-	    context.restore();
-	 }
+	 context.restore();
       }
    });
 

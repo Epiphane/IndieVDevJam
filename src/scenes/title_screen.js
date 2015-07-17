@@ -22,6 +22,14 @@ constructor: function() {
 	 self.pic.getComponent('Button').checkMouseOver(mouse);
       });
 
+      this.game.input.on('mousedown', function(evt) {
+	 self.pic.getComponent('Button').checkMouseClick();
+      });
+
+      this.game.input.on('mouseup', function(evt) {
+	 self.pic.getComponent('Button').checkMouseUp();
+      });
+
       // Define a callback to be used whenever 'W', 'A', 'S', or 'D' is pressed
       // These keys are defined in main.js
       this.game.input.on('key', ['W', 'A', 'S', 'D'], function(key) {
