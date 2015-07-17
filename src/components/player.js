@@ -20,5 +20,8 @@ Juicy.Component.create('Player', {
       }
 
       this.direction = physics.dx > 0 ? 1 : -1;
+      if (input.keyDown('SPACE')) {
+         // physics.dx = speed;
+      }
    }
 });

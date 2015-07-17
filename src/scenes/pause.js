@@ -3,10 +3,11 @@ var Pause = Juicy.State.extend({
       this.prevState = prevState;
 
       this.text = new Juicy.Text('PAUSED', '40pt Arial', 'red', 'center');
+      this.sub = new Juicy.Text('Press ESC to continue', '40pt Arial', 'red', 'center');
    },
    init: function() {
       var self = this;
-      this.game.input.on('key', 'SPACE', function() {
+      this.game.input.on('key', 'ESC', function() {
          self.game.setState(self.prevState);
       });
    },

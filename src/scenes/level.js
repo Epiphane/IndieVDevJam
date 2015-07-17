@@ -15,7 +15,7 @@ var Level = Juicy.State.extend({
    },
    init: function() {
       var self = this;
-      this.game.input.on('key', 'SPACE', function() {
+      this.game.input.on('key', 'ESC', function() {
          self.game.setState(new Pause(self));
       });
    },
