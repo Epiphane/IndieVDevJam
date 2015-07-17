@@ -118,6 +118,7 @@
    };
 
    Game.prototype.setState = function(state) {
+      this.input.clear();
       this.state = state;
       this.state.game = this;
       this.state.init();
@@ -223,7 +224,7 @@
    Scene.prototype.init      = function() {};
    Scene.prototype.click     = function(x, y) {};
    Scene.prototype.onKey     = {};
-   Scene.prototype.update    = function(dt, input) {};
+   Scene.prototype.update    = function(dt, input) { return true; };
    Scene.prototype.render    = function(context) {};
 
    /* -------------------- Game Entity ----------------------- */
@@ -390,6 +391,10 @@
       return this; // Enable chaining
    };
 
+   Input.prototype.clear = function() {
+      this.keyCallbacks = {};
+   }
+
    Input.prototype.setKeys = function(keys) {
       this.KEYS = keys;
 
@@ -444,7 +449,6 @@
 
          for (var i = 0; i < keys.length; i ++) {
             var key = keys[i];
-            console.log('callback for',key,this.KEYS[key]);
 
             this.keyCallbacks[this.KEYS[key]] = this.keyCallbacks[this.KEYS[key]] || [];
             this.keyCallbacks[this.KEYS[key]].push(callback);

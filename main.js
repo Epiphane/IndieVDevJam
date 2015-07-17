@@ -10,6 +10,7 @@ var GAME_WIDTH = 1024;
       RIGHT: 39,
       DOWN: 40,
       SPACE: 32,
+      ESC: 27,
 
       W: 87,
       A: 65,
