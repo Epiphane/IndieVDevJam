@@ -4,7 +4,7 @@ Juicy.Component.create('Button', {
 
    checkMouseOver: function(mousePoint) {
       if (this.entity.transform.contains(mousePoint.x, mousePoint.y)) {
-	 
+         this.entity.getComponent('Animations').currAnimations.push(bounceAnimation(1.0, 1.2, 2.0));
       } 
    },
 

@@ -1,7 +1,7 @@
 
 var TitleScreen = Juicy.Scene.extend({
 constructor: function() {
-      this.pic = new Juicy.Entity(this, ['Image', 'Button']);
+      this.pic = new Juicy.Entity(this, ['Image', 'Button', 'Animations']);
       this.pic.transform.position.x = GAME_WIDTH/2;
       this.pic.transform.position.y = GAME_HEIGHT/2;
       this.pic.getComponent('Image').setImage('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSxLS2z0JOP62RuEwe2WPgsRmy-n6oPyeqIl0kWWfosylUBDDXL6FEVfACx');      
@@ -58,7 +58,7 @@ constructor: function() {
    // update() is called every friggin' frame. This is your typical
    // update loop function. dt = time in seconds
    update: function(dt, input) {
-
+      this.pic.update(dt);
    },
 
 

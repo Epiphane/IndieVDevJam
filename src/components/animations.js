@@ -24,6 +24,19 @@ function yScaleAnimation(startScale, endScale, duration) {
    }
 }
 
+function bounceAnimation(startScale, endScale, duration) {
+   return {
+      type: "bounce",
+      begin: startScale,
+      end:   endScale,
+      duration: duration,
+
+      nextAnimation: null,
+
+      currTime: 0
+   }
+}
+
 Juicy.Component.create('Animations', {
    constructor: function() {
       this.currAnimations = Array();
@@ -57,6 +70,13 @@ Juicy.Component.create('Animations', {
       else if (anim.type == "scaleY") {
 	 this.scaleY = currValue;
       } 
+      else if (anim.type == "bounce") {
+	 var timeLeft = anim.duration - anim.currTime;
+	 var frequency = ( Math.sin( anim.currTime * 12 * PI) + 1 ) / 2;
+	 var amplitude = timeLeft * anim.end;
+	 var bounceFactor = frequency * amplitude + anim.begin;
+	 this.scaleX = this.scaleY = bounceFactor;
+      }
 
       anim.currTime += dt;
       if (anim.currTime > anim.duration) {
