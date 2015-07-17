@@ -1,7 +1,3 @@
-requirejs([
-   './src/engine/juicy.js',
-   './src/scenes/level.js'
-]);
 
 var GAME_HEIGHT = 768;
 var GAME_WIDTH = 1024;

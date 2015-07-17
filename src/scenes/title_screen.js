@@ -1,49 +1,13 @@
 
-// Call this to create a "Scene". These are the main
-// states that your game can be in. Calling extend()
-// just makes sure that all the necessary data is in
-// place for the game to use.
-var GameScreen = Juicy.Scene.extend({
-
-
-   // This function is called when you say:
-   // var state = new GameScreen();
-   // Since it's just a constructor, you can't
-   // reference things like this.game yet or anything
-   constructor: function() {
-
-
-      // Create a new Entity with the 'Image' Component
-      // Image is a basic component of Juicy Engine.
-      // It basically fills up the entire bounding box of this entity
-      // with a specific image you set
+var TitleScreen = Juicy.Scene.extend({
+constructor: function() {
       this.pic = new Juicy.Entity(this, ['Image']);
-      this.pic.transform.position.x = 300;
+      this.pic.transform.position.x = WINDOW_WIDTH/2;
+      this.pic.transform.position.y = WINDOW_HEIGHT/2;
       this.pic.getComponent('Image').setImage('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSxLS2z0JOP62RuEwe2WPgsRmy-n6oPyeqIl0kWWfosylUBDDXL6FEVfACx');      
 
-      // This is virtually the same, as an example of a custom entity
-      this.dude = new Dude(this);
-      this.dude.transform.position.x = 10;
-      this.dude.transform.position.y = 10;
+	// TODO: button graphic or something
 
-      // Of course you can change that color;
-      this.dude.getComponent('Box').fillStyle = 'green';
-
-      
-
-      // Another feature is Juicy.Text. You can initialize it with
-      // any amount of parameters, in the order [text, font, color, alignment]
-      // If you want to change these later, use text.set(...);
-      this.title = new Juicy.Text('Hello!', '40pt Arial', 'white', 'center');
-      this.sub = new Juicy.Text('You dont have to initialize font either!');
-
-
-
-      // Another basic entity. This one uses our Custom component
-      // defined in src/components.custom.js
-      this.dudeWithComponent = new Juicy.Entity(this, ['Custom']);
-      this.dudeWithComponent.transform.position.x = 100;
-      this.dudeWithComponent.transform.position.y = 300;
    },
 
    // init is called whenever the state is swapped to.
