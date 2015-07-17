@@ -1,5 +1,6 @@
 // TL;DR make sure this file has been loaded, since we use the Custom component
 requirejs([
+   './src/engine/juicy.js',
    './src/components/custom.js',
    './src/entities/dude.js'
 ]);
