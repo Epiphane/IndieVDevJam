@@ -1,6 +1,3 @@
-require([
-   './src/engine/lib/SAT.js'
-]);
 
 Juicy.Component.create('Physics', {
    constructor: function() {
