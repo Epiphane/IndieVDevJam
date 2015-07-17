@@ -1,6 +1,6 @@
 var Booklet = Juicy.Entity.extend({
    components: ['Box', 'Booklet'],
-   colors: ['#ffef00', '#ff0000', '#00d700', '#650ebd'],
+   colors: ['#ffff00', '#ff0000', '#00ff00', '#0000ff'],
    init: function() {
       this.transform.width = 0.4;
       this.transform.height = 0.3;
