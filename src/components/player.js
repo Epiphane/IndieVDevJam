@@ -2,17 +2,18 @@ Juicy.Component.create('Player', {
    update: function(dt, input) {
       var speed = 500;
 
+      var physics = this.entity.getComponent('Physics');
+      if (!physics)
+         return;
+
       if (input.keyDown('UP')) {
-         this.entity.transform.position.y -= speed * dt;
-      }
-      if (input.keyDown('DOWN')) {
-         this.entity.transform.position.y += speed * dt;
+         physics.jump();
       }
       if (input.keyDown('LEFT')) {
-         this.entity.transform.position.x -= speed * dt;
+         physics.dx = -speed;
       }
       if (input.keyDown('RIGHT')) {
-         this.entity.transform.position.x += speed * dt;
+         physics.dx = speed;
       }
    }
 });
