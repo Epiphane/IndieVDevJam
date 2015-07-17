@@ -142,8 +142,13 @@
       var nextTime = new Date().getTime();
       var updated  = false;
       var dt = (nextTime - this.lastTime) / 1000;
+      if (dt > 0.2) {
+        this.lastTime = nextTime;
+        return;
+      }
+
       // Limit to 60 FPS and skip long frames
-      if (dt < 1 / 60 || dt > 0.2)
+      if (dt < 1 / 60)
          return;
 
       try {
