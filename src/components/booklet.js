@@ -15,14 +15,7 @@ Juicy.Component.create('Booklet', {
 
       var enemies = this.entity.scene.enemies;
       for (var i = 0; i < enemies.length; i ++) {
-         var enemy = enemies[i].transform;
-      
-         var isLeft  = enemy.position.x >= transform.position.x + transform.width;
-         var isRight = enemy.position.x + enemy.width <= transform.position.x;
-         var isAbove = enemy.position.y >= transform.position.y + transform.height;
-         var isBelow = enemy.position.y + enemy.height <= transform.position.y;
-
-         if (!isLeft && !isRight && !isAbove && !isBelow) {
+         if (this.entity.transform.testCollision(enemies[i].transform)) {
             enemies[i].getComponent('Enemy').health -= 30;
 
             this.entity.dead = true;
@@ -32,14 +25,7 @@ Juicy.Component.create('Booklet', {
 
       var obstacles = this.entity.scene.obstacles;
       for (var i = 0; i < obstacles.length; i ++) {
-         var obstacle = obstacles[i].transform;
-      
-         var isLeft  = obstacle.position.x >= transform.position.x + transform.width;
-         var isRight = obstacle.position.x + obstacle.width <= transform.position.x;
-         var isAbove = obstacle.position.y >= transform.position.y + transform.height;
-         var isBelow = obstacle.position.y + obstacle.height <= transform.position.y;
-
-         if (!isLeft && !isRight && !isAbove && !isBelow) {
+         if (this.entity.transform.testCollision(obstacles[i].transform)) {
             this.entity.dead = true;
             return;
          }
