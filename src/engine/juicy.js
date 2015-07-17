@@ -98,10 +98,16 @@
 
    Game.prototype.resize = function() {
       var parent = this.canvas.parentElement;
-      var width  = parent.width || parent.clientWidth;
+      var width  = parent.width  || parent.clientWidth;
+      var height = parent.height || parent.clientHeight;
 
       this.canvas.width  = width;
       this.canvas.height = width * this.height / this.width;
+      if (this.canvas.height > height) {
+         this.canvas.height = height;
+         this.canvas.width = height * this.width / this.height;
+      }
+
       this.scale = {
          x: this.canvas.width  / this.width,
          y: this.canvas.height / this.height
