@@ -1,6 +1,9 @@
-Juicy.Component.create('Particles', {
+Juicy.Component.create('Animations', {
    constructor: function() {
+      this.currAnimations = Array();
    },
+
+   
 
    setParticleType: function(image, howMany, updateParticle) {
       this.particleImage = image;
@@ -33,11 +36,5 @@ Juicy.Component.create('Particles', {
    },
 
    render: function(context) {
-      for (var i = 0; i < this.particles.length; i++) {
-         context.beginPath();
-         context.rect(this.particles[i].x, this.particles[i].y, 0.1, 0.1);
-         context.fillStyle = "red"; 
-         context.fill();
-      }
    },
 });

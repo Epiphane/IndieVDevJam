@@ -523,7 +523,17 @@
       },
       render: function(context) {
          arguments[0] = this.image;
+
+	 var animator = this.entity.getComponent("Animations");
+	 if (animator) {
+	    context.save();
+	 }
+
          context.drawImage.apply(context, arguments);
+
+	 if (animator) {
+	    context.restore();
+	 }
       }
    });
 
