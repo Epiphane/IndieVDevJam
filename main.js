@@ -23,6 +23,6 @@ var GAME_WIDTH = 1024;
    };
 
    document.addEventListener('DOMContentLoaded', function() {
-      Game.setState(new TitleScreen()).run();
+      Game.setState(new Level()).run();
    }, false);
 // });
