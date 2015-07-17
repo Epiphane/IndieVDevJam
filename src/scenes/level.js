@@ -1,25 +1,30 @@
 var Level = Juicy.State.extend({
-   height: 16,
-   width: 32,
+   height: 15,
+   width: 20,
    constructor: function() {
       this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics', 'Particles']);
-      this.player.transform.width = 0.9;
+      this.player.transform.width = 0.7;
       this.player.transform.height = 0.9;
       this.player.getComponent('Box').fillStyle = 'green';
 
       this.player.getComponent('Particles').setParticleType("butts", 5, function(particle) {
-	 particle.life--;
-	 particle.x += 0.1;
-	 particle.y += 0.1;
+         particle.life--;
+         particle.x += 0.1;
+         particle.y += 0.1;
       });
 
       this.player.getComponent('Particles').startParticles();
 
       this.obstacles = [];
-      this.addPlatform(0, this.height - 1, GAME_WIDTH, 1);
       this.addPlatforms();
 
       this.objects = [];
+
+      this.enemies = [];
+      this.spawnTime = 2;
+      this.spawnCooldown = 2;
+      this.waveTime = 10;
+      this.waveCooldown = 10;
    },
    init: function() {
       var self = this;
@@ -45,6 +50,32 @@ var Level = Juicy.State.extend({
          }
       }
 
+      for (var i = 0; i < this.enemies.length; i ++) {
+         this.enemies[i].update(dt);
+         if (this.enemies[i].dead) {
+            this.enemies.splice(i, 1);
+            i --;
+         }
+      }
+
+      this.spawnCooldown -= dt;
+      if (this.spawnCooldown <= 0) {
+         this.spawnCooldown = this.spawnTime;
+
+         var enemy = new Juicy.Entity(this, ['Box', 'Enemy', 'Physics']);
+         enemy.getComponent('Box').fillStyle = 'red';
+         enemy.transform.width = 0.7;
+         enemy.transform.height = 0.9;
+         if (Juicy.rand(2) === 1) {
+            enemy.getComponent('Enemy').direction = 1;
+         }
+         else {
+            enemy.getComponent('Enemy').direction = -1;
+            enemy.transform.position.x = this.width - enemy.transform.width;
+         }
+         this.enemies.push(enemy);
+      }
+
       return this.paused;
    },
    render: function(context) {
@@ -62,6 +93,10 @@ var Level = Juicy.State.extend({
          this.objects[i].render(context);
       }
 
+      for (var i = 0; i < this.enemies.length; i ++) {
+         this.enemies[i].render(context);
+      }
+
       context.restore();
    },
    addPlatform: function(x, y, w, h) {
@@ -74,51 +109,29 @@ var Level = Juicy.State.extend({
       this.obstacles.push(platform);
    },
    addPlatforms: function() {
-      // Add some random platforms
-      var available = [];
-      for (var row = 0; row < this.height; row ++) {
-         var cells = [];
-         for (var c = 0; c < this.width; c ++) {
-            cells.push(1);
-         }
-         available.push(cells);
-      }
+      // Base
+      this.addPlatform(-1, this.height - 1, this.width + 2, 1);
 
-      // Fill bottom row with 0, since you can't spawn platforms there
-      for (var c = 0; c < this.width; c ++)
-         available[available.length - 1][c] = 0;
+      var platformh = 0.5;
 
-      var platformy = Juicy.rand(0, available.length - 1);
-      for (var platformx = 0; platformx < available[0].length; platformx ++) {
-         var platformw = Juicy.rand(2, 6);
+      // Sides
+      var platformw = 7;
+      this.addPlatform(-1, 11, platformw, platformh);
+      this.addPlatform(this.width - platformw + 1, 11, platformw, platformh);
 
-         var x = platformx;
-         var y = platformy;
-         var w = platformw;
+      platformw = 4;
+      this.addPlatform(-1, 8, platformw, platformh);
+      this.addPlatform(this.width - platformw + 1, 8, platformw, platformh);
 
-         var avail = true;
-         for (var col = platformx; avail && col < platformx + platformw; col ++) {
-               if (!available[platformy][col]) {
-               avail = false;
-            }
-         }
+      // Middle
+      platformw = 8;      
+      this.addPlatform((this.width - platformw) / 2, 7, platformw, platformh);
 
-         if (avail) {
-            this.addPlatform(x, y, w, 1);
+      // Sides
+      platformw = 9;  
+      this.addPlatform(-1, 4, platformw, platformh);
+      this.addPlatform(this.width - platformw + 1, 4, platformw, platformh);
 
-            for (var col = platformx - 2; avail && col <= platformx + platformw + 1; col ++) {
-               for (var row = platformy; avail && row <= platformy; row ++) {
-                  if (col < 0 || col >= available[0].length || row < 0 || row > available.length)
-                     continue;
-            
-                  available[row][col] = 0;
-               }
-            }            
-         }
-
-         platformy += Juicy.rand(-6, 7);
-         if (platformy < 3) platformy = 3;
-         if (platformy >= available.length) platformy = available.length - 1;
-      }
+      return;
    }
 });

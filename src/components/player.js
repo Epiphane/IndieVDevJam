@@ -1,7 +1,7 @@
 Juicy.Component.create('Player', {
    constructor: function() {
       this.direction = 1;
-      this.firingRate = 0.2;
+      this.firingRate = 0.1;
       this.cooldown = 0;
    },
    update: function(dt, input) {
@@ -29,12 +29,14 @@ Juicy.Component.create('Player', {
       if (input.keyDown('SPACE') && this.cooldown <= 0) {
          var booklet = new Booklet(this.entity.scene);
          booklet.transform.position.x = this.entity.transform.position.x;
-         booklet.transform.position.y = this.entity.transform.position.y + this.entity.transform.height / 2;
+         booklet.transform.position.y = this.entity.transform.position.y + (this.entity.transform.height - booklet.transform.height) / 2;
          booklet.getComponent('Booklet').dx = this.direction;
 
          this.entity.scene.addObject(booklet);
 
          this.cooldown = this.firingRate;
+
+         physics.dx -= this.direction * 2;
       }
    }
 });

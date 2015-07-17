@@ -5,13 +5,13 @@ Juicy.Component.create('Physics', {
    },
    jump: function() {
       if (this.onGround) {
-         this.dy = -20;
+         this.dy = -30;
          this.onGround = false;
 	 this.entity.getComponent('Particles').startParticles();
       }
    },
    update: function(dt, input) {
-      this.dy += 75 * dt;
+      this.dy += 120 * dt;
 
       var transform = this.entity.transform;
 
@@ -55,6 +55,11 @@ Juicy.Component.create('Physics', {
 
       transform.position.x = next.x;
       transform.position.y = next.y;
+
+      if (transform.position.x + transform.width < 0)
+         transform.position.x += this.entity.scene.width + 1;
+      if (transform.position.x > this.entity.scene.width)
+         transform.position.x -= this.entity.scene.width + 1;
 
       this.dx = 0;
       if (Math.abs(this.dy) >= 10)
