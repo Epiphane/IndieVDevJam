@@ -23,6 +23,6 @@ var WINDOW_HEIGHT = 768;
    };
 
    document.addEventListener('DOMContentLoaded', function() {
-      Game.setState(new GameScreen()).run();
+      Game.setState(new TitleScreen()).run();
    }, false);
 // });
