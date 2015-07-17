@@ -29,6 +29,14 @@ var Level = Juicy.State.extend({
       };
       this.player.update(dt);
 
+      for (var i = 0; i < this.objects.length; i ++) {
+         this.objects[i].update(dt);
+         if (this.objects[i].dead) {
+            this.objects.splice(i, 1);
+            i --;
+         }
+      }
+
       return this.paused;
    },
    render: function(context) {
@@ -40,6 +48,10 @@ var Level = Juicy.State.extend({
 
       for (var i = 0; i < this.obstacles.length; i ++) {
          this.obstacles[i].render(context);
+      }
+
+      for (var i = 0; i < this.objects.length; i ++) {
+         this.objects[i].render(context);
       }
 
       context.restore();
