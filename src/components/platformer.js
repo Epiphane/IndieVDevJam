@@ -15,23 +15,32 @@ Juicy.Component.create('Physics', {
             }
 
 
+			var self = this;
+
 			var butt = {
 				x: this.entity.transform.position.x,
-				y: this.entity.transform.position.y + this.entity.transform.height - 0.3
+				y: this.entity.transform.position.y + this.entity.transform.height
 			}
 
-			this.entity.scene.particles.getComponent('ParticleManager').spawnParticles(butt, "", 5, function(particle, ndx) {
-				return ndx * 20;
+			this.entity.scene.particles.getComponent('ParticleManager').spawnParticles(butt, "", 8, function(particle, ndx) {
+				if (ndx > 1) {
+					return ndx - 1;
+				}
+				else {
+					return 0;
+				}
 			},
-			 function(particle, ndx) {
-				particle.dx = this.dx;
-				particle.dy = this.dy / 2;
+			 function(particle) {
+			 	particle.x = self.entity.transform.position.x + self.entity.transform.width/2 * (Math.random() * 2);
+			 	particle.y = self.entity.transform.position.y + self.entity.transform.height + 0.7;
+				particle.dx = self.dx + Math.random() * 4 - 2;
+				particle.dy = self.dy / 8;
 				particle.startY = butt.y;
 				particle.startLife = 30;
-				particle.life = particle.startLife + ndx * 10;
+				particle.life = particle.startLife;
 			}, function(particle) {
-				particle.x += 0.1;//particle.dx * 0.01;
-				particle.y += 0.1;//particle.dy * 0.01;
+				particle.x += particle.dx * 0.01;
+				particle.y += particle.dy * 0.01;
 				particle.dx *= 0.9;
 				particle.dy *= 0.9;
 

@@ -14,22 +14,23 @@ Juicy.Component.create('ParticleManager', {
             init: initParticle,
          };
          this.pendingParticles.push(newParticle);
-         this.newParticle.timeToLive = timeToLive(newParticle, i);
+         newParticle.timeToLive = timeToLive(newParticle, i);
       }
    },
 
    initParticle: function(currParticle) {
-          
-      this.particles.push(newParticle);
+      this.particles.push(currParticle);
+      currParticle.init(currParticle);
    },
 
    update: function(dt, input) {
       for (var i = this.pendingParticles.length - 1; i >= 0; i--) {
           var currParticle = this.pendingParticles[i];
           if (currParticle.timeToLive < 0) {
-              this.initParticle(currParticle, i);
+              this.initParticle(currParticle);
               this.pendingParticles.splice(i, 1);
           }
+          currParticle.timeToLive--;
       }
 
       for (var i = this.particles.length - 1; i >= 0; i--) {
@@ -48,7 +49,7 @@ Juicy.Component.create('ParticleManager', {
       for (var i = 0; i < this.particles.length; i++) {
          context.beginPath();
          context.rect(this.particles[i].x, this.particles[i].y, 0.3, 0.3);
-         context.fillStyle = "rgba(100, 200, 200, " + this.particles[i].alpha + ")"; 
+         context.fillStyle = "rgba(100, 200, 200, " + this.particles[i].alpha + 1 + ")"; 
          context.fill();
       }
    },
