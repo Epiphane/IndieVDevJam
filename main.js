@@ -1,6 +1,5 @@
-
-var GAME_HEIGHT = 768;
-var GAME_WIDTH = 1024;
+var GAME_HEIGHT = 600;
+var GAME_WIDTH = 800;
 
 // function(Juicy) {
    var Game = new Juicy.Game(document.getElementById('game-canvas'), GAME_WIDTH, GAME_HEIGHT);

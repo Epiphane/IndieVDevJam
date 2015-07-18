@@ -6,7 +6,7 @@ Juicy.Component.create('Physics', {
 
     jump: function() {
         if (this.onGround) {
-            this.dy = -30;
+            this.dy = -60;
             this.onGround = false;
 
             var animator = this.entity.getComponent('Animations');
@@ -17,7 +17,7 @@ Juicy.Component.create('Physics', {
     },
 
 update: function(dt, input) {
-      this.dy += 120 * dt;
+      this.dy += 240 * dt;
 
       var transform = this.entity.transform;
 

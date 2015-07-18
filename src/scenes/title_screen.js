@@ -74,8 +74,6 @@ constructor: function() {
 
    // FINALLY. render() draws whatever you want to draw.
    render: function(context) {
-      console.log('r');
-
       // This calls render() on every component in this.dude.
       // Everything is transformed relative to the player, so if
       // your dude is at x=1000, then everything will be drawn
