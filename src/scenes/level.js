@@ -89,20 +89,19 @@ var Level = Juicy.State.extend({
       if (this.spawnCooldown <= 0) {
          this.spawnCooldown = this.spawnTime;
 
-         var enemy = new Juicy.Entity(this, ['Box', 'Enemy', 'Physics', 'Animations']);
+         var enemy = new Juicy.Entity(this, ['Box', 'Enemy', 'PatrollingPhysics', 'Animations']);
          enemy.getComponent('Box').fillStyle = 'red';
          enemy.transform.width = 1.4;
-         enemy.transform.position.y = 1;
+         enemy.transform.position.y = 10;
+         enemy.transform.position.x = 30;
          enemy.transform.height = 1.8;
          if (Juicy.rand(2) === 1) {
             enemy.getComponent('Enemy').direction = 1;
-            enemy.transform.position.x = 10;
          }
          else {
             enemy.getComponent('Enemy').direction = -1;
-            enemy.transform.position.x = this.levelTiles.width - 10;
          }
-         // this.enemies.push(enemy);
+         this.enemies.push(enemy);
       }
 
       return this.paused;

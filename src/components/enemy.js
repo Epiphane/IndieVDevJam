@@ -12,7 +12,7 @@ Juicy.Component.create('Enemy', {
          
       }
 
-      var physics = this.entity.getComponent('Physics');
+      var physics = this.entity.getComponent('PatrollingPhysics');
       if (!physics)
          return;
 

@@ -78,9 +78,9 @@ Juicy.Component.create('LevelTiles', {
          else {
             // Hit a block oh no...
             if (step_dy > 0) 
-               y = Math.ceil(y) - 0.2;
+               y = Math.ceil(y) - 0.1;
             else
-               y = Math.floor(y) + 0.2;
+               y = Math.floor(y) + 0.1;
 
             hit_y = true;
          }
