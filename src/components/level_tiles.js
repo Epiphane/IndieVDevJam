@@ -4,9 +4,10 @@ Juicy.Component.create('LevelTiles', {
    SPAWN: 0,
    GOAL: 1,
    ANY: 2,
-   EMPTY: '.',
+   EMPTY: ' ',
    PLATFORM: '-',
    WALL: 'X',
+   ENEMYSPAWN: 'E',
    BOOK: '%',
    getTile: function(x, y) {
       var sector_x = Math.floor(x / this.SECTION_WIDTH);
@@ -156,6 +157,8 @@ Juicy.Component.create('LevelTiles', {
       this.width = width * this.SECTION_WIDTH;
       this.height = height * this.SECTION_HEIGHT;
 
+      this.spawns = [];
+
       for (var i = 0; i < width; i ++) {
          this.tiles.push([]);
 
@@ -172,6 +175,20 @@ Juicy.Component.create('LevelTiles', {
             var config = this.sections[type];
             var cfg = this.parse(config, i === 0, i === width - 1, j === height - 1);
 
+            // Get enemy spawns
+            var spawn = cfg.indexOf(this.ENEMYSPAWN);
+            var found = spawn;
+            while (spawn >= 0) {
+               var x = i * this.SECTION_WIDTH + spawn % this.SECTION_WIDTH;
+               var y = j * this.SECTION_HEIGHT + Math.floor(spawn / this.SECTION_WIDTH);
+
+               this.spawns.push({ x: x, y: y });
+
+               cfg[spawn] = this.EMPTY;
+               spawn = cfg.indexOf(this.ENEMYSPAWN);
+            }
+
+            // Get the player spawn
             if (type === 'spawn') {
                var ind = cfg.indexOf('^');
 
@@ -183,6 +200,7 @@ Juicy.Component.create('LevelTiles', {
                cfg[ind] = this.EMPTY;
             }
 
+            // Register that we've used this type of room
             if (limitedUses[type]) {
                limitedUses[type] --;
             }
@@ -226,14 +244,14 @@ Juicy.Component.create('LevelTiles', {
            + '--------                                '
            + '----------                              '
            + '----------                              '
-           + '--  -------    ----------               '
+           + '--  -------    ----------        E    E '
            + '--- -------                             '
            + '---- -------                ------------'
            + '-----------                             '
            + '------ ---                              '
            + '-----------                             '
            + '--  ------                              '
-           + '-- --------                             '
+           + '-- --------                    E E      '
            + '------ ------                           '
            + '-----  -------            --------------'
            + '----------                              '
@@ -280,10 +298,10 @@ Juicy.Component.create('LevelTiles', {
               + '---                 ' + '                    '
               + '--                  ' + '                    '
               + '----                ' + '        -------     '
-              + ' -----              ' + '      ----------    '
+              + ' -----              ' + 'E     ----------    '
               + '- ------            ' + '     -----------  --'
-              + '--                  ' + '---------------    -'
-              + '--           -------' + '                    '
+              + '--               ---' + '---------------    -'
+              + '--            ----- ' + '                    '
               + '                    ' + '                    '
               + '                    ' + '                    '
               + '--                  ' + '        ------------'
@@ -293,7 +311,7 @@ Juicy.Component.create('LevelTiles', {
               + '-----         ------' + '--            ------'
               + ' --          -------' + '----       ----  -- '
               + '---                 ' + '            --- ----'
-              + '- -                 ' + '              ----- '
+              + '- -           E    E' + '              ----- '
               + '---                 ' + '    -          --- -'
               + '--          --------' + '----          ------'
               + '---          -------' + '-               ----'
@@ -308,7 +326,7 @@ Juicy.Component.create('LevelTiles', {
               + '                    ' + '                    '
               + '                    ' + '                    '
               + '                    ' + '                    '
-              + '                    ' + '                    '
+              + '               E  E ' + '  E E E E           '
               + '                    ' + '                    '
               + '         -----------' + '-----------         '
               + '      ---------   --' + '-------             '
@@ -331,9 +349,9 @@ Juicy.Component.create('LevelTiles', {
               + '                   -' + '--                  '
               + '                  --' + '---                 '
               + '                  --' + '---                 '
-              + '     XXX         ---' + '----     XXX        '
-              + '     XXX        ----' + '-----    XXX        '
-              + '     XXX      ------' + '------   XXX        '
-              + '    ----------------' + '-------------       '
+              + '  XXX            ---' + '----         XXX    '
+              + '  XXX    E      ----' + '-----    E   XXX    '
+              + '  XXX         ------' + '------       XXX    '
+              + '--------------------' + '--------------------'
    }
 });

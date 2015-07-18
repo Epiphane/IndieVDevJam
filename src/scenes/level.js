@@ -10,10 +10,6 @@ var Level = Juicy.State.extend({
       this.objects = [];
 
       this.enemies = [];
-      this.spawnTime = 2;
-      this.spawnCooldown = 2;
-      this.waveTime = 10;
-      this.waveCooldown = 10;
 
       this.particles = new Juicy.Entity(this, ['ParticleManager']);
 
@@ -33,6 +29,26 @@ var Level = Juicy.State.extend({
 
       this.player.transform.position.x = this.levelTiles.spawn.x - 1;
       this.player.transform.position.y = this.levelTiles.spawn.y - 1;
+
+      // Create enemies
+      for (var i = 0; i < this.levelTiles.spawns.length; i ++) {
+         var spawn = this.levelTiles.spawns[i];
+
+         var enemy = new Juicy.Entity(this, ['Box', 'Enemy', 'PatrollingPhysics', 'Animations']);
+         enemy.getComponent('Box').fillStyle = 'red';
+         enemy.transform.width = 1.4;
+         enemy.transform.position.y = spawn.y;
+         enemy.transform.position.x = spawn.x;
+         enemy.transform.height = 1.8;
+         if (Juicy.rand(2) === 1) {
+            enemy.getComponent('Enemy').direction = 1;
+         }
+         else {
+            enemy.getComponent('Enemy').direction = -1;
+         }
+
+         this.enemies.push(enemy);
+      }
    },
    init: function() {
       var self = this;

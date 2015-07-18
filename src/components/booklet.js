@@ -34,11 +34,31 @@ Juicy.Component.create('Booklet', {
    },
 
    update: function(dt, input) {
+      var tileManager = this.entity.scene.tileManager.getComponent('LevelTiles');
+
       var transform = this.entity.transform;
-      transform.position.x += this.dx;
-   
+
+      var ray;
+      if (this.dx > 0) {
+         // Moving right
+         var top = tileManager.raycast(transform.position.x + transform.width, transform.position.y, this.dx * dt, 0);
+         var bot = tileManager.raycast(transform.position.x + transform.width, transform.position.y + transform.height, this.dx * dt, 0);
+
+         if (Math.abs(top.dx) > Math.abs(bot.dx)) ray = bot;
+         else ray = top;
+      }
+      else {
+         // Moving left
+         var top = tileManager.raycast(transform.position.x, transform.position.y, this.dx * dt, 0);
+         var bot = tileManager.raycast(transform.position.x, transform.position.y + transform.height, this.dx * dt, 0);
+      
+         if (Math.abs(top.dx) > Math.abs(bot.dx)) ray = bot;
+         else ray = top;
+      }
+      transform.position.x += ray.dx;
+
       this.life -= dt;
-      if (this.life < 0) {
+      if (Math.abs(ray.dx) < 0.1 || this.life < 0) {
          this.entity.dead = true;
          return;
       }

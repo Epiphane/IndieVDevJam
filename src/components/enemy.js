@@ -3,10 +3,9 @@ Juicy.Component.create('Enemy', {
       this.direction = 1;
 
       this.health = 100;
+      this.speed = 8;
    },
    update: function(dt, input) {
-      var speed = 8;
-
       if (this.health <= 0) {
          this.entity.dead = true;
          
@@ -17,6 +16,6 @@ Juicy.Component.create('Enemy', {
          return;
 
       physics.dy += 240 * dt;
-      physics.dx = speed * this.direction;
+      physics.dx = this.speed * this.direction;
    }
 });

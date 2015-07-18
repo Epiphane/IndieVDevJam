@@ -2,6 +2,13 @@ Juicy.Component.create('Physics', {
     constructor: function() {
         this.dx = this.dy = 0;
         this.onGround = false;
+
+        this.collisions = {
+          above: false,
+          below: false,
+          right: false,
+          left: false
+        };
     },
 
     jump: function() {
@@ -14,44 +21,44 @@ Juicy.Component.create('Physics', {
                 animator.play(xScaleAnimation(0.4, 1.0, 0.5, 0.2), "horizontal_squish");
             }
             
-			ga('send', 'event', 'player', 'jump', 'non-upgraded');
+         ga('send', 'event', 'player', 'jump', 'non-upgraded');
 
-			var self = this;
+         var self = this;
 
-			var butt = {
-				x: this.entity.transform.position.x,
-				y: this.entity.transform.position.y + this.entity.transform.height
-			}
+         var butt = {
+            x: this.entity.transform.position.x,
+            y: this.entity.transform.position.y + this.entity.transform.height
+         }
 
-			this.entity.scene.particles.getComponent('ParticleManager').spawnParticles("100, 200, 200, ", 0.3,  8, function(particle, ndx) {
-				if (ndx > 1) {
-					return ndx - 1;
-				}
-				else {
-					return 0;
-				}
-			},
-			 function(particle) {
-			 	particle.x = self.entity.transform.position.x + self.entity.transform.width/2 * (Math.random() * 2);
-			 	particle.y = self.entity.transform.position.y + self.entity.transform.height + 0.7;
-				particle.dx = self.dx + Math.random() * 4 - 2;
-				particle.dy = self.dy / 8;
-				particle.startY = butt.y;
-				particle.startLife = 30;
-				particle.life = particle.startLife;
-			}, function(particle) {
-				particle.x += particle.dx * 0.01;
-				particle.y += particle.dy * 0.01;
-				particle.dx *= 0.9;
-				particle.dy *= 0.9;
+         this.entity.scene.particles.getComponent('ParticleManager').spawnParticles("100, 200, 200, ", 0.3,  8, function(particle, ndx) {
+            if (ndx > 1) {
+               return ndx - 1;
+            }
+            else {
+               return 0;
+            }
+         },
+          function(particle) {
+             particle.x = self.entity.transform.position.x + self.entity.transform.width/2 * (Math.random() * 2);
+             particle.y = self.entity.transform.position.y + self.entity.transform.height + 0.7;
+            particle.dx = self.dx + Math.random() * 4 - 2;
+            particle.dy = self.dy / 8;
+            particle.startY = butt.y;
+            particle.startLife = 30;
+            particle.life = particle.startLife;
+         }, function(particle) {
+            particle.x += particle.dx * 0.01;
+            particle.y += particle.dy * 0.01;
+            particle.dx *= 0.9;
+            particle.dy *= 0.9;
 
-				if (particle.life > particle.startLife) {
-					particle.alpha = 1;
-				}
-				else {
-					particle.alpha = particle.life / particle.startLife;
-				}
-			});
+            if (particle.life > particle.startLife) {
+               particle.alpha = 1;
+            }
+            else {
+               particle.alpha = particle.life / particle.startLife;
+            }
+         });
 
         }
     },
@@ -92,10 +99,9 @@ Juicy.Component.create('Physics', {
          if (!tileManager.canMove(transform.position.x, transform.position.y + transform.height, 0, 1)
           || !tileManager.canMove(transform.position.x + transform.width, transform.position.y + transform.height, 0, 1)) {
 
-			var upgrades = this.entity.getComponent('Upgrades');
+          var upgrades = this.entity.getComponent('Upgrades');
             if (this.onGround == false && upgrades) {
-            	if (upgrades.heavy) {
-            		console.log("Boom")
+               if (upgrades.heavy) {
                       var self = this;
 
                       this.entity.scene.particles.getComponent('ParticleManager').spawnParticles("0, 255, 0, ", 0.3, 8, function(particle, ndx) {
@@ -119,8 +125,8 @@ Juicy.Component.create('Physics', {
                           }
                       });
                     
-				}
-			}
+            }
+         }
 
             this.dy = 0;
             this.onGround = true;
@@ -129,6 +135,18 @@ Juicy.Component.create('Physics', {
       }
       else {
         this.onGround = false;
+      }
+
+      if (dx !== 0 && Math.abs(mindx) < 0.01) {
+        // We hit a wall
+        if (dx < 0) this.collisions.left = true;
+        else this.collisions.right = true;
+      }
+
+      if (dy !== 0 && Math.abs(mindy) < 0.01) {
+        // We hit a wall
+        if (dy < 0) this.collisions.left = true;
+        else this.collisions.right = true;
       }
    },
 

@@ -33,7 +33,7 @@ Juicy.Component.create('Player', {
          var booklet = new Booklet(this.entity.scene);
          booklet.transform.position.x = this.entity.transform.position.x;
          booklet.transform.position.y = this.entity.transform.position.y + (this.entity.transform.height - booklet.transform.height) / 2;
-         booklet.getComponent('Booklet').dx = this.direction;
+         booklet.getComponent('Booklet').dx = this.direction * 100;
 
          this.entity.scene.addObject(booklet);
 
