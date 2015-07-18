@@ -128,6 +128,14 @@ Juicy.Component.create('Physics', {
             }
          }
 
+         if (!this.onGround) {
+
+            var animator = this.entity.getComponent('Animations');
+            if (animator) {
+              animator.play(yScaleAnimation(0.7, 1.0, 1.0, 0.2), "vertical_squish");
+            }
+          }
+
             this.dy = 0;
             this.onGround = true;
 
