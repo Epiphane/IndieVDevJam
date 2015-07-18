@@ -102,29 +102,7 @@ Juicy.Component.create('Physics', {
           var upgrades = this.entity.getComponent('Upgrades');
             if (this.onGround == false && upgrades) {
                if (upgrades.heavy) {
-                      var self = this;
-
-                      this.entity.scene.particles.getComponent('ParticleManager').spawnParticles("0, 255, 0, ", 0.3, 8, function(particle, ndx) {
-                          return 0;
-                      },
-                       function(particle) {
-                          particle.x = self.entity.transform.position.x + self.entity.transform.width/2;
-                          particle.y = self.entity.transform.position.y + self.entity.transform.height;
-                          particle.dx = Math.random() * 50 - 25;
-                          particle.startLife = 30;
-                          particle.life = particle.startLife;
-                      }, function(particle) {
-                          particle.x += particle.dx * 0.01;
-                          particle.dx *= 0.9;
-
-                          if (particle.life > particle.startLife) {
-                              particle.alpha = 1;
-                          }
-                          else {
-                              particle.alpha = particle.life / particle.startLife;
-                          }
-                      });
-                    
+                     doImpactParticles();
             }
          }
 
@@ -148,6 +126,31 @@ Juicy.Component.create('Physics', {
         if (dy < 0) this.collisions.left = true;
         else this.collisions.right = true;
       }
+   },
+
+   doImpactParticles: function() {
+        var self = this;
+
+        this.entity.scene.particles.getComponent('ParticleManager').spawnParticles("0, 255, 0, ", 0.3, 8, function(particle, ndx) {
+            return 0;
+        },
+         function(particle) {
+            particle.x = self.entity.transform.position.x + self.entity.transform.width/2;
+            particle.y = self.entity.transform.position.y + self.entity.transform.height;
+            particle.dx = Math.random() * 50 - 25;
+            particle.startLife = 30;
+            particle.life = particle.startLife;
+        }, function(particle) {
+            particle.x += particle.dx * 0.01;
+            particle.dx *= 0.9;
+ 
+            if (particle.life > particle.startLife) {
+                particle.alpha = 1;
+            }
+            else {
+                particle.alpha = particle.life / particle.startLife;
+            }
+       });
    },
 
 
