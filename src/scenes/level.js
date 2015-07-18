@@ -34,8 +34,8 @@ var Level = Juicy.State.extend({
       for (var i = 0; i < this.levelTiles.spawns.length; i ++) {
          var spawn = this.levelTiles.spawns[i];
 
-         var enemy = new Juicy.Entity(this, ['Box', 'Enemy', 'PatrollingPhysics', 'Animations']);
-         enemy.getComponent('Box').fillStyle = 'red';
+         var enemy = new Juicy.Entity(this, ['Image', 'Enemy', 'PatrollingPhysics', 'Animations']);
+         enemy.getComponent('Image').setImage('./img/deck.png');
          enemy.transform.width = 1.4;
          enemy.transform.position.y = spawn.y;
          enemy.transform.position.x = spawn.x;
