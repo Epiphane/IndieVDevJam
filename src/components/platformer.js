@@ -3,11 +3,11 @@ Juicy.Component.create('Physics', {
         this.dx = this.dy = 0;
         this.onGround = false;
     },
+
     jump: function() {
         if (this.onGround) {
             this.dy = -30;
             this.onGround = false;
-            this.entity.getComponent('Particles').startParticles();
 
             var animator = this.entity.getComponent('Animations');
             if (animator) {

@@ -1,23 +1,25 @@
-Juicy.Component.create('Particles', {
+Juicy.Component.create('ParticleManager', {
    constructor: function() {
+      this.particles = Array();
    },
 
-   setParticleType: function(image, howMany, updateParticle) {
+   spawnParticles: function(where, image, howMany, initParticle, updateParticle) {
       this.particleImage = image;
       this.howMany = howMany;
       this.updateFunction = updateParticle;
-      this.particles = Array();
+      
       this.image = new Image();
       this.image.src = ""
-   },
 
-   startParticles: function() {
       for (var i = 0; i < this.howMany; i++) {
-         this.particles.push({
-            x: 0,
-            y: 0,
-            life: 60   
-         });
+         var newParticle = {
+            x: where.x,
+            y: where.y,
+            life: 60
+         };
+         
+         this.particles.push(newParticle);
+         initParticle(newParticle);
       }
    },
 
@@ -25,6 +27,8 @@ Juicy.Component.create('Particles', {
       for (var i = this.particles.length - 1; i >= 0; i--) {
          if (this.particles[i]) {
             this.updateFunction(this.particles[i]);
+            this.particles[i].life--;
+
             if (this.particles[i].life < 0) {
                this.particles.splice(i, 1);
             }

@@ -3,16 +3,16 @@ var Level = Juicy.State.extend({
    width: 40,
    tilesize: 48,
    constructor: function() {
-      this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics', 'Particles', 'Animations']);
+      this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics', 'Animations']);
       this.player.transform.width = 0.7;
       this.player.transform.height = 0.9;
       this.player.getComponent('Box').fillStyle = 'green';
 
-      this.player.getComponent('Particles').setParticleType("butts", 5, function(particle) {
-         particle.life--;
-         particle.x += Math.random() - 0.5;
-         particle.y += Math.random();
-      });
+//       this.player.getComponent('Particles').setParticleType("butts", 5, function(particle) {
+//          particle.life--;
+//          particle.x += Math.random() - 0.5;
+//          particle.y += Math.random();
+//       });
 
       this.obstacles = [];
       this.buildLevel();
@@ -24,6 +24,8 @@ var Level = Juicy.State.extend({
       this.spawnCooldown = 2;
       this.waveTime = 10;
       this.waveCooldown = 10;
+
+      this.particles = new Juicy.Entity(this, ['ParticleManager']);
 
       // Positive = move down or right
       this.camera = {
@@ -46,6 +48,7 @@ var Level = Juicy.State.extend({
    },
    update: function(dt, input) {
       this.player.update(dt);
+      this.particles.update(dt);
 
       var player_input = this.player.getComponent('Player');
 
@@ -122,6 +125,8 @@ var Level = Juicy.State.extend({
       for (var i = 0; i < this.enemies.length; i ++) {
          this.enemies[i].render(context);
       }
+
+      this.particles.render(context);
 
       context.restore();
    },
