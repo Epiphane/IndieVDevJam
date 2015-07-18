@@ -31,6 +31,10 @@ Juicy.Component.create('Button', {
                 var currRotation = this.entity.getComponent('Animations').rotate;
                 var resetRotation = rotateAnimation(currRotation, 0, 0.5, 0.5, 0.13);
                 this.entity.getComponent('Animations').play(resetRotation, "button_rotate");
+
+                var currScale = this.entity.getComponent('Animations').xScale;
+                this.entity.getComponent('Animations').play(xScaleAnimation(currScale, 1.0, 0.5, 0.2), "reset_scale_x");
+                this.entity.getComponent('Animations').play(yScaleAnimation(currScale, 1.0, 0.5, 0.2), "reset_scale_y");
             }
 
             this.state = BUTTON_STATE_IDLE;
