@@ -4,7 +4,6 @@ var Booklet = Juicy.Entity.extend({
    init: function() {
       this.transform.width = 0.8;
       this.transform.height = 0.6;
-
       this.getComponent('Box').fillStyle = this.colors[Juicy.rand(this.colors.length)];
    }
 });
