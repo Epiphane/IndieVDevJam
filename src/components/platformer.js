@@ -34,22 +34,65 @@ Juicy.Component.create('Physics', {
         }
     },
 
-update: function(dt, input) {
-      this.dy += 240 * dt;
-
+    update: function(dt, input) {
+      var tileManager = this.entity.scene.tileManager.getComponent('LevelTiles');
+      
       var transform = this.entity.transform;
 
+      var dx = this.dx * dt;
+      var dy = this.dy * dt;
+
+      var tl = tileManager.raycast(transform.position.x,                   transform.position.y, dx, dy);
+      var tr = tileManager.raycast(transform.position.x + transform.width, transform.position.y, dx, dy);
+      // TODO: Middle feelers
+      var bl = tileManager.raycast(transform.position.x,                   transform.position.y + transform.height, dx, dy);
+      var br = tileManager.raycast(transform.position.x + transform.width, transform.position.y + transform.height, dx, dy);
+
+      var mindx = tl.dx;
+      var mindy = tl.dy;
+      if (Math.abs(tr.dx) < Math.abs(mindx)) mindx = tr.dx;
+      if (Math.abs(tr.dy) < Math.abs(mindy)) mindy = tr.dy;
+      if (Math.abs(br.dx) < Math.abs(mindx)) mindx = br.dx;
+      if (Math.abs(br.dy) < Math.abs(mindy)) mindy = br.dy;
+      if (Math.abs(bl.dx) < Math.abs(mindx)) mindx = bl.dx;
+      if (Math.abs(bl.dy) < Math.abs(mindy)) mindy = bl.dy;
+
+      var ray = tl;
+      if (tr.dist < ray.dist || tr.hit.y) {
+        ray = tr;
+      }
+      if (br.dist < ray.dist || br.hit.y) {
+        ray = br;
+      }
+      if (bl.dist < ray.dist || bl.hit.y) {
+        ray = bl;
+      }
+
+      // Walk across all the tiles
+      transform.position.x += mindx;
+      transform.position.y += mindy;
+
+      if (dy > 0 && Math.abs(mindy) < 0.01) {
+        this.dy = 0;
+        this.onGround = true;
+      }
+      else {
+        this.onGround = false;
+      }
+
+      return;
+
       var prev = {
-         x: transform.position.x,
-         y: transform.position.y
+        x: transform.position.x,
+        y: transform.position.y
       };
 
-      transform.position.x += this.dx * dt
-      transform.position.y += this.dy * dt
+      transform.position.x += dx;
+      transform.position.y += dy;
 
-      var obstacles = this.entity.scene.obstacles;
+      var obstacles = tileManager.getObstacles(transform.position.x, transform.position.y, transform.width, transform.height);
       for (var i = 0; i < obstacles.length; i ++) {
-         var obstacle = obstacles[i].transform;
+         var obstacle = obstacles[i];
 
          if (transform.testCollision(obstacle)) {
             var wasLeft  = obstacle.position.x >= prev.x + transform.width;
@@ -66,6 +109,7 @@ update: function(dt, input) {
                }
 
                transform.position.y = obstacle.position.y - transform.height;
+               console.log(transform.position.y);
                this.dy = 0;
                this.onGround = true;
             }
@@ -76,10 +120,10 @@ update: function(dt, input) {
                transform.position.y = obstacle.position.y + obstacle.height;
                this.dy = 0;
                
-				var animator = this.entity.getComponent('Animations');
-				if (animator) {
-					animator.play(yScaleAnimation(0.7, 1.0, 0.0, 0.2), "vertical_squish");
-				}
+               var animator = this.entity.getComponent('Animations');
+               if (animator) {
+                  animator.play(yScaleAnimation(0.7, 1.0, 0.0, 0.2), "vertical_squish");
+               }
             }
             else if (wasRight) {
                transform.position.x = obstacle.position.x + obstacle.width;
@@ -93,8 +137,10 @@ update: function(dt, input) {
          transform.position.x -= this.entity.scene.width + 1;
 
       this.dx = 0;
-      if (Math.abs(this.dy) >= 10)
+      if (Math.abs(this.dy) >= 0.1)
          this.onGround = false;
+
+
    },
 
 

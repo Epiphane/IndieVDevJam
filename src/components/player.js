@@ -10,6 +10,9 @@ Juicy.Component.create('Player', {
       var physics = this.entity.getComponent('Physics');
       if (!physics)
          return;
+      
+      physics.dx = 0;
+      physics.dy += 240 * dt;
 
       if (input.keyDown('UP')) {
          physics.jump();

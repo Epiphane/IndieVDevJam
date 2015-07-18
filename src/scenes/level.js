@@ -8,7 +8,6 @@ var Level = Juicy.State.extend({
       this.player.getComponent('Box').fillStyle = 'green';
 
       this.obstacles = [];
-      this.buildLevel(3, 2);
 
       this.objects = [];
 
@@ -29,17 +28,31 @@ var Level = Juicy.State.extend({
          dx: 0,
          dy: 0
       }
+
+      this.tileManager = new Juicy.Entity(this, ['LevelTiles']);
+      this.tileManager.getComponent('LevelTiles').build(3, 2);
+
+      this.player.transform.position.x = this.tileManager.getComponent('LevelTiles').SECTION_WIDTH / 2;
+      this.player.transform.position.y = 1;
    },
    init: function() {
       var self = this;
       this.game.input.on('key', 'ESC', function() {
          self.game.setState(new Pause(self));
       });
+      // this.game.input.on('key', 'A', function() {
+      //    self.paused = false
+      // });
    },
    addObject: function(obj) {
       this.objects.push(obj);
    },
    update: function(dt, input) {
+      // if (this.paused)
+      //    return;
+
+      // this.paused = true;
+
       this.player.update(dt);
       this.particles.update(dt);
 
@@ -81,23 +94,23 @@ var Level = Juicy.State.extend({
          }
       }
 
-      this.spawnCooldown -= dt;
-      if (this.spawnCooldown <= 0) {
-         this.spawnCooldown = this.spawnTime;
+      // this.spawnCooldown -= dt;
+      // if (this.spawnCooldown <= 0) {
+      //    this.spawnCooldown = this.spawnTime;
 
-         var enemy = new Juicy.Entity(this, ['Box', 'Enemy', 'Physics', 'Animations']);
-         enemy.getComponent('Box').fillStyle = 'red';
-         enemy.transform.width = 1.4;
-         enemy.transform.height = 1.8;
-         if (Juicy.rand(2) === 1) {
-            enemy.getComponent('Enemy').direction = 1;
-         }
-         else {
-            enemy.getComponent('Enemy').direction = -1;
-            enemy.transform.position.x = this.width - enemy.transform.width;
-         }
-         this.enemies.push(enemy);
-      }
+      //    var enemy = new Juicy.Entity(this, ['Box', 'Enemy', 'Physics', 'Animations']);
+      //    enemy.getComponent('Box').fillStyle = 'red';
+      //    enemy.transform.width = 1.4;
+      //    enemy.transform.height = 1.8;
+      //    if (Juicy.rand(2) === 1) {
+      //       enemy.getComponent('Enemy').direction = 1;
+      //    }
+      //    else {
+      //       enemy.getComponent('Enemy').direction = -1;
+      //       enemy.transform.position.x = this.width - enemy.transform.width;
+      //    }
+      //    this.enemies.push(enemy);
+      // }
 
       return this.paused;
    },
@@ -106,6 +119,8 @@ var Level = Juicy.State.extend({
       var sc = this.tilesize;
       context.scale(sc, sc);
       context.translate(-this.camera.x, -this.camera.y);
+
+      this.tileManager.render(context, this.camera.x, this.camera.y, GAME_WIDTH / this.tilesize, GAME_HEIGHT / this.tilesize);
 
       this.player.render(context);
 
@@ -124,33 +139,5 @@ var Level = Juicy.State.extend({
       this.particles.render(context);
 
       context.restore();
-   },
-   addPlatform: function(x, y, w, h) {
-      var platform = new Juicy.Entity(this, ['Box']);
-          platform.transform.position.x = x;
-          platform.transform.position.y = y;
-          platform.transform.width = w;
-          platform.transform.height = h;
-
-      this.obstacles.push(platform);
-   },
-   buildLevel: function(width, height) {
-      var generator = new LevelGenerator();
-
-      this.width = generator.SECTION_WIDTH * width;
-      this.height = generator.SECTION_HEIGHT * height;
-      for (var i = 0; i < width; i ++) {
-         for (var j = 0; j < height; j ++) {
-            var type = generator.ANY;
-            if (i === 0 && j === 0)
-               type = generator.SPAWN;
-            else if (i === width - 1 && j === height - 1)
-               type = generator.GOAL;
-
-            generator.createSection(this, type, i, j, i === 0, i === width - 1, j === height - 1);
-         }
-      }
-
-      this.player.transform.position.x = generator.SECTION_WIDTH / 2;
    }
 });
