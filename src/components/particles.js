@@ -4,7 +4,7 @@ Juicy.Component.create('ParticleManager', {
       this.particles = Array();
    },
 
-   spawnParticles: function(where, image, howMany, timeToLive, initParticle, updateParticle) {
+   spawnParticles: function(image, size, howMany, timeToLive, initParticle, updateParticle) {
       this.howMany = howMany;
       this.updateFunction = updateParticle;
 
@@ -15,6 +15,8 @@ Juicy.Component.create('ParticleManager', {
          };
          this.pendingParticles.push(newParticle);
          newParticle.timeToLive = timeToLive(newParticle, i);
+         newParticle.image = image;
+         newParticle.size = size;
       }
    },
 
@@ -48,8 +50,8 @@ Juicy.Component.create('ParticleManager', {
    render: function(context) {
       for (var i = 0; i < this.particles.length; i++) {
          context.beginPath();
-         context.rect(this.particles[i].x, this.particles[i].y, 0.3, 0.3);
-         context.fillStyle = "rgba(100, 200, 200, " + this.particles[i].alpha + 1 + ")"; 
+         context.rect(this.particles[i].x, this.particles[i].y, this.particles[i].size, this.particles[i].size);
+         context.fillStyle = "rgba(" + this.particles[i].image + this.particles[i].alpha + 1 + ")"; 
          context.fill();
       }
    },

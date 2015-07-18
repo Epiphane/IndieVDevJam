@@ -23,7 +23,7 @@ Juicy.Component.create('Physics', {
 				y: this.entity.transform.position.y + this.entity.transform.height
 			}
 
-			this.entity.scene.particles.getComponent('ParticleManager').spawnParticles(butt, "", 8, function(particle, ndx) {
+			this.entity.scene.particles.getComponent('ParticleManager').spawnParticles("100, 200, 200, ", 0.3,  8, function(particle, ndx) {
 				if (ndx > 1) {
 					return ndx - 1;
 				}
