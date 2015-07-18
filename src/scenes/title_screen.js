@@ -4,7 +4,7 @@ constructor: function() {
       this.pic = new Juicy.Entity(this, ['Image', 'Button', 'Animations']);
       this.pic.transform.position.x = GAME_WIDTH/2;
       this.pic.transform.position.y = GAME_HEIGHT/2;
-      this.pic.getComponent('Image').setImage('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSxLS2z0JOP62RuEwe2WPgsRmy-n6oPyeqIl0kWWfosylUBDDXL6FEVfACx');      
+      this.pic.getComponent('Image').setImage('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSxLS2z0JOP62RuEwe2WPgsRmy-n6oPyeqIl0kWWfosylUBDDXL6FEVfACx'); 
 
 	// TODO: button graphic or something
 
@@ -67,11 +67,14 @@ constructor: function() {
    // update loop function. dt = time in seconds
    update: function(dt, input) {
       this.pic.update(dt);
+
+      return this.pic.getComponent('Animations').done;
    },
 
 
    // FINALLY. render() draws whatever you want to draw.
    render: function(context) {
+      console.log('r');
 
       // This calls render() on every component in this.dude.
       // Everything is transformed relative to the player, so if

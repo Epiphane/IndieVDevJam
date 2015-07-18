@@ -516,6 +516,8 @@
             entity.transform.width  = this.width;
             entity.transform.height = this.height;
 
+            entity.scene.updated = true;
+
             if (self.onload)
                self.onload(this);
          }
