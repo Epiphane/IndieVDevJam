@@ -13,7 +13,8 @@ Juicy.Component.create('Physics', {
             if (animator) {
                 animator.play(xScaleAnimation(0.4, 1.0, 0.5, 0.2), "horizontal_squish");
             }
-
+            
+			ga('send', 'event', 'player', 'jump', 'non-upgraded');
 
 			var self = this;
 
