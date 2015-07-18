@@ -31,8 +31,8 @@ var Level = Juicy.State.extend({
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
       this.levelTiles.build(3, 2);
 
-      this.player.transform.position.x = this.levelTiles.SECTION_WIDTH / 2;
-      this.player.transform.position.y = 1;
+      this.player.transform.position.x = this.levelTiles.spawn.x - 1;
+      this.player.transform.position.y = this.levelTiles.spawn.y - 1;
    },
    init: function() {
       var self = this;
@@ -102,7 +102,7 @@ var Level = Juicy.State.extend({
             enemy.getComponent('Enemy').direction = -1;
             enemy.transform.position.x = this.levelTiles.width - 10;
          }
-         this.enemies.push(enemy);
+         // this.enemies.push(enemy);
       }
 
       return this.paused;
