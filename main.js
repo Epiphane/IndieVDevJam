@@ -18,9 +18,9 @@ var GAME_WIDTH = 800;
    }));
 
    // On window resize, fill it with the game again!
-   window.onresize = function() {
-       Game.resize();
-   };
+   // window.onresize = function() {
+   //     Game.resize();
+   // };
 
    document.addEventListener('DOMContentLoaded', function() {
       Game.setState(new TitleScreen()).run();

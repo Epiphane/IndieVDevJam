@@ -63,6 +63,18 @@ var Level = Juicy.State.extend({
             this.player.transform.position.x = spawn.x;
             this.player.transform.position.y = spawn.y;
          }
+         else if (spawn.type === 'shrine') {
+            var shrine = new Juicy.Entity(this, ['Image']);
+            shrine.getComponent('Image').setImage('./img/shrine.png');
+            shrine.transform.width = 3;
+            shrine.transform.height = 6;
+            shrine.transform.position.y = spawn.y - 1.85;
+            shrine.transform.position.x = spawn.x - 1;
+
+            shrine.addComponent(new Juicy.Components.Destructible(1000));
+
+            this.objects.push(shrine);
+         }
          else {
             console.warn(spawn);
          }
@@ -148,17 +160,30 @@ var Level = Juicy.State.extend({
       context.scale(sc, sc);
       context.translate(-this.camera.x, -this.camera.y);
 
-      this.tileManager.render(context, this.camera.x, this.camera.y, GAME_WIDTH / this.tilesize, GAME_HEIGHT / this.tilesize);
+      var bounds = {
+         position: {
+            x: this.camera.x,
+            y: this.camera.y
+         },
+         width: GAME_WIDTH / this.tilesize,
+         height: GAME_HEIGHT / this.tilesize
+      };
 
-      this.player.render(context);
+      this.tileManager.render(context, bounds.position.x, bounds.position.y, bounds.width, bounds.height);
 
       for (var i = 0; i < this.objects.length; i ++) {
-         this.objects[i].render(context);
+         if (this.objects[i].transform.testCollision(bounds)) {
+            this.objects[i].render(context);
+         }
       }
 
       for (var i = 0; i < this.enemies.length; i ++) {
-         this.enemies[i].render(context);
+         if (this.enemies[i].transform.testCollision(bounds)) {
+            this.enemies[i].render(context);
+         }
       }
+
+      this.player.render(context);
 
       this.particles.render(context);
 
