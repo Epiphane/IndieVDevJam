@@ -16,6 +16,7 @@ Juicy.Component.create('Enemy', {
       if (!physics)
          return;
 
+      physics.dy += 240 * dt;
       physics.dx = speed * this.direction;
    }
 });

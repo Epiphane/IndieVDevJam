@@ -58,7 +58,7 @@ Juicy.Component.create('Physics', {
 
     update: function(dt, input) {
       var tileManager = this.entity.scene.tileManager.getComponent('LevelTiles');
-      
+
       var transform = this.entity.transform;
 
       var dx = this.dx * dt;
@@ -95,76 +95,16 @@ Juicy.Component.create('Physics', {
       transform.position.y += mindy;
 
       if (dy > 0 && Math.abs(mindy) < 0.01) {
-        this.dy = 0;
-        this.onGround = true;
+         if (!tileManager.canMove(transform.position.x, transform.position.y + transform.height, 0, 1)) {
+            this.dy = 0;
+            this.onGround = true;
+         }
       }
       else {
         this.onGround = false;
       }
-
-      return;
-
-      var prev = {
-        x: transform.position.x,
-        y: transform.position.y
-      };
-
-      transform.position.x += dx;
-      transform.position.y += dy;
-
-      var obstacles = tileManager.getObstacles(transform.position.x, transform.position.y, transform.width, transform.height);
-      for (var i = 0; i < obstacles.length; i ++) {
-         var obstacle = obstacles[i];
-
-         if (transform.testCollision(obstacle)) {
-            var wasLeft  = obstacle.position.x >= prev.x + transform.width;
-            var wasRight = obstacle.position.x + obstacle.width <= prev.x;
-            var wasAbove = obstacle.position.y >= prev.y + transform.height;
-            var wasBelow = obstacle.position.y + obstacle.height <= prev.y;
-
-            if (wasAbove) {
-               if (this.onGround == false) {
-                  var animator = this.entity.getComponent('Animations');
-                  if (animator) {
-                     animator.play(yScaleAnimation(0.7, 1.0, 1.0, 0.2));
-                  }
-               }
-
-               transform.position.y = obstacle.position.y - transform.height;
-               console.log(transform.position.y);
-               this.dy = 0;
-               this.onGround = true;
-            }
-            else if (wasLeft) {
-               transform.position.x = obstacle.position.x - transform.width;
-            }
-            else if (wasBelow) {
-               transform.position.y = obstacle.position.y + obstacle.height;
-               this.dy = 0;
-               
-               var animator = this.entity.getComponent('Animations');
-               if (animator) {
-                  animator.play(yScaleAnimation(0.7, 1.0, 0.0, 0.2), "vertical_squish");
-               }
-            }
-            else if (wasRight) {
-               transform.position.x = obstacle.position.x + obstacle.width;
-            }
-         }
-      }
-
-      if (transform.position.x + transform.width < 0)
-         transform.position.x += this.entity.scene.width + 1;
-      if (transform.position.x > this.entity.scene.width)
-         transform.position.x -= this.entity.scene.width + 1;
-
-      this.dx = 0;
-      if (Math.abs(this.dy) >= 0.1)
-         this.onGround = false;
-
-
    },
 
 
-    render: function(context) {}
+   render: function(context) {}
 });

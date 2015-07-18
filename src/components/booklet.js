@@ -52,19 +52,5 @@ Juicy.Component.create('Booklet', {
             return;
          }
       }
-
-      var obstacles = this.entity.scene.obstacles;
-      for (var i = 0; i < obstacles.length; i ++) {
-         if (this.entity.transform.testCollision(obstacles[i].transform)) {
-            var x = obstacles[i].transform.position.x;
-            if (this.dx < 0) {
-                x += obstacles[i].transform.width;
-            }
-
-            this.deathParticles(x);
-            this.entity.dead = true;
-            return;
-         }
-      }
    }
 });

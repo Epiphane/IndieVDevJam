@@ -7,8 +7,6 @@ var Level = Juicy.State.extend({
 
       this.player.getComponent('Box').fillStyle = 'green';
 
-      this.obstacles = [];
-
       this.objects = [];
 
       this.enemies = [];
@@ -30,9 +28,10 @@ var Level = Juicy.State.extend({
       }
 
       this.tileManager = new Juicy.Entity(this, ['LevelTiles']);
-      this.tileManager.getComponent('LevelTiles').build(3, 2);
+      this.levelTiles = this.tileManager.getComponent('LevelTiles');
+      this.levelTiles.build(3, 2);
 
-      this.player.transform.position.x = this.tileManager.getComponent('LevelTiles').SECTION_WIDTH / 2;
+      this.player.transform.position.x = this.levelTiles.SECTION_WIDTH / 2;
       this.player.transform.position.y = 1;
    },
    init: function() {
@@ -40,19 +39,11 @@ var Level = Juicy.State.extend({
       this.game.input.on('key', 'ESC', function() {
          self.game.setState(new Pause(self));
       });
-      // this.game.input.on('key', 'A', function() {
-      //    self.paused = false
-      // });
    },
    addObject: function(obj) {
       this.objects.push(obj);
    },
    update: function(dt, input) {
-      // if (this.paused)
-      //    return;
-
-      // this.paused = true;
-
       this.player.update(dt);
       this.particles.update(dt);
 
@@ -67,15 +58,15 @@ var Level = Juicy.State.extend({
       this.camera.y += dy * 4 * dt;
       if (this.camera.x < 0) 
          this.camera.dx = this.camera.x = 0;
-      if (this.camera.x * this.tilesize + GAME_WIDTH > this.width * this.tilesize) {
+      if (this.camera.x * this.tilesize + GAME_WIDTH > this.levelTiles.width * this.tilesize) {
          this.camera.dx = 0;
-         this.camera.x = this.width - GAME_WIDTH / this.tilesize;
+         this.camera.x = this.levelTiles.width - GAME_WIDTH / this.tilesize;
       }
       if (this.camera.y < 0)
          this.camera.dy = this.camera.y = 0;
-      if (this.camera.y * this.tilesize + GAME_HEIGHT > this.height * this.tilesize) {
+      if (this.camera.y * this.tilesize + GAME_HEIGHT > this.levelTiles.height * this.tilesize) {
          this.camera.dy = 0;
-         this.camera.y = this.height - GAME_HEIGHT / this.tilesize;
+         this.camera.y = this.levelTiles.height - GAME_HEIGHT / this.tilesize;
       }
 
       for (var i = 0; i < this.objects.length; i ++) {
@@ -94,23 +85,25 @@ var Level = Juicy.State.extend({
          }
       }
 
-      // this.spawnCooldown -= dt;
-      // if (this.spawnCooldown <= 0) {
-      //    this.spawnCooldown = this.spawnTime;
+      this.spawnCooldown -= dt;
+      if (this.spawnCooldown <= 0) {
+         this.spawnCooldown = this.spawnTime;
 
-      //    var enemy = new Juicy.Entity(this, ['Box', 'Enemy', 'Physics', 'Animations']);
-      //    enemy.getComponent('Box').fillStyle = 'red';
-      //    enemy.transform.width = 1.4;
-      //    enemy.transform.height = 1.8;
-      //    if (Juicy.rand(2) === 1) {
-      //       enemy.getComponent('Enemy').direction = 1;
-      //    }
-      //    else {
-      //       enemy.getComponent('Enemy').direction = -1;
-      //       enemy.transform.position.x = this.width - enemy.transform.width;
-      //    }
-      //    this.enemies.push(enemy);
-      // }
+         var enemy = new Juicy.Entity(this, ['Box', 'Enemy', 'Physics', 'Animations']);
+         enemy.getComponent('Box').fillStyle = 'red';
+         enemy.transform.width = 1.4;
+         enemy.transform.position.y = 1;
+         enemy.transform.height = 1.8;
+         if (Juicy.rand(2) === 1) {
+            enemy.getComponent('Enemy').direction = 1;
+            enemy.transform.position.x = 10;
+         }
+         else {
+            enemy.getComponent('Enemy').direction = -1;
+            enemy.transform.position.x = this.levelTiles.width - 10;
+         }
+         this.enemies.push(enemy);
+      }
 
       return this.paused;
    },
@@ -123,10 +116,6 @@ var Level = Juicy.State.extend({
       this.tileManager.render(context, this.camera.x, this.camera.y, GAME_WIDTH / this.tilesize, GAME_HEIGHT / this.tilesize);
 
       this.player.render(context);
-
-      for (var i = 0; i < this.obstacles.length; i ++) {
-         this.obstacles[i].render(context);
-      }
 
       for (var i = 0; i < this.objects.length; i ++) {
          this.objects[i].render(context);

@@ -45,7 +45,7 @@ Juicy.Component.create('LevelTiles', {
    },
    getTile: function(x, y) {
       var sector_x = Math.floor(x / this.SECTION_WIDTH);
-      var sector_y = Math.floor(y / this.SECTION_WIDTH);
+      var sector_y = Math.floor(y / this.SECTION_HEIGHT);
 
       var config = this.tiles[sector_x][sector_y];
       var tile_x = x % this.SECTION_WIDTH;
@@ -164,8 +164,8 @@ Juicy.Component.create('LevelTiles', {
       w = Math.ceil(w);
       h = Math.ceil(h);
 
-      for (var i = x; i < x + w && i < this.width; i ++) {
-         for (var j = y; j < y + h && j < this.height; j ++) {
+      for (var i = x; i <= x + w && i < this.width; i ++) {
+         for (var j = y; j <= y + h && j < this.height; j ++) {
             if (this.getTile(i, j) === '-') {
                context.fillStyle = 'blue';
                context.fillRect(i, j, 1, 1);
