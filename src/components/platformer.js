@@ -153,8 +153,10 @@ Juicy.Component.create('Physics', {
 
       if (dy !== 0 && Math.abs(mindy) < 0.01) {
         // We hit a wall
-        if (dy < 0) this.collisions.left = true;
-        else this.collisions.right = true;
+        if (dy < 0) this.collisions.above = true;
+        else this.collisions.below = true;
+
+            this.dy = 0;
       }
    },
 
