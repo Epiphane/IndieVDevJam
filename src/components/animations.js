@@ -5,7 +5,7 @@ function xScaleAnimation(startScale, endScale, anchor, duration) {
         end: endScale,
         duration: duration,
 
-		/** Scale-specific */
+        /** Scale-specific */
         anchor: anchor,
 
         nextAnimation: null,
@@ -21,7 +21,7 @@ function yScaleAnimation(startScale, endScale, anchor, duration) {
         end: endScale,
         duration: duration,
 
-		/** Scale-specific */
+        /** Scale-specific */
         anchor: anchor,
 
         nextAnimation: null,
@@ -50,8 +50,38 @@ function rotateAnimation(startRot, endRot, anchorX, anchorY, duration) {
         end: endRot,
         duration: duration,
 
-		anchorX: anchorX,
-		anchorY: anchorY,
+        anchorX: anchorX,
+        anchorY: anchorY,
+
+        nextAnimation: null,
+
+        currTime: 0
+    }
+}
+
+/**
+ * Does whatever you tell it in the function (called once).  Should mostly just use to 
+ *  set flags or change states or something I guess.
+ *
+ *  Still doesn't call nextAnimation until after it's duration.
+ */
+function customFunctionAnimation(func, duration) {
+	return {
+		type: "doFunction",
+		func: func,
+
+		nextAnimation: null,
+
+		currTime: 0
+	}
+}
+
+function WOWOWOWOWOW(X_GOOD_JOB, Y_U_DID_IT, HOW_LONG_DUNKY) {
+    return {
+        type: "WOW",
+        begin: X_GOOD_JOB,
+        end: Y_U_DID_IT,
+        duration: HOW_LONG_DUNKY,
 
         nextAnimation: null,
 
@@ -69,9 +99,12 @@ Juicy.Component.create('Animations', {
         this.scaleAnchorX = 0.5;
         this.scaleAnchorY = 0;
 
-		this.rotate = 0;
+        this.rotate = 0;
         this.rotateAnchorX = 0;
         this.rotateAnchorY = 0;
+
+	this.translateX = 0;
+	this.translateY = 0;
     },
 
     update: function(dt, input) {
@@ -114,16 +147,50 @@ Juicy.Component.create('Animations', {
 
             this.scaleAnchorX = this.scaleAnchorY = 0.5;
         } else if (anim.type == "rotate") {
-			this.rotate = currValue;
-			this.rotateAnchorX = anim.anchorX;
-			this.rotateAnchorY = anim.anchorY;
-		} else {
-			console.log("Whaaa?  Unkown animation type " + anim.type);
-		}
+            this.rotate = currValue;
+            this.rotateAnchorX = anim.anchorX;
+            this.rotateAnchorY = anim.anchorY;
+		} else if (anim.type == "WOW") {
+			this.translateX = Math.random() * anim.begin;
+			this.translateY = Math.random() * anim.end;
+		} else if (anim.type == "doFunction") {
+			if (anim.currTime == 0) {
+				anim.func();
+			}	
+        } else {
+            console.log("Whaaa?  Unkown animation type " + anim.type);
+        }
 
         anim.currTime += dt;
         if (anim.currTime > anim.duration) {
             anim.done = true;
+            this.finishAnimation(anim);
+        }
+    },
+
+	/**
+	 * We don't always end RIGHT when currTime == duration.
+	 *  Set the element to anim.end if appropriate.
+	 */
+	finishAnimation: function(anim) {
+		if (anim.type == "scaleX") {
+            this.scaleX = anim.end;
+        } else if (anim.type == "scaleY") {
+            this.scaleY = anim.end;
+        } else if (anim.type == "bounce") {
+            this.scaleX = this.scaleY = anim.end;
+            this.scaleAnchorX = this.scaleAnchorY = 0.5;
+        } else if (anim.type == "rotate") {
+            this.rotate = anim.end;
+            this.rotateAnchorX = anim.anchorX;
+            this.rotateAnchorY = anim.anchorY;
+		} else if (anim.type == "WOW") {
+			this.translateX = 0;
+			this.translateY = 0;
+		} else if (anim.type == "doFunction") {
+			//nothin
+        } else {
+            console.log("Whaaa?  Unkown animation type " + anim.type);
         }
     },
 
@@ -132,8 +199,8 @@ Juicy.Component.create('Animations', {
     },
 
     stop: function(key) {
-		this.currAnimations[key].done = true;
-	},
+        this.currAnimations[key].done = true;
+    },
 
     currScale: function() {
         return this.currScale;
@@ -145,18 +212,20 @@ Juicy.Component.create('Animations', {
      * Transform the canvas based on what the current animation says we should do 
      */
     transformCanvas: function(context) {
-		var scaleAnchorAdjustX = this.entity.transform.width * this.scaleAnchorX;
-		var scaleAnchorAdjustY = this.entity.transform.height * this.scaleAnchorY;
-    	 
-		context.translate(scaleAnchorAdjustX, scaleAnchorAdjustY);
-		context.scale(this.scaleX, this.scaleY);
-		context.translate(-scaleAnchorAdjustX, -scaleAnchorAdjustY);
+        var scaleAnchorAdjustX = this.entity.transform.width * this.scaleAnchorX;
+        var scaleAnchorAdjustY = this.entity.transform.height * this.scaleAnchorY;
 
-		var rotateAnchorAdjustX = this.entity.transform.width * this.rotateAnchorX;
-		var rotateAnchorAdjustY = this.entity.transform.height * this.rotateAnchorY;
-    	 
-		context.translate(rotateAnchorAdjustX, rotateAnchorAdjustY);
-		context.rotate(this.rotate);
-		context.translate(-rotateAnchorAdjustX, -rotateAnchorAdjustY);
+        context.translate(scaleAnchorAdjustX, scaleAnchorAdjustY);
+        context.scale(this.scaleX, this.scaleY);
+        context.translate(-scaleAnchorAdjustX, -scaleAnchorAdjustY);
+
+        var rotateAnchorAdjustX = this.entity.transform.width * this.rotateAnchorX;
+        var rotateAnchorAdjustY = this.entity.transform.height * this.rotateAnchorY;
+
+        context.translate(rotateAnchorAdjustX, rotateAnchorAdjustY);
+        context.rotate(this.rotate);
+        context.translate(-rotateAnchorAdjustX, -rotateAnchorAdjustY);
+
+	context.translate(this.translateX, this.translateY);
     },
 });
