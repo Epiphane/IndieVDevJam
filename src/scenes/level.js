@@ -1,7 +1,7 @@
 var Level = Juicy.State.extend({
    tilesize: 20,
    constructor: function() {
-      this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics', 'Animations']);
+      this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics', 'Animations', 'Upgrades']);
       this.player.transform.width = 1.4;
       this.player.transform.height = 1.8;
 
