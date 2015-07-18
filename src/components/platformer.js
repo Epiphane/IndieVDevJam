@@ -20,15 +20,27 @@ Juicy.Component.create('Physics', {
 				y: this.entity.transform.position.y + this.entity.transform.height - 0.3
 			}
 
-			this.entity.scene.particles.getComponent('ParticleManager').spawnParticles(butt, "butts.jpg", 5, function(particle) {
-				particle.dx = Math.random() * 1 - 0.5;
-				particle.dy = -0.01;
+			this.entity.scene.particles.getComponent('ParticleManager').spawnParticles(butt, "", 5, function(particle, ndx) {
+				return ndx * 20;
+			},
+			 function(particle, ndx) {
+				particle.dx = this.dx;
+				particle.dy = this.dy / 2;
 				particle.startY = butt.y;
+				particle.startLife = 30;
+				particle.life = particle.startLife + ndx * 10;
 			}, function(particle) {
-				particle.x += particle.dx;
-				particle.y += particle.dy;
-				particle.dx *= 0.83;
-				particle.dy *= 1.11;
+				particle.x += 0.1;//particle.dx * 0.01;
+				particle.y += 0.1;//particle.dy * 0.01;
+				particle.dx *= 0.9;
+				particle.dy *= 0.9;
+
+				if (particle.life > particle.startLife) {
+					particle.alpha = 1;
+				}
+				else {
+					particle.alpha = particle.life / particle.startLife;
+				}
 			});
 
         }
