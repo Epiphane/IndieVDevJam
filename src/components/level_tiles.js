@@ -7,42 +7,7 @@ Juicy.Component.create('LevelTiles', {
    EMPTY: '.',
    PLATFORM: '-',
    WALL: 'X',
-   build: function(width, height) {
-      var sectionsUsed = [];
-      this.tiles = []; // Array of room configurations
-      this.width = width * this.SECTION_WIDTH;
-      this.height = height * this.SECTION_HEIGHT;
-
-      for (var i = 0; i < width; i ++) {
-         this.tiles.push([]);
-
-         for (var j = 0; j < height; j ++) {
-            var config = this.sections.spawn;
-
-            this.tiles[i].push(this.parse(config, i === 0, i === width - 1, j === height - 1));
-         }
-      }
-   },
-   parse: function(config, leftWall, rightWall, bottomWall) {
-      if (config.length !== this.SECTION_HEIGHT * this.SECTION_WIDTH)
-         throw "Section length is not the right size.";
-
-      var cfg = config.split('');
-
-      if (bottomWall)
-         for (var i = (this.SECTION_HEIGHT - 1) * this.SECTION_WIDTH; i < cfg.length; i ++)
-            cfg[i] = '-';
-
-      if (leftWall)
-         for (var i = 0; i < cfg.length; i += this.SECTION_WIDTH)
-            cfg[i] = 'X';
-
-      if (rightWall)
-         for (var i = this.SECTION_WIDTH - 1; i < cfg.length; i += this.SECTION_WIDTH)
-            cfg[i] = 'X';
-
-      return cfg;
-   },
+   BOOK: '%',
    getTile: function(x, y) {
       var sector_x = Math.floor(x / this.SECTION_WIDTH);
       var sector_y = Math.floor(y / this.SECTION_HEIGHT);
@@ -139,7 +104,7 @@ Juicy.Component.create('LevelTiles', {
          else {
             // Hit a block oh no...
             if (step_dx > 0)
-               x = Math.ceil(x);
+               x = Math.ceil(x) - 0.1;
             else
                x = Math.floor(x);
 
@@ -166,78 +131,209 @@ Juicy.Component.create('LevelTiles', {
 
       for (var i = x; i <= x + w && i < this.width; i ++) {
          for (var j = y; j <= y + h && j < this.height; j ++) {
-            if (this.getTile(i, j) === '-') {
+            if (this.getTile(i, j) === this.PLATFORM) {
                context.fillStyle = 'blue';
                context.fillRect(i, j, 1, 1);
             }
-            if (this.getTile(i, j) === 'X') {
+            if (this.getTile(i, j) === this.WALL) {
                context.fillStyle = 'green';
+               context.fillRect(i, j, 1, 1);
+            }
+            if (this.getTile(i, j) === this.BOOK) {
+               context.fillStyle = 'yellow';
                context.fillRect(i, j, 1, 1);
             }
          }
       }
    },
+   build: function(width, height) {
+      var limitedUses = {
+         spawn: 1,
+         treasure: 1,
+      };
+
+      this.tiles = []; // Array of room configurations
+      this.width = width * this.SECTION_WIDTH;
+      this.height = height * this.SECTION_HEIGHT;
+
+      for (var i = 0; i < width; i ++) {
+         this.tiles.push([]);
+
+         for (var j = 0; j < height; j ++) {
+            var type = 'spawn';
+            if (i > 0 || j > 0) {
+               var keys = Object.keys(this.sections);
+
+               while (limitedUses[type] === 0) {
+                  type = keys[Juicy.rand(keys.length)];                  
+               }
+            }
+
+            var config = this.sections[type];
+            var cfg = this.parse(config, i === 0, i === width - 1, j === height - 1);
+
+            if (type === 'spawn') {
+               var ind = cfg.indexOf('^');
+
+               this.spawn = {
+                  x: ind % this.SECTION_WIDTH,
+                  y: Math.floor(ind / this.SECTION_HEIGHT)
+               };
+
+               cfg[ind] = this.EMPTY;
+            }
+
+            if (limitedUses[type]) {
+               limitedUses[type] --;
+            }
+
+            this.tiles[i].push(cfg);
+         }
+      }
+   },
+   parse: function(config, leftWall, rightWall, bottomWall) {
+      if (config.length !== this.SECTION_HEIGHT * this.SECTION_WIDTH)
+         throw "Section length is not the right size.";
+
+      var cfg = config.split('');
+
+      if (bottomWall)
+         for (var i = (this.SECTION_HEIGHT - 1) * this.SECTION_WIDTH; i < cfg.length; i ++)
+            cfg[i] = this.PLATFORM;
+
+      if (leftWall)
+         for (var i = 0; i < cfg.length; i += this.SECTION_WIDTH)
+            cfg[i] = this.WALL;
+
+      if (rightWall)
+         for (var i = this.SECTION_WIDTH - 1; i < cfg.length; i += this.SECTION_WIDTH)
+            cfg[i] = this.WALL;
+
+      return cfg;
+   },
    sections: {
-      spawn: '                                        '
-           + '                                        '
-           + '                                        '
-           + '                                        '
-           + '                                        '
-           + '                                        '
-           + '                                        '
-           + '                                        '
-           + '-----------------      -----------------'
-           + '                                        '
-           + '                                        '
-           + '                                        '
-           + '                                        '
-           + '                                        '
-           + '--------       ----------               '
+      spawn: '----------------------------------------'
+           + '---------------------                   '
+           + '--------------                          '
+           + '------------                            '
+           + '------------                            '
+           + '--      ---                             '
+           + '-   ^                                   '
+           + '-                                       '
+           + '-            ----      -----------------'
+           + '--      ----                            '
+           + '--------- -                             '
            + '--------                                '
-           + '------------                ------------'
+           + '----------                              '
+           + '----------                              '
+           + '--  -------    ----------               '
+           + '--- -------                             '
+           + '---- -------                ------------'
+           + '-----------                             '
+           + '------ ---                              '
+           + '-----------                             '
+           + '--  ------                              '
+           + '-- --------                             '
+           + '------ ------                           '
+           + '-----  -------            --------------'
+           + '----------                              '
            + '                                        '
            + '                                        '
            + '                                        '
-           + '                                        '
-           + '                                        '
-           + '                                        '
-           + '--------------            --------------'
-           + '                                        '
-           + '                                        '
-           + '                                        '
-           + '                                        '
-           + '                                        '
-           + '----------------------------------------',
-      room: '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '               -    ' + '    -               '
-          + '               -    ' + '    -               '
-       
-          + '               -    ' + '    -               '
-          + '               -----' + '-----               '
-          + '                    ' + '        ------      '
-          + '                    ' + '             -      '
-          + '                    ' + '             -      '
-          + '               -----' + '----         -      '
-          + '                    ' + '             ------ '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
-          + '                    ' + '                    '
+           + '--------                                '
+           + '-----                                   ',
+      treasure: 'X-------------------' + '---------------     '
+              + 'X                  -' + '        ------X     '
+              + 'X                  -' + '          --- X     '
+              + '                   -' + '              X     '
+              + '          --       -' + '             -X     '
+              + '          --       -' + '              X     '
+              + '                   -' + '              X     '
+              + '                   -' + '              X     '
+              + 'XXXX              - ' + '              XXXXXX'
+              + 'X                -  ' + '    -------        X'
+              + 'X               -   ' + '    -              X'
+              + 'X               -   ' + '    -              X'
+              + 'X               -   ' + '    -              X'
+              + 'X               -   ' + '    -              X'
+              + 'X               -   ' + '%   -              X'
+  
+              + 'X    --         -  ' + '     -              X'
+              + 'X                ---' + '-----              X'
+              + 'X                   ' + '               -   X'
+              + 'X                   ' + '                   X'
+              + 'X                   ' + '                   X'
+              + 'X                   ' + '          -        X'
+              + 'X                   ' + '                   X'
+              + 'X      -----     -  ' + '   --              X'
+              + 'X                   ' + '                   X'
+              + 'X                   ' + '                   X'
+              + 'X                   ' + '                    '
+              + 'X                   ' + '                    '
+              + 'X                   ' + '                    '
+              + 'X                   ' + '                    '
+              + 'X-------------------' + '-------------------X',
+      room1:    '-----               ' + '                    '
+              + '-----               ' + '                    '
+              + '---                 ' + '                    '
+              + '--          --------' + '----                '
+              + '---                 ' + '                    '
+              + '--                  ' + '                    '
+              + '----                ' + '        -------     '
+              + ' -----              ' + '      ----------    '
+              + '- ------            ' + '     -----------  --'
+              + '--                  ' + '---------------    -'
+              + '--           -------' + '                    '
+              + '                    ' + '                    '
+              + '                    ' + '                    '
+              + '--                  ' + '        ------------'
+              + '-----               ' + '          ----------'
+  
+              + '- -- -         -----' + '                ----'
+              + '-----         ------' + '--            ------'
+              + ' --          -------' + '----       ----  -- '
+              + '---                 ' + '            --- ----'
+              + '- -                 ' + '              ----- '
+              + '---                 ' + '    -          --- -'
+              + '--          --------' + '----          ------'
+              + '---          -------' + '-               ----'
+              + '------              ' + '               ---- '
+              + '                    ' + '              - ----'
+              + '                    ' + '              -  ---'
+              + '               -----' + '------              '
+              + '           ----     ' + '                    '
+              + '         ------     ' + '                    '
+              + '       -------      ' + '                    ',
+      room2:    '                    ' + '                    '
+              + '                    ' + '                    '
+              + '                    ' + '                    '
+              + '                    ' + '                    '
+              + '                    ' + '                    '
+              + '                    ' + '                    '
+              + '         -----------' + '-----------         '
+              + '      ---------   --' + '-------             '
+              + '-                   ' + '-                   '
+              + '--                  ' + '                    '
+              + '------              ' + '                    '
+              + '-------------       ' + '                    '
+              + ' -------            ' + '                    '
+              + '                 ---' + '------              '
+              + '                    ' + '                    '
+
+              + '                    ' + '                    '
+              + '                    ' + '                    '
+              + '            -----   ' + '   -----            '
+              + '           -        ' + '        -           '
+              + '           -        ' + '        -           '
+              + '           -        ' + '        -           '
+              + '            ----    ' + '    ----            '
+              + '                    ' + '                    '
+              + '                   -' + '--                  '
+              + '                  --' + '---                 '
+              + '                  --' + '---                 '
+              + '     XXX         ---' + '----     XXX        '
+              + '     XXX        ----' + '-----    XXX        '
+              + '     XXX      ------' + '------   XXX        '
+              + '    ----------------' + '-------------       '
    }
 });

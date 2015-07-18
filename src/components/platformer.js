@@ -64,11 +64,13 @@ Juicy.Component.create('Physics', {
       var dx = this.dx * dt;
       var dy = this.dy * dt;
 
-      var tl = tileManager.raycast(transform.position.x,                   transform.position.y, dx, dy);
-      var tr = tileManager.raycast(transform.position.x + transform.width, transform.position.y, dx, dy);
-      // TODO: Middle feelers
-      var bl = tileManager.raycast(transform.position.x,                   transform.position.y + transform.height, dx, dy);
-      var br = tileManager.raycast(transform.position.x + transform.width, transform.position.y + transform.height, dx, dy);
+      var tl = tileManager.raycast(transform.position.x,                       transform.position.y, dx, dy);
+      var tr = tileManager.raycast(transform.position.x + transform.width,     transform.position.y, dx, dy);
+      var ml = tileManager.raycast(transform.position.x,                       transform.position.y + transform.height / 2, dx, dy);
+      var mr = tileManager.raycast(transform.position.x + transform.width,     transform.position.y + transform.height / 2, 1, dy);
+      var bl = tileManager.raycast(transform.position.x,                       transform.position.y + transform.height, dx, dy);
+      var bm = tileManager.raycast(transform.position.x + transform.width / 2, transform.position.y + transform.height, dx, dy);
+      var br = tileManager.raycast(transform.position.x + transform.width,     transform.position.y + transform.height, dx, dy);
 
       var mindx = tl.dx;
       var mindy = tl.dy;
@@ -78,24 +80,17 @@ Juicy.Component.create('Physics', {
       if (Math.abs(br.dy) < Math.abs(mindy)) mindy = br.dy;
       if (Math.abs(bl.dx) < Math.abs(mindx)) mindx = bl.dx;
       if (Math.abs(bl.dy) < Math.abs(mindy)) mindy = bl.dy;
-
-      var ray = tl;
-      if (tr.dist < ray.dist || tr.hit.y) {
-        ray = tr;
-      }
-      if (br.dist < ray.dist || br.hit.y) {
-        ray = br;
-      }
-      if (bl.dist < ray.dist || bl.hit.y) {
-        ray = bl;
-      }
+      if (Math.abs(bm.dy) < Math.abs(mindy)) mindy = bm.dy;
+      if (Math.abs(mr.dx) < Math.abs(mindx)) mindx = mr.dx;
+      if (Math.abs(ml.dx) < Math.abs(mindx)) mindx = ml.dx;
 
       // Walk across all the tiles
       transform.position.x += mindx;
       transform.position.y += mindy;
 
       if (dy > 0 && Math.abs(mindy) < 0.01) {
-         if (!tileManager.canMove(transform.position.x, transform.position.y + transform.height, 0, 1)) {
+         if (!tileManager.canMove(transform.position.x, transform.position.y + transform.height, 0, 1)
+          || !tileManager.canMove(transform.position.x + transform.width, transform.position.y + transform.height, 0, 1)) {
 
 			var upgrades = this.entity.getComponent('Upgrades');
             if (this.onGround == false && upgrades) {

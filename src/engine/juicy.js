@@ -285,6 +285,9 @@
       }
    };
    Entity.prototype.getComponent = function(name) {
+      if (!this.components[name])
+        return null;
+
       if (this.dt) {
          if (this.updated[name] === 1)
             throw 'Circular component dependency: ' + name + '<>';
