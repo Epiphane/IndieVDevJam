@@ -108,6 +108,8 @@ Juicy.Component.create('Animations', {
     },
 
     update: function(dt, input) {
+        this.done = true;
+
         var keys = Object.keys(this.currAnimations);
         for (var i = 0; i < keys.length; i++) {
             var anim = this.currAnimations[keys[i]];
@@ -123,6 +125,9 @@ Juicy.Component.create('Animations', {
                     nextAnim.currTime = 0;
                     nextAnim.done = false;
                 }
+            }
+            else {
+                this.done = false;
             }
         }
     },
