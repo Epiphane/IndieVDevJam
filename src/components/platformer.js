@@ -13,6 +13,24 @@ Juicy.Component.create('Physics', {
             if (animator) {
                 animator.play(xScaleAnimation(0.4, 1.0, 0.5, 0.2), "horizontal_squish");
             }
+
+
+			var butt = {
+				x: this.entity.transform.position.x,
+				y: this.entity.transform.position.y + this.entity.transform.height - 0.3
+			}
+
+			this.entity.scene.particles.getComponent('ParticleManager').spawnParticles(butt, "butts.jpg", 5, function(particle) {
+				particle.dx = Math.random() * 1 - 0.5;
+				particle.dy = -0.01;
+				particle.startY = butt.y;
+			}, function(particle) {
+				particle.x += particle.dx;
+				particle.y += particle.dy;
+				particle.dx *= 0.83;
+				particle.dy *= 1.11;
+			});
+
         }
     },
 

@@ -15,7 +15,7 @@ Juicy.Component.create('ParticleManager', {
          var newParticle = {
             x: where.x,
             y: where.y,
-            life: 60
+            life: 30
          };
          
          this.particles.push(newParticle);
@@ -39,8 +39,8 @@ Juicy.Component.create('ParticleManager', {
    render: function(context) {
       for (var i = 0; i < this.particles.length; i++) {
          context.beginPath();
-         context.rect(this.particles[i].x, this.particles[i].y, 0.1, 0.1);
-         context.fillStyle = "red"; 
+         context.rect(this.particles[i].x, this.particles[i].y, 0.3, 0.3);
+         context.fillStyle = "rgba(100, 200, 200, " + this.particles[i].life/30 + ")"; 
          context.fill();
       }
    },
