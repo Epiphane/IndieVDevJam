@@ -26,6 +26,8 @@ var Level = Juicy.State.extend({
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
       this.levelTiles.build(3, 2);
 
+      var self = this;
+
       // Create enemies
       for (var i = 0; i < this.levelTiles.spawns.length; i ++) {
          var spawn = this.levelTiles.spawns[i];
@@ -64,14 +66,21 @@ var Level = Juicy.State.extend({
             this.player.transform.position.y = spawn.y;
          }
          else if (spawn.type === 'shrine') {
-            var shrine = new Juicy.Entity(this, ['Image']);
-            shrine.getComponent('Image').setImage('./img/shrine.png');
+            var shrine = new Juicy.Entity(this, ['Sprite']);
+            shrine.getComponent('Sprite').setSheet('./img/shrine.png', 256, 512);
             shrine.transform.width = 3;
             shrine.transform.height = 6;
             shrine.transform.position.y = spawn.y - 1.85;
             shrine.transform.position.x = spawn.x - 1;
 
-            shrine.addComponent(new Juicy.Components.Destructible(1000));
+            var destructible = new Juicy.Components.Destructible(1000);
+            destructible.ondestroy = function() {
+               self.slow = true;
+               self.flash = 1;
+               shrine.getComponent('Sprite').runAnimation(1, 3, 0.5)
+                  .oncompleteanimation = function() {};
+            }
+            shrine.addComponent(destructible);
 
             this.objects.push(shrine);
          }
@@ -92,6 +101,13 @@ var Level = Juicy.State.extend({
       this.objects.push(obj);
    },
    update: function(dt, input) {
+      if (this.slow)
+         dt /= 3;
+
+      if (this.flash) {
+         this.flash -= dt;
+      }
+
       this.player.update(dt);
       this.particles.update(dt);
 
@@ -188,5 +204,10 @@ var Level = Juicy.State.extend({
       this.particles.render(context);
 
       context.restore();
+
+      if (this.flash) {
+         context.fillStyle = 'rgba(255, 255, 255, ' + this.flash + ')';
+         context.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+      }
    }
 });

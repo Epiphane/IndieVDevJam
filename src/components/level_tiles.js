@@ -110,7 +110,7 @@ Juicy.Component.create('LevelTiles', {
             if (step_dx > 0)
                x = Math.ceil(x) - 0.1;
             else
-               x = Math.floor(x);
+               x = Math.floor(x) + 0.1;
 
             hit_x = true;
          }
@@ -174,8 +174,6 @@ Juicy.Component.create('LevelTiles', {
             if (i === width - 1 && j === height - 1) {
                type = 'goal';
             }
-
-            console.log(type);
 
             var config = this.sections[type];
             var cfg = this.parse(config, i === 0, i === width - 1, j === height - 1);
