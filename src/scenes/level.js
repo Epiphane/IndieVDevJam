@@ -141,20 +141,20 @@ var Level = Juicy.State.extend({
       var platformh = 0.5;
 
       // Sides
-      var platformw = 7;
+      var platformw = 12;
       this.addPlatform(-1, this.height - 4, platformw, platformh);
       this.addPlatform(this.width - platformw + 1, this.height - 4, platformw, platformh);
 
-      platformw = 4;
+      platformw = 10;
       this.addPlatform(-1, this.height - 7, platformw, platformh);
       this.addPlatform(this.width - platformw + 1, this.height - 7, platformw, platformh);
 
       // Middle
-      platformw = 8;      
+      platformw = 16;      
       this.addPlatform((this.width - platformw) / 2, this.height - 8, platformw, platformh);
 
       // Sides
-      platformw = 9;  
+      platformw = 18;  
       this.addPlatform(-1, this.height - 11, platformw, platformh);
       this.addPlatform(this.width - platformw + 1, this.height - 11, platformw, platformh);
 
