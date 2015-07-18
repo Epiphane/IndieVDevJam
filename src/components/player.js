@@ -3,7 +3,6 @@ Juicy.Component.create('Player', {
       this.direction = 1;
       this.firingRate = 0.1;
       this.cooldown = 0;
-      this.score = new Score(this); // pass in this player instance (will need name and other shit)
    },
    update: function(dt, input) {
       var speed = 16;
@@ -38,11 +37,6 @@ Juicy.Component.create('Player', {
          this.cooldown = this.firingRate;
 
          physics.dx -= this.direction * 2;
-         
-         
-         
-         // TEMP 
-         this.entity.getComponent('score').eventOccurred('killedEnemy');
       }
    }
 });

@@ -7,8 +7,10 @@ Juicy.Component.create('Enemy', {
    update: function(dt, input) {
       var speed = 8;
 
-      if (this.health <= 0)
-         this.entity.dead = true;
+      if (this.health <= 0) {
+          this.entity.dead = true;
+          this.entity.scene.player.getComponent('Score').eventOccurred('killedEnemy');
+      }
 
       var physics = this.entity.getComponent('Physics');
       if (!physics)
