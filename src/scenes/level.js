@@ -8,7 +8,6 @@ var Level = Juicy.State.extend({
       this.player.getComponent('Box').fillStyle = 'green';
 
       this.objects = [];
-
       this.enemies = [];
 
       this.particles = new Juicy.Entity(this, ['ParticleManager']);
@@ -27,28 +26,49 @@ var Level = Juicy.State.extend({
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
       this.levelTiles.build(3, 2);
 
-      this.player.transform.position.x = this.levelTiles.spawn.x - 1;
-      this.player.transform.position.y = this.levelTiles.spawn.y - 1;
-
       // Create enemies
       for (var i = 0; i < this.levelTiles.spawns.length; i ++) {
          var spawn = this.levelTiles.spawns[i];
 
-         var enemy = new Juicy.Entity(this, ['Image', 'Enemy', 'PatrollingPhysics', 'Animations']);
-         enemy.getComponent('Image').setImage('./img/deck.png');
-         enemy.transform.width = 1.4;
-         enemy.transform.position.y = spawn.y;
-         enemy.transform.position.x = spawn.x;
-         enemy.transform.height = 1.8;
-         if (Juicy.rand(2) === 1) {
-            enemy.getComponent('Enemy').direction = 1;
+         if (spawn.type === 'enemy') {
+            var enemy = new Juicy.Entity(this, ['Image', 'Enemy', 'PatrollingPhysics', 'Animations']);
+            enemy.getComponent('Image').setImage('./img/deck.png');
+            enemy.transform.width = 1.4;
+            enemy.transform.position.y = spawn.y;
+            enemy.transform.position.x = spawn.x;
+            enemy.transform.height = 1.8;
+            if (Juicy.rand(2) === 1) {
+               enemy.getComponent('Enemy').direction = 1;
+            }
+            else {
+               enemy.getComponent('Enemy').direction = -1;
+            }
+
+            this.enemies.push(enemy);
+         }
+         else if (spawn.type === 'book') {
+            var book = new Juicy.Entity(this, ['Image']);
+            book.getComponent('Image').setImage('./img/deck.png');
+            book.transform.width = 0.75;
+            book.transform.height = 1;
+            book.transform.position.y = spawn.y;
+            book.transform.position.x = spawn.x;
+
+            var power = new Juicy.Components.Powerup();
+            book.addComponent(power);
+
+            this.objects.push(book);
+         }
+         else if (spawn.type === 'player') {
+            this.player.transform.position.x = spawn.x;
+            this.player.transform.position.y = spawn.y;
          }
          else {
-            enemy.getComponent('Enemy').direction = -1;
+            console.warn(spawn);
          }
-
-         this.enemies.push(enemy);
       }
+
+      // Create books
    },
    init: function() {
       var self = this;
