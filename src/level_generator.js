@@ -12,6 +12,23 @@ LevelGenerator.prototype.EMPTY = '.';
 LevelGenerator.prototype.PLATFORM = '-';
 LevelGenerator.prototype.WALL = 'X';
 
+LevelGenerator.prototype.buildLevel = function(width, height) {
+   var tiles = [];
+
+   for (var r = 0; r < height * this.SECTION_HEIGHT; r ++)
+      tiles.push([]);
+
+   for (var i = 0; i < width; i ++) {
+      for (var j = 0; j < height; j ++) {
+         
+      }
+   }
+};
+
+LevelGenerator.prototype.parseSection = function(config, i, j, leftWall, rightWall, bottomWall) {
+   
+}
+
 LevelGenerator.prototype.createSection = function(level, type, i, j, leftWall, rightWall, bottomWall) {
    var config = this.sections.room;
 
