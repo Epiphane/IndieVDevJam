@@ -4,7 +4,7 @@ constructor: function() {
       this.pic = new Juicy.Entity(this, ['Image', 'Button', 'Animations']);
       this.pic.transform.position.x = 0;
       this.pic.transform.position.y = 0;
-      this.pic.getComponent('Image').setImage('http://p1.pichost.me/i/52/1760078.jpg'); 
+      this.pic.getComponent('Image').setImage('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSxLS2z0JOP62RuEwe2WPgsRmy-n6oPyeqIl0kWWfosylUBDDXL6FEVfACx'); 
 
 	// TODO: button graphic or something
 
