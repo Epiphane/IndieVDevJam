@@ -44,7 +44,7 @@ Juicy.Component.create('Player', {
    throwBook: function() {
       var booklet = new Booklet(this.entity.scene);
       booklet.transform.position.x = this.entity.transform.position.x;
-      booklet.transform.position.y = this.entity.transform.position.y + (this.entity.transform.height - booklet.transform.height) / 2;
+      booklet.transform.position.y = this.entity.transform.position.y + 0.1;
 
       var powers = Object.keys(this.powerups);
       for (var i = 0; i < powers.length; i ++) {
@@ -55,7 +55,7 @@ Juicy.Component.create('Player', {
 
       var comp = booklet.getComponent('Booklet');
       comp.dx = this.direction * 100;
-//       comp.setPowers(powers);
+      comp.setPowers(powers);
 
       this.entity.scene.addObject(booklet);
 
