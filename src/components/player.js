@@ -4,13 +4,13 @@ Juicy.Component.create('Player', {
       this.firingRate = 0.1;
       this.cooldown = 0;
       this.doingRecoil = false;
-      this.jumpSound = new buzz.sound( "audio/fx_jump", {
+      this.jumpSound = newBuzzSound( "audio/fx_jump", {
          formats: [ "wav"]
       });
-      this.hitSound = new buzz.sound( "audio/fx_playerdmg", {
+      this.hitSound = newBuzzSound( "audio/fx_playerdmg", {
          formats: [ "wav"]
       });
-      this.powerupSound = new buzz.sound( "audio/fx_powerup", {
+      this.powerupSound = newBuzzSound( "audio/fx_powerup", {
          formats: [ "wav"]
       });
 
