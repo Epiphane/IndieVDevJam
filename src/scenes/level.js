@@ -1,7 +1,7 @@
 var Level = Juicy.State.extend({
    tilesize: 20,
    constructor: function() {
-      this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics', 'Animations', 'Score']);
+      this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics', 'Animations', 'Score', 'Upgrades']);
       this.gui = new Juicy.Entity(this, ['GUI', 'Animations']);
       this.player.getComponent('Score').setGui(this.gui.getComponent('GUI'));
       var name = 'lol name here'; // set the name from a textbox before the game or some shiiiii
@@ -42,6 +42,9 @@ var Level = Juicy.State.extend({
          strength: 0,
          time: 0
       };
+
+      // Transition out of level
+      this.flash = false;
 
       var self = this;
 
@@ -133,7 +136,6 @@ var Level = Juicy.State.extend({
          dt /= 3;
 
       if (this._shake && this._shake.time > 0) {
-         console.log(Math.sin(this._shake.time * 6));
          this.game.canvas.style.left = (this._shake.strength * Math.sin(this._shake.time * 64)) + 'px';
 
          this._shake.time -= dt;
@@ -143,7 +145,16 @@ var Level = Juicy.State.extend({
          }
       }
 
-      if (this.flash) {
+      if (this.flash !== false) {
+         if (this.flash > -1.5 && this.flash - dt <= -1.5) {
+            TransitionManager.toShop();
+
+            var self = this;
+            TransitionManager.onComplete = function() {
+               self.game.setState(new UpgradeScreen(self.player));
+            }
+         }
+
          this.flash -= dt;
       }
 
@@ -249,9 +260,15 @@ var Level = Juicy.State.extend({
       
       this.gui.render(context);
       
-      if (this.flash) {
-         context.fillStyle = 'rgba(255, 255, 255, ' + this.flash + ')';
-         context.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+      if (this.flash !== false) {
+         if (this.flash > 0) {
+            context.fillStyle = 'rgba(255, 255, 255, ' + this.flash + ')';
+            context.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+         }
+         else {
+            context.fillStyle = 'rgba(0, 0, 0, ' + (-0.5 * this.flash) + ')';
+            context.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+         }
       }
    }
 });

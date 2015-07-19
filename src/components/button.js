@@ -7,7 +7,13 @@ var BUTTON_STATE_DISABLED = 3;
 Juicy.Component.create('Button', {
     constructor: function() {
         this.state = BUTTON_STATE_IDLE;
+
+        this.action = function() {};
     },
+
+    update: function(dt) {
+        this.checkMouseOver(this.entity.scene.game.mouse);
+    },  
 
     checkMouseOver: function(mousePoint) {
         if (this.state == BUTTON_STATE_DISABLED) {
@@ -41,46 +47,12 @@ Juicy.Component.create('Button', {
         }
     },
 
-    checkMouseClick: function() {
-        if (this.state == BUTTON_STATE_DISABLED) {
-            return;
-        }
-
-        if (this.state == BUTTON_STATE_MOUSEOVER) {
-            this.state = BUTTON_STATE_MOUSEDOWN
-
-            var currRotation = this.entity.getComponent('Animations').rotate;
-            var resetRotation = rotateAnimation(currRotation, 0, 0.5, 0.5, 0.13);
-            this.entity.getComponent('Animations').play(resetRotation, "button_rotate");
-
-            this.entity.getComponent('Animations').play(xScaleAnimation(1.0, 0.8, 0.5, 0.1), "what_now");
-            this.entity.getComponent('Animations').play(yScaleAnimation(1.0, 0.8, 0.5, 0.1), "button_bounce_y");
-        }
-    },
-
-    checkMouseUp: function() {
-        if (this.state == BUTTON_STATE_DISABLED) {
-            return;
-        }
-
-        if (this.state == BUTTON_STATE_MOUSEDOWN) {
-            this.state = BUTTON_STATE_DISABLED;
- 
-            this.entity.getComponent('Animations').play(yScaleAnimation(0.8, 15, 0.5, 0.8), "hold_on_tight");
-            this.entity.getComponent('Animations').play(xScaleAnimation(0.8, 15, 0.5, 0.8), "here_we_go");
-            
-            var FREEDOM_SPIN = rotateAnimation(0, 8 * PI, 0.5, 0.5, 0.5);
-            var INTENSIFFFFY = WOWOWOWOWOW(12.0, 12.0, 0.8);
-            
-            var startGame = customFunctionAnimation(function() {
-                buzz.all().stop();
-                Game.setState(new Level());
-            }, 0);
-
-            FREEDOM_SPIN.nextAnimation = INTENSIFFFFY;
-            INTENSIFFFFY.nextAnimation = startGame;
-
-            this.entity.getComponent('Animations').play(FREEDOM_SPIN, "wow");
+    checkMouseClick: function(x, y) {
+        if (x && y) {
+            if (this.entity.transform.contains(x, y)) {
+                this.state = BUTTON_STATE_DISABLED;
+                this.action();
+            }
         }
     }
 });

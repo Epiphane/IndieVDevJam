@@ -28,6 +28,7 @@ var newBuzzSound = (function() {
         }
 
         document.getElementById('game-canvas').focus()
+        muter.blur();
 
         localStorage.setItem('mute', gameMuted);
     };
