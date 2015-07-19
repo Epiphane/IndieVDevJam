@@ -9,36 +9,7 @@ Juicy.Component.create('Booklet', {
 
         this.powers = powers;
 
-        var powerColors = {
-            fire: '#ff0000',
-            ice: '#aaddff',
-            explosive: '#ffff00',
-        };
-
-        if (powers.length === 0) {
-            // Brown book
-            box.fillStyle = '#8B4513';
-        }
-        else if (powers.length === 1) {
-            // Choose that color
-            box.fillStyle = powerColors[powers[0]];
-        }
-        else {
-            // More than two books. Special cases here
-            if (this.hasPower('fire')) {
-                if (this.hasPower('ice')) {
-                    box.fillStyle = '#cc167d';
-                }
-                else if (this.hasPower('explosive')) {
-                    box.fillStyle = '#ffffff';
-                }
-            }
-            else if (this.hasPower('ice')) {
-                if (this.hasPower('explosive')) {
-                    box.fillStyle = '#ff6c00';
-                }
-            }
-        }
+        box.fillStyle = Powerup.getColor(powers);
     },
 
     hasPower: function(power) {

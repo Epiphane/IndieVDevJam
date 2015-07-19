@@ -9,6 +9,18 @@ Juicy.Component.create('Player', {
    availablePowerups: function() {
       return ['fire', 'ice', 'explosive'];
    },
+   updateGUI: function() {
+      var bars = [];
+      var powers = Object.keys(this.powerups);
+      for (var i = 0; i < powers.length; i ++) {
+         bars.push({
+            color: Powerup.colors[powers[i]],
+            mana: this.powerups[powers[i]]
+         });
+      }
+
+      this.entity.scene.gui.getComponent('GUI').setPowerBars(bars, Powerup.getColor(powers));
+   },
    setPowerup: function(name, mana) {
       if (this.powerups[name] && this.powerups[name] >= mana) {
          return;
@@ -16,6 +28,8 @@ Juicy.Component.create('Player', {
       else {
          this.powerups[name] = mana;
       }
+
+      this.updateGUI();
    },
    throwBook: function() {
       var booklet = new Booklet(this.entity.scene);
@@ -34,6 +48,8 @@ Juicy.Component.create('Player', {
       comp.setPowers(powers);
 
       this.entity.scene.addObject(booklet);
+
+      this.updateGUI();
    },
    update: function(dt, input) {
       var speed = 16;
