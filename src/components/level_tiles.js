@@ -11,39 +11,18 @@ Juicy.Component.create('LevelTiles', {
    BOOK: '%',
    PLAYER: '^',
    SHRINE: '&',
+   SPIKE: 'M',
    SPAWNABLE: /%|E|\^|&/,
    constructor: function() {
-      var self = this;
-      
-      this.tileImg = new Image();
-      this.tileImg.src = 'img/tile.png';
-      this.tileImg.onload = function() {
-         self.tile1rdy = true;
-         self.renderCanvas();
-      }
-      
-      this.tileImg2 = new Image();
-      this.tileImg2.src = 'img/tile2.png';
-      this.tileImg2.onload = function() {
-         self.tile2rdy = true;
-         self.renderCanvas();
-      };
-      
-      this.bg = new Image();
-      this.bg.src = 'img/bg.png';
-      this.bg.onload = function() {
-         self.bgRdy = true;
-         self.renderCanvas();
-      }
-      this.imageCanvas = document.createElement('canvas');
-      this.imageReady = false;
+      this.loadImages();
    },
    
    imagesLoaded: function() {
       if(
          this.tile1rdy &&
          this.tile2rdy &&
-         this.bgRdy
+         this.bgRdy &&
+         this.spikeRdy
       ) {
          return true;
       }
@@ -262,28 +241,23 @@ Juicy.Component.create('LevelTiles', {
       for (var i = x; i < this.width; i ++) {
          for (var j = y; j < this.height; j ++) {
             if (this.getTile(i, j) === this.PLATFORM || this.getTile(i, j) === this.WALL) {
-               var rand = Math.floor((Math.random() * 5) + 1);
+               var rand = Math.floor((Math.random() * 9) + 1);
                var img;
                switch (rand) {
-                  case 1:
-                     img = this.tileImg;
-                     break;
-                  case 2: 
-                     img = this.tileImg;
-                     break;
-                  case 3: 
-                     img = this.tileImg;
-                     break;
-                  case 4: 
-                     img = this.tileImg;
-                     break;
-                  case 5: 
+                  case 1: 
                      img = this.tileImg2;
                      break;
+                  default:
+                     img = this.tileImg;
+                     break;
                }
-               context.fillRect(i * 20, j * 20, 20, 20);
                context.drawImage(img, i * 20, j * 20, 20, 20);
             }
+            else if (this.getTile(i, j) === this.SPIKE) {
+               img = this.spikeImg;
+               context.drawImage(img, i * 20, j * 20, 20, 20);
+            }
+            
          }
       }
    },
@@ -329,16 +303,16 @@ Juicy.Component.create('LevelTiles', {
            + '-----------                             '
            + '------ ---                              '
            + '-----------                             '
-           + '--  ------                              '
+           + '--  ------M                             '
            + '-- --------                    E E      '
-           + '------ ------                           '
+           + '------ ------M                          '
            + '-----  -------            --------------'
            + '----------                              '
            + '                                        '
            + '                                        '
            + '                                        '
            + '--------                                '
-           + '-----                                   ',
+           + '-----         MMMMM                     ',
       treasure: 'X-------------------' + '---------------     '
               + 'X                  -' + '        ------X     '
               + 'X                  -' + '          --- X     '
@@ -361,14 +335,14 @@ Juicy.Component.create('LevelTiles', {
               + 'X                   ' + '                   X'
               + 'X                   ' + '                   X'
               + 'X                   ' + '          -        X'
-              + 'X                   ' + '                   X'
+              + 'X        M          ' + '                   X'
               + 'X      -----     -  ' + '   --              X'
               + 'X                   ' + '                   X'
               + 'X                   ' + '                   X'
               + 'X                   ' + '                    '
               + 'X                   ' + '                    '
               + 'X                   ' + '                    '
-              + 'X    % % % % % %    ' + '                    '
+              + 'X M  % % % % % %  M ' + '                    '
               + 'X-------------------' + '-------------------X',
       room1:    '-----               ' + '                    '
               + '-----               ' + '                    '
@@ -432,5 +406,40 @@ Juicy.Component.create('LevelTiles', {
               + '  XXX    E      ----' + '-----    E   XXX    '
               + '  XXX         ------' + '------       XXX    '
               + '--------------------' + '--------------------'
+   },
+   
+   // hidden down here so you dont have to see my sloppy code :)
+   loadImages: function() {
+      var self = this;
+      
+      this.tileImg = new Image();
+      this.tileImg.src = 'img/tile.png';
+      this.tileImg.onload = function() {
+         self.tile1rdy = true;
+         self.renderCanvas();
+      }
+      
+      this.tileImg2 = new Image();
+      this.tileImg2.src = 'img/tile2.png';
+      this.tileImg2.onload = function() {
+         self.tile2rdy = true;
+         self.renderCanvas();
+      };
+      
+      this.bg = new Image();
+      this.bg.src = 'img/bg.png';
+      this.bg.onload = function() {
+         self.bgRdy = true;
+         self.renderCanvas();
+      }
+      
+      this.spikeImg = new Image();
+      this.spikeImg.src = 'img/spike.png';
+      this.spikeImg.onload = function() {
+         self.spikeRdy = true;
+         self.renderCanvas();
+      }
+      
+      this.imageCanvas = document.createElement('canvas');
    }
 });
