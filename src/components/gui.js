@@ -29,7 +29,7 @@ Juicy.Component.create('GUI', {
         */
 
         for (var i = 0; i < this.powerbars.length; i ++) {
-            var barWidth = this.powerbars[i].mana * 20;
+            var barWidth = this.powerbars[i].mana * 5;
             var barHeight = 30 / this.powerbars.length;
             if (barHeight > 20)
                 barHeight = 20;

@@ -2,12 +2,18 @@ Juicy.Component.create('Booklet', {
     constructor: function() {
         this.dx = 0;
         this.life = 2;
+
+        this.damage = 30;
     },
 
     setPowers: function(powers) {
         var box = this.entity.getComponent('Box');
 
         this.powers = powers;
+
+        if (this.powers.indexOf('fire') >= 0) {
+            this.damage *= 1.5;
+        }
 
         box.fillStyle = Powerup.getColor(powers);
     },
@@ -77,7 +83,17 @@ Juicy.Component.create('Booklet', {
         var enemies = this.entity.scene.enemies;
         for (var i = 0; i < enemies.length; i ++) {
             if (this.entity.transform.testCollision(enemies[i].transform)) {
-                enemies[i].getComponent('Enemy').health -= 30;
+                var enemy = enemies[i].getComponent('Enemy');
+
+                enemy.health -= this.damage;
+
+                // Apply powerups
+                if (this.powers.indexOf('ice') >= 0) {
+                    enemy.slow = 1;
+                }
+                if (this.powers.indexOf('explosive') >= 0) {
+                    // enemy.slow = 1;
+                }
 
                 this.entity.dead = true;
                 return;

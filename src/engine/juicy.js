@@ -557,7 +557,6 @@
          return this;
       },
       applyTint: function() {
-         console.log(this.tint);
          // Create an offscreen buffer
          this.tintOverlay.width = this.image.width;
          this.tintOverlay.height = this.image.height;
