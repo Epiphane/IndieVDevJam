@@ -2,7 +2,7 @@ Juicy.Component.create('Booklet', {
     constructor: function() {
         this.dx = 0;
         this.life = 2;
-        this.hitSound = new buzz.sound( "audio/fx_bookhit", {
+        this.hitSound = newBuzzSound( "audio/fx_bookhit", {
             formats: [ "wav"]
         });
     },
@@ -82,7 +82,7 @@ Juicy.Component.create('Booklet', {
         for (var i = 0; i < enemies.length; i ++) {
             if (this.entity.transform.testCollision(enemies[i].transform)) {
                 enemies[i].getComponent('Enemy').health -= 30;
-
+                this.hitSound.play();
                 this.entity.dead = true;
                 return;
             }
@@ -95,7 +95,7 @@ Juicy.Component.create('Booklet', {
                     objects[i].getComponent('Destructible').health -= 30;
 
                     this.deathParticles(objects[i].transform.width);
-
+                    this.hitSound.play();
                     this.entity.dead = true;
                     return;
                 }
