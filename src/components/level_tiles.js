@@ -12,6 +12,37 @@ Juicy.Component.create('LevelTiles', {
    PLAYER: '^',
    SHRINE: '&',
    SPAWNABLE: /%|E|\^|&/,
+   constructor: function() {
+      var self = this;
+      
+      this.tileImg = new Image();
+      this.tileImg.src = 'img/tile.png';
+      this.tileImg.onload = function() {
+         self.tile1rdy = true;
+         self.renderCanvas();
+      }
+      
+      this.tileImg2 = new Image();
+      this.tileImg2.src = 'img/tile2.png';
+      this.tileImg2.onload = function() {
+         self.tile2rdy = true;
+         self.renderCanvas();
+      };
+      this.imageCanvas = document.createElement('canvas');
+      this.imageReady = false;
+   },
+   
+   imagesLoaded: function() {
+      if(
+         this.tile1rdy &&
+         this.tile2rdy
+      ) {
+         return true;
+      }
+      
+      return false;
+   },
+   
    getTile: function(x, y) {
       var sector_x = Math.floor(x / this.SECTION_WIDTH);
       var sector_y = Math.floor(y / this.SECTION_HEIGHT);
@@ -128,23 +159,7 @@ Juicy.Component.create('LevelTiles', {
       };
    },
    render: function(context, x, y, w, h) {
-      x = Math.floor(x);
-      y = Math.floor(y);
-      w = Math.ceil(w);
-      h = Math.ceil(h);
-
-      for (var i = x; i <= x + w && i < this.width; i ++) {
-         for (var j = y; j <= y + h && j < this.height; j ++) {
-            if (this.getTile(i, j) === this.PLATFORM) {
-               context.fillStyle = 'blue';
-               context.fillRect(i, j, 1, 1);
-            }
-            if (this.getTile(i, j) === this.WALL) {
-               context.fillStyle = 'green';
-               context.fillRect(i, j, 1, 1);
-            }
-         }
-      }
+      context.drawImage(this.imageCanvas, 0, 0, this.width, this.height);
    },
    build: function(width, height) {
       var limitedUses = {
@@ -156,6 +171,9 @@ Juicy.Component.create('LevelTiles', {
       this.tiles = []; // Array of room configurations
       this.width = width * this.SECTION_WIDTH;
       this.height = height * this.SECTION_HEIGHT;
+      
+      this.imageCanvas.width = this.width * 20;
+      this.imageCanvas.height = this.height * 20;
 
       this.spawns = [];
 
@@ -215,6 +233,39 @@ Juicy.Component.create('LevelTiles', {
          }
       }
    },
+   
+   renderCanvas: function() {
+      if(!this.imagesLoaded()) {
+         return;
+      }
+      
+      x = 0;
+      y = 0;
+      w = 40;
+      h = 30;
+      
+      var context = this.imageCanvas.getContext('2d');
+
+      for (var i = x; i < this.width; i ++) {
+         for (var j = y; j < this.height; j ++) {
+            if (this.getTile(i, j) === this.PLATFORM || this.getTile(i, j) === this.WALL) {
+               var rand = Math.floor((Math.random() * 2) + 1);
+               var img;
+               switch (rand) {
+                  case 1:
+                     img = this.tileImg2;
+                     break;
+                  case 2: 
+                     img = this.tileImg2;
+                     break;
+               }
+               context.fillRect(i * 20, j * 20, 20, 20);
+               context.drawImage(img, i * 20, j * 20, 20, 20);
+            }
+         }
+      }
+   },
+   
    parse: function(config, leftWall, rightWall, bottomWall) {
       if (config.length !== this.SECTION_HEIGHT * this.SECTION_WIDTH)
          throw "Section length is not the right size.";

@@ -105,6 +105,9 @@ var Level = Juicy.State.extend({
       this.objects.push(obj);
    },
    update: function(dt, input) {
+      if (!this.levelTiles.imagesLoaded()) {
+         return;
+      }
       if (this.slow)
          dt /= 3;
 
@@ -175,6 +178,9 @@ var Level = Juicy.State.extend({
       return this.paused;
    },
    render: function(context) {
+      if (!this.levelTiles.imagesLoaded()) {
+         return;
+      }
       context.save();
       var sc = this.tilesize;
       context.scale(sc, sc);
