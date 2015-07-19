@@ -4,34 +4,35 @@ Juicy.Component.create('Booklet', {
       this.life = 2;
    },
 
-   deathParticles: function(posX) {
-      var self = this;
+  
 
-      this.entity.scene.particles.getComponent('ParticleManager').spawnParticles("255, 0, 0, ", 0.15, 8, function(particle, ndx) {
-          return 0;
-      },
-       function(particle) {
-          particle.x = posX;
-          particle.y = self.entity.transform.position.y + self.entity.transform.height/2;
-          particle.dx = -self.dx * (Math.random() * 0.8 + 0.2);
-          particle.dy = (Math.random() - 0.5) * 10;
-          particle.startLife = 30;
-          particle.life = particle.startLife;
-      }, function(particle) {
-          particle.x += particle.dx * 0.001;
-          particle.y += particle.dy * 0.01;
-          particle.dx *= 0.9;
-          particle.dy *= 0.9;
+    deathParticles: function(posX) {
+        var self = this;
 
-          if (particle.life > particle.startLife) {
-              particle.alpha = 1;
-          }
-          else {
-              particle.alpha = particle.life / particle.startLife;
-          }
-      });
+        this.entity.scene.particles.getComponent('ParticleManager').spawnParticles("255, 0, 0, ", 0.15, 8, function(particle, ndx) {
+            return 0;
+        },
+        function(particle) {
+            particle.x = posX;
+            particle.y = self.entity.transform.position.y + self.entity.transform.height/2 - 0.07;
+            particle.dx = -self.dx * (Math.random() * 0.8 + 0.2) * 9;
+            particle.dy = (Math.random() - 0.5) * 10;
+            particle.startLife = 30;
+            particle.life = particle.startLife;
+        }, function(particle) {
+            particle.x += particle.dx * 0.0003;
+            particle.y += particle.dy * 0.01;
+            particle.dx *= 0.9;
+            particle.dy *= 0.9;
 
-   },
+            if (particle.life > particle.startLife) {
+                particle.alpha = 1;
+            }
+            else {
+                particle.alpha = particle.life / particle.startLife;
+            }
+        });
+    },
 
    update: function(dt, input) {
       var tileManager = this.entity.scene.tileManager.getComponent('LevelTiles');

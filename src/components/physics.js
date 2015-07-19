@@ -79,14 +79,16 @@ Juicy.Component.create('Physics', {
 
       var mindx = tl.dx;
       var mindy = tl.dy;
-      if (Math.abs(tr.dx) < Math.abs(mindx)) mindx = tr.dx;
-      if (Math.abs(tr.dy) < Math.abs(mindy)) mindy = tr.dy;
+      if (dx > 0) {
+        if (Math.abs(tr.dx) < Math.abs(mindx)) mindx = tr.dx;
+        if (Math.abs(tr.dy) < Math.abs(mindy)) mindy = tr.dy;
+        if (Math.abs(mr.dx) < Math.abs(mindx)) mindx = mr.dx;
+      }
       if (Math.abs(br.dx) < Math.abs(mindx)) mindx = br.dx;
       if (Math.abs(br.dy) < Math.abs(mindy)) mindy = br.dy;
       if (Math.abs(bl.dx) < Math.abs(mindx)) mindx = bl.dx;
       if (Math.abs(bl.dy) < Math.abs(mindy)) mindy = bl.dy;
       if (Math.abs(bm.dy) < Math.abs(mindy)) mindy = bm.dy;
-      if (Math.abs(mr.dx) < Math.abs(mindx)) mindx = mr.dx;
       if (Math.abs(ml.dx) < Math.abs(mindx)) mindx = ml.dx;
 
       // Walk across all the tiles
@@ -103,6 +105,14 @@ Juicy.Component.create('Physics', {
                      this.doImpactParticles();
             }
          }
+
+         if (!this.onGround) {
+
+            var animator = this.entity.getComponent('Animations');
+            if (animator) {
+              animator.play(yScaleAnimation(0.7, 1.0, 1.0, 0.2), "vertical_squish");
+            }
+          }
 
             this.dy = 0;
             this.onGround = true;
@@ -121,8 +131,10 @@ Juicy.Component.create('Physics', {
 
       if (dy !== 0 && Math.abs(mindy) < 0.01) {
         // We hit a wall
-        if (dy < 0) this.collisions.left = true;
-        else this.collisions.right = true;
+        if (dy < 0) this.collisions.above = true;
+        else this.collisions.below = true;
+
+            this.dy = 0;
       }
    },
 
