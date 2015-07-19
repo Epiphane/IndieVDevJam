@@ -24,6 +24,7 @@ TransitionManager = (function() {
 
         if (scrollX === dest || dx === 0) {
             TransitionManager.onComplete();
+            TransitionManager.onComplete = function() {};
         }
         else {
             window.requestAnimFrame(update);
@@ -43,8 +44,6 @@ TransitionManager = (function() {
     TransitionManager.toShop = function() {
         dest = machineWidth;
         update();
-
-        console.log('hi');
     };
 
     TransitionManager.onComplete = function() {};

@@ -135,7 +135,7 @@ var Level = Juicy.State.extend({
       if (this.slow)
          dt /= 3;
 
-      if (this._shake && this._shake.time > -0.5) {
+      if (this._shake && this._shake.time > 0) {
          this.game.canvas.style.left = (this._shake.strength * Math.sin(this._shake.time * 64)) + 'px';
 
          this._shake.time -= dt;
@@ -146,7 +146,7 @@ var Level = Juicy.State.extend({
       }
 
       if (this.flash !== false) {
-         if (this.flash > 0 && this.flash - dt <= 0) {
+         if (this.flash > -1.5 && this.flash - dt <= -1.5) {
             TransitionManager.toShop();
 
             var self = this;
