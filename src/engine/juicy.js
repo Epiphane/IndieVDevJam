@@ -72,8 +72,6 @@
       var mx = (evt.x || evt.clientX) - canvasRect.left;
       var my = (evt.y || evt.clientY) - canvasRect.top;
 
-      console.log(mx, my);
-
       return {
          x: Math.floor(mx * this.width /  this.canvas.width), 
          y: Math.floor(my * this.height / this.canvas.height)
@@ -391,6 +389,8 @@
       this.keyState = {};
       this.keyCallbacks = {};
 
+      this.eventListeners = {};
+
       // Reverse of KEYS
       this.CODES = {};
       for (var key in keys) {
@@ -404,6 +404,10 @@
 
    Input.prototype.clear = function() {
       this.keyCallbacks = {};
+
+      for (var key in this.eventListeners) {
+           
+      }
    }
 
    Input.prototype.setKeys = function(keys) {
