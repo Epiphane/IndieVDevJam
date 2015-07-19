@@ -33,6 +33,9 @@ var Level = Juicy.State.extend({
       this.music = newBuzzSound( "audio/music_burning_books", {
          formats: [ "mp3"]
       });
+      this.shrineDeathSound = newBuzzSound( "audio/fx_shrine_ded", {
+         formats: [ "wav"]
+      });
 
       var self = this;
 
@@ -83,6 +86,8 @@ var Level = Juicy.State.extend({
 
             var destructible = new Juicy.Components.Destructible(1000);
             destructible.ondestroy = function() {
+               buzz.all().stop();
+               self.shrineDeathSound.play();
                self.slow = true;
                self.flash = 1;
                shrine.getComponent('Sprite').runAnimation(1, 3, 0.5)
@@ -106,7 +111,6 @@ var Level = Juicy.State.extend({
       });
       this.music.play()
          .loop()
-         .setVolume(75)
    },
    addObject: function(obj) {
       this.objects.push(obj);
