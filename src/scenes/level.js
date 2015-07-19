@@ -30,6 +30,10 @@ var Level = Juicy.State.extend({
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
       this.levelTiles.build(3, 2);
 
+      this.music = new buzz.sound( "audio/music_burning_books", {
+         formats: [ "mp3"]
+      });
+
       var self = this;
 
       // Create enemies
@@ -100,6 +104,9 @@ var Level = Juicy.State.extend({
       this.game.input.on('key', 'ESC', function() {
          self.game.setState(new Pause(self));
       });
+      this.music.play()
+         .loop()
+         .setVolume(75)
    },
    addObject: function(obj) {
       this.objects.push(obj);
