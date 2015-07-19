@@ -10,17 +10,14 @@
    }
 })(this, function() {
    /* -------------------- Animation frames ----------------- */
-   window = window || {};
-   var requestAnimationFrame = (function() {
-      return  window.requestAnimationFrame  || 
-         window.webkitRequestAnimationFrame || 
-         window.mozRequestAnimationFrame    || 
-         window.oRequestAnimationFrame      || 
-         window.msRequestAnimationFrame     || 
-         function(/* function */ callback, /* DOMElement */ element){
-            window.setTimeout(callback, 1000 / 60);
-         };
-   })();
+   window.requestAnimFrame = (function() {
+	 return  window.requestAnimationFrame       ||
+	 window.webkitRequestAnimationFrame ||
+	 window.mozRequestAnimationFrame    ||
+	 function( callback ) {
+	 window.setTimeout(callback, 1000 / 60);
+      };
+      })();
 
    /* Base object */
    var Juicy = {};
@@ -118,6 +115,7 @@
    };
 
    Game.prototype.setState = function(state) {
+      this.input.clear();
       this.state = state;
       this.state.game = this;
       this.state.init();
@@ -136,7 +134,7 @@
          return;
 
       var self = this;
-      requestAnimationFrame(function() {
+      window.requestAnimationFrame(function() {
          self.update();
       });
       var nextTime = new Date().getTime();
@@ -147,9 +145,7 @@
         return;
       }
 
-      // Limit to 60 FPS and skip long frames
-      if (dt < 1 / 60)
-         return;
+      // Skip long frames
 
       try {
 
@@ -223,7 +219,7 @@
    Scene.prototype.init      = function() {};
    Scene.prototype.click     = function(x, y) {};
    Scene.prototype.onKey     = {};
-   Scene.prototype.update    = function(dt, input) {};
+   Scene.prototype.update    = function(dt, input) { return true; };
    Scene.prototype.render    = function(context) {};
 
    /* -------------------- Game Entity ----------------------- */
@@ -390,6 +386,10 @@
       return this; // Enable chaining
    };
 
+   Input.prototype.clear = function() {
+      this.keyCallbacks = {};
+   }
+
    Input.prototype.setKeys = function(keys) {
       this.KEYS = keys;
 
@@ -444,7 +444,6 @@
 
          for (var i = 0; i < keys.length; i ++) {
             var key = keys[i];
-            console.log('callback for',key,this.KEYS[key]);
 
             this.keyCallbacks[this.KEYS[key]] = this.keyCallbacks[this.KEYS[key]] || [];
             this.keyCallbacks[this.KEYS[key]].push(callback);
