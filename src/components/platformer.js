@@ -163,15 +163,8 @@ Juicy.Component.create('Physics', {
    },
 
    bounceBack: function(direction, scale) {
-      if (!this.onGround) {
-        // Dont want a as big of a bounceBack while in air
-        this.dy = -60 * (scale / 2.0);
-        this.dx = direction * 40 * scale;
-      }
-      else {
-        this.dy = -100 * (scale / 2.0);
-        this.dx = direction * 80 * scale;
-      }
+      this.dy = -80 * (scale / 2.0);
+      this.dx = direction * 240 * scale;
             
       ga('send', 'event', 'player', 'touched-enemy', 'non-upgraded');
     },
