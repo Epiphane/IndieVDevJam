@@ -3,8 +3,10 @@ Juicy.Component.create('Enemy', {
       this.direction = 1;
 
       this.health = 100;
+      this.speed = 8;
    },
    update: function(dt, input) {
+
       var speed = 8;
 
       if (this.health <= 0) {
@@ -12,10 +14,11 @@ Juicy.Component.create('Enemy', {
           this.entity.scene.player.getComponent('Score').eventOccurred('killedEnemy');
       }
 
-      var physics = this.entity.getComponent('Physics');
+      var physics = this.entity.getComponent('PatrollingPhysics');
       if (!physics)
          return;
 
-      physics.dx = speed * this.direction;
+      physics.dy += 240 * dt;
+      physics.dx = this.speed * this.direction;
    }
 });

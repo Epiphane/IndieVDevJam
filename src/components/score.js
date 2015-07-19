@@ -10,8 +10,7 @@ Juicy.Component.create('Score', {
 		this.events_since_last_check= []; 
 		this.time_since_last_update= 0;
 		this.event_happened_since_last_update= false;
-		
-		this.scoreText = new Juicy.Text('Score: ' + this.score, '10pt Arial', 'white', 'center');
+		this.gui = null; // set from level
 	},
 
 	events: {
@@ -28,7 +27,10 @@ Juicy.Component.create('Score', {
 			}
 			else {
 				// process those events and reset combo counter
-				this.processEvents();
+				if (this.events_since_last_check.length != 0) {
+					this.processEvents();
+				}
+				
 				this.time_since_last_update = 0;
 			}
 			this.event_happened_since_last_update = false;
@@ -36,10 +38,6 @@ Juicy.Component.create('Score', {
 		else {
 			this.time_since_last_update += dt;
 		}
-	},
-	
-	render: function(context) {
-		this.scoreText.draw(context, 0, 0);
 	},
 	
 	// right now lets just count events of the same type as comboable
@@ -81,6 +79,14 @@ Juicy.Component.create('Score', {
 	eventOccurred: function(eventName) {
 		this.events_since_last_check.push(eventName);
 		this.event_happened_since_last_update = true;
+		
+		// we want to update gui for cool FX when an enemy is killed, so call that directly here
+		// flash the amount of points gained'
+		//this.gui.setFlash(this.events[eventName]); // yeahhh we should cache this and not repeat the lookup every time lol
+	},
+	
+	setGui: function(gui) {
+		this.gui = gui;
 	},
 
 	// will hit api
@@ -95,9 +101,7 @@ Juicy.Component.create('Score', {
 			this.score = 0;
 		}
 		
-		this.scoreText.set({
-		   text: 'Score: ' + this.score
-		});
+		this.gui.updateScore(this.score); // yeahhh we should cache this and not repeat the lookup every time lol
 	},
 
 });
