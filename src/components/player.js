@@ -4,6 +4,7 @@ Juicy.Component.create('Player', {
       this.firingRate = 0.1;
       this.cooldown = 0;
       this.doingRecoil = false;
+      this.invincible = 0;
       this.jumpSound = newBuzzSound( "audio/fx_jump", {
          formats: [ "wav"]
       });
@@ -15,6 +16,21 @@ Juicy.Component.create('Player', {
       });
 
       this.powerups = {};
+
+      this.health = 4;
+      this.maxhealth = 4;
+   },
+   takeDamage: function(damage) {
+      damage = damage || 0.5;
+
+      this.health -= damage;
+      this.invincible = 2;
+
+      if (this.health <= 0) {
+         this.entity.dead = true;
+      }
+
+      this.updateGUI();
    },
    availablePowerups: function() {
       return ['fire', 'ice', 'explosive'];
@@ -30,6 +46,7 @@ Juicy.Component.create('Player', {
       }
 
       this.entity.scene.gui.getComponent('GUI').setPowerBars(bars, Powerup.getColor(powers));
+      this.entity.scene.gui.getComponent('GUI').setHealth(this.health, this.maxhealth);
    },
    setPowerup: function(name, mana) {
       if (this.powerups[name] && this.powerups[name] >= mana) {
@@ -121,16 +138,23 @@ Juicy.Component.create('Player', {
          }
       }
 
-      var enemies = this.entity.scene.enemies;
-      for (var i = 0; i < enemies.length; i++) {
-         var enemy = enemies[i];
+      if (this.invincible > 0) {
+         this.invincible -= dt;
+         this.hide = Math.floor(this.invincible * 10) % 2 === 1;
+      }
+      else {
+         var enemies = this.entity.scene.enemies;
+         for (var i = 0; i < enemies.length; i++) {
+            var enemy = enemies[i];
 
-         if (this.entity.transform.testCollision(enemy.transform)) {
-            // Collided with enemy, have slight bouceback
-            this.bounceBack(enemy, this.entity.transform.position.x, 1.0);
-            this.hitSound.play();
+            if (this.entity.transform.testCollision(enemy.transform)) {
+               // Collided with enemy, have slight bouceback
+               this.bounceBack(enemy, this.entity.transform.position.x, 1.0);
+               this.hitSound.play();
+               this.takeDamage(0.5);
 
-            this.entity.scene.shake();
+               this.entity.scene.shake();
+            }
          }
       }
    },

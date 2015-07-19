@@ -117,7 +117,9 @@ var Level = Juicy.State.extend({
          self.game.setState(new Pause(self));
       });
       this.music.play()
-         .loop()
+         .loop();
+
+      this.player.getComponent('Player').updateGUI();
    },
    shake: function(time, strength) {
       this._shake = {
@@ -159,6 +161,9 @@ var Level = Juicy.State.extend({
       }
 
       this.player.update(dt);
+      if (this.player.dead) {
+         this.game.setState(new GameOverScreen(this.player));
+      }
       this.particles.update(dt);
 
       var player_input = this.player.getComponent('Player');
@@ -252,7 +257,9 @@ var Level = Juicy.State.extend({
          }
       }
 
-      this.player.render(context);
+      if (!this.player.getComponent('Player').hide) {
+         this.player.render(context);
+      }
 
       this.particles.render(context);
 
