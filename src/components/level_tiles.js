@@ -12,6 +12,7 @@ Juicy.Component.create('LevelTiles', {
    PLAYER: '^',
    SHRINE: '&',
    SPIKE: 'M',
+   HEART: 'H',
    SPAWNABLE: /%|E|\^|&/,
    constructor: function() {
       this.loadImages();
@@ -22,7 +23,8 @@ Juicy.Component.create('LevelTiles', {
          this.tile1rdy &&
          this.tile2rdy &&
          this.bgRdy &&
-         this.spikeRdy
+         this.spikeRdy &&
+         this.heartRdy
       ) {
          return true;
       }
@@ -240,26 +242,44 @@ Juicy.Component.create('LevelTiles', {
 
       for (var i = x; i < this.width; i ++) {
          for (var j = y; j < this.height; j ++) {
-            if (this.getTile(i, j) === this.PLATFORM || this.getTile(i, j) === this.WALL) {
-               var rand = Math.floor((Math.random() * 9) + 1);
-               var img;
-               switch (rand) {
-                  case 1: 
-                     img = this.tileImg2;
-                     break;
-                  default:
-                     img = this.tileImg;
-                     break;
-               }
-               context.drawImage(img, i * 20, j * 20, 20, 20);
+            switch (this.getTile(i, j)) {
+               case this.PLATFORM:
+                  this.renderNormalTile(context, i * 20, j * 20, 20, 20);
+                  break;
+               case this.WALL:
+                  this.renderNormalTile(context, i * 20, j * 20, 20, 20);
+                  break;
+               case this.SPIKE:
+                  this.renderSpike(context, i * 20, j * 20, 20, 20);
+                  break;
+               case this.HEART:
+                  this.renderHeart(context, i * 20, j * 20, 20, 20);
+                  break;
             }
-            else if (this.getTile(i, j) === this.SPIKE) {
-               img = this.spikeImg;
-               context.drawImage(img, i * 20, j * 20, 20, 20);
-            }
-            
          }
       }
+   },
+   
+   renderNormalTile: function(context, x, y, width, height) {
+      var rand = Math.floor((Math.random() * 9) + 1);
+      var img;
+      switch (rand) {
+         case 1: 
+            img = this.tileImg2;
+            break;
+         default:
+            img = this.tileImg;
+            break;
+      }
+      context.drawImage(img, x, y, width, height);
+   },
+   
+   renderSpike: function(context, x, y, width, height) {
+      context.drawImage(this.spikeImg, x, y, width, height);
+   },
+   
+   renderHeart: function(context, x, y, width, height) {
+      context.drawImage(this.heartImg, x, y, width, height);
    },
    
    parse: function(config, leftWall, rightWall, bottomWall) {
@@ -316,7 +336,7 @@ Juicy.Component.create('LevelTiles', {
       treasure: 'X-------------------' + '---------------     '
               + 'X                  -' + '        ------X     '
               + 'X                  -' + '          --- X     '
-              + '                   -' + '              X     '
+              + '          H        -' + '              X     '
               + '          --       -' + '             -X     '
               + '          --       -' + '              X     '
               + '                   -' + '              X     '
@@ -437,6 +457,13 @@ Juicy.Component.create('LevelTiles', {
       this.spikeImg.src = 'img/spike.png';
       this.spikeImg.onload = function() {
          self.spikeRdy = true;
+         self.renderCanvas();
+      }
+      
+      this.heartImg = new Image();
+      this.heartImg.src = 'img/heart.png';
+      this.heartImg.onload = function() {
+         self.heartRdy = true;
          self.renderCanvas();
       }
       
