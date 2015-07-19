@@ -13,7 +13,7 @@ var newBuzzSound = (function() {
     // Initialize all audio
 
     // Set buzz defaults
-    buzz.defaults.volume = 40;
+    buzz.defaults.volume = 30;
 
     muter.onclick = function() {
         gameMuted = !gameMuted;

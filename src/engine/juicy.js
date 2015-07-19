@@ -630,6 +630,14 @@
 
          this.entity = entity;
       },
+      distanceTo: function(other) {
+        var dx = (other.position.x + other.width / 2) - (this.position.x + this.width / 2);
+        var dy = (other.position.y + other.height / 2) - (this.position.y + this.height / 2);
+
+        // console.log(this.position, this.width, this.height);
+
+        return Math.sqrt(dx * dx + dy * dy);
+      },
       testCollision: function(other) {
          var isLeft  = other.position.x >= this.position.x + this.width;
          var isRight = other.position.x + other.width <= this.position.x;

@@ -10,8 +10,8 @@ TransitionManager = (function() {
 
     var update = function() {
         var dx = Math.ceil((dest - window.scrollX) / 75);
-        if (Math.abs(dx) > 6) {
-            dx = 6 * dx / Math.abs(dx)
+        if (Math.abs(dx) > 8) {
+            dx = 8 * dx / Math.abs(dx)
         }
 
         var scrollX = window.scrollX + dx;

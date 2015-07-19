@@ -100,7 +100,7 @@ Juicy.Component.create('Booklet', {
             this.deathParticles(objectHit.transform.width, this.dx < 0);
 
             if (this.hasPowerup('SLOW')) {
-                var phys = objectHit.getComponent('PatrollingPhysics');
+                var phys = objectHit.getComponent('Enemy');
                 if (phys) {
                     phys.slow = 1;
                 }
@@ -115,12 +115,32 @@ Juicy.Component.create('Booklet', {
             }
         }
 
-        if (componentWithHealth) {
-            if (this.hasPowerup('DAMAGE')) {
-                componentWithHealth.health -= 45;
+        var damage = 30;
+        if (this.hasPowerup('DAMAGE')) {
+            damage += 15;
+        }
+
+        if (componentWithHealth && !this.hasPowerup('EXPLODE')) {
+            componentWithHealth.health -= damage;
+        }
+
+        if (this.hasPowerup('EXPLODE')) {
+            var radius = 3;
+
+            var dist = this.entity.transform.distanceTo(this.entity.scene.player.transform);
+            if (dist < radius) {
+                var player = this.entity.scene.player.getComponent('Player');
+                player.bounceBack(this.entity, 1.0);
             }
-            else {
-                componentWithHealth.health -= 30;
+
+            var enemies = this.entity.scene.enemies;
+            for (var i = 0; i < enemies.length; i ++) {
+                var dist = this.entity.transform.distanceTo(enemies[i].transform);
+                if (dist < radius) {
+                    var enemy = enemies[i].getComponent('Enemy');
+                    enemy.bounceBack(this.dx, - Math.random() * 20 - 20, 1.0);
+                    enemy.health -= damage / 2;
+                }
             }
         }
 
