@@ -41,9 +41,14 @@ TransitionManager = (function() {
         }
     };
 
-    TransitionManager.toShop = function() {
-        dest = machineWidth;
-        update();
+    TransitionManager.toShop = function(quick) {
+        if (!quick) {
+            dest = machineWidth;
+            update();
+        }
+        else {
+            window.scroll(machineWidth, 0);
+        }
     };
 
     TransitionManager.onComplete = function() {};

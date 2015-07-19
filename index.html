@@ -28,7 +28,7 @@
 
    <!-- Main stage for rendering game scenes -->
    <div id="machine" class="full-screen">
-      <div id="screen">
+      <div id="game" class="screen">
          <canvas id="game-canvas"></canvas>
       </div>
 
@@ -37,7 +37,9 @@
       </div>
    </div>
    <div id="shop" class="full-screen">
-   ABD
+      <div id="shop-container" class="screen">
+         <canvas id="shop-canvas"></canvas>
+      </div>
    </div>
 
    <!-- Libraries -->
@@ -62,6 +64,7 @@
    <script src="src/components/patrolling.js"></script>
    <script src="src/components/physics.js"></script>
    <script src="src/components/level_tiles.js"></script>
+   <script src="src/components/upgrade_scroll.js"></script>
    <script src="src/scenes/pause.js"></script>
    <script src="src/scenes/upgrades.js"></script>
    <script src="src/scenes/level.js"></script>

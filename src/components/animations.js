@@ -72,7 +72,8 @@ function customFunctionAnimation(func, duration) {
 
 		nextAnimation: null,
 
-		currTime: 0
+		currTime: 0,
+        duration: duration
 	}
 }
 
@@ -159,9 +160,9 @@ Juicy.Component.create('Animations', {
 			this.translateX = Math.random() * anim.begin;
 			this.translateY = Math.random() * anim.end;
 		} else if (anim.type == "doFunction") {
-			if (anim.currTime == 0) {
+			if (anim.duration !== 0 || anim.currTime === 0) {
 				anim.func();
-			}	
+			}
         } else {
             console.log("Whaaa?  Unkown animation type " + anim.type);
         }
@@ -204,7 +205,13 @@ Juicy.Component.create('Animations', {
     },
 
     stop: function(key) {
-        this.currAnimations[key].done = true;
+        if (this.currAnimations[key]) {
+            this.currAnimations[key].done = true;
+        }
+    },
+
+    abortAll: function() {
+        this.currAnimations = {};
     },
 
     currScale: function() {

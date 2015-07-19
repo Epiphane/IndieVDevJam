@@ -528,6 +528,8 @@
          this.tint = false;
          this.tintOverlay = document.createElement('canvas');
 
+         this.opacity = 1;
+
          this.image = new Image();
          this.image.onload = function() {
             if (!entity.transform.width || !entity.transform.height) {
@@ -581,6 +583,8 @@
          context.globalAlpha = 1;
       },
       render: function(context) {
+         var originalAlpha = context.globalAlpha;
+         context.globalAlpha = this.opacity;
          arguments[0] = this.image;
          context.drawImage.apply(context, arguments);
 
@@ -588,6 +592,7 @@
             arguments[0] = this.tintOverlay;
             context.drawImage.apply(context, arguments);
          }
+         context.globalAlpha = originalAlpha;
       }
    });
 
@@ -620,6 +625,8 @@
          this.width = this.height = 0;
       
          this.children = [];
+
+         this.entity = entity;
       },
       testCollision: function(other) {
          var isLeft  = other.position.x >= this.position.x + this.width;
@@ -663,7 +670,8 @@
             return this.scale;
       },
       addChild: function(child) {
-         child.parent = this;
+         child.parent = this.entity;
+         child.transform.parent = this;
          this.children.push(child);
       }
    });
@@ -685,10 +693,12 @@
       this.context = this.canvas.getContext('2d');
 
       font = font || '32px Arial';
-      text = text || '';
+      text = text || ' ';
       fillStyle = fillStyle || 'white';
 
       this.align(alignment || 'left');
+
+      this.opacity = 1;
 
       return this.set({
          text:      text,
@@ -748,7 +758,12 @@
             arguments[dx] -= this.canvas.width;
       }
 
+      var originalAlpha = context.globalAlpha;
+      context.globalAlpha = this.opacity;
+
       context.drawImage.apply(context, arguments);
+
+      context.globalAlpha = originalAlpha;
 
       this.updated = false;
    };
