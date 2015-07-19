@@ -1,6 +1,6 @@
 Juicy.Component.create('Score', {
 	constructor: function(name) {
-		this.player = name;
+		this.player = null; // set from elsewhere
 		this.game_id= 69;
 		this.api_key= 6969;
 		this.score= 0;
@@ -87,6 +87,12 @@ Juicy.Component.create('Score', {
 	
 	setGui: function(gui) {
 		this.gui = gui;
+	},
+	
+	setName: function(name) {
+		this.name = name;
+		// update the gui too
+		this.gui.setName(name);
 	},
 
 	// will hit api

@@ -2,6 +2,7 @@ Juicy.Component.create('GUI', {
 	constructor: function(name) {
 		this.score = new Juicy.Text('Score: 0');
 		this.flash = new Juicy.Text();
+		this.playerName = new Juicy.Text('');
 		this.flashTexts = [];
 		this.nextAvailableIndex = 0; // for flash texts
 		this.maxFlashTexts = 10;
@@ -13,6 +14,7 @@ Juicy.Component.create('GUI', {
 	
 	render: function(context) {
 		this.score.draw(context, 10, 10, 50, 30);
+		this.playerName.draw(context, 10, 25, 60, 30);
 		/*
 		for (text in this.flashTexts) {
 			if (text.text && text.text != "") {
@@ -27,6 +29,12 @@ Juicy.Component.create('GUI', {
 			text: 'Score: ' + score
 		});
 	},
+	
+	setName: function(name) {
+		this.playerName.set({
+			text: name
+		})
+	}
 	
 	/*
 	// flash some text in the middle of the screen
