@@ -34,6 +34,12 @@ var Level = Juicy.State.extend({
          formats: [ "mp3"]
       });
 
+      // Screen Shaking
+      this._shake = {
+         strength: 0,
+         time: 0
+      };
+
       var self = this;
 
       // Create enemies
@@ -96,8 +102,6 @@ var Level = Juicy.State.extend({
             console.warn(spawn);
          }
       }
-
-      // Create books
    },
    init: function() {
       var self = this;
@@ -108,6 +112,12 @@ var Level = Juicy.State.extend({
          .loop()
          .setVolume(75)
    },
+   shake: function(time, strength) {
+      this._shake = {
+         strength: strength || 5,
+         time: time || 0.3
+      };
+   },
    addObject: function(obj) {
       this.objects.push(obj);
    },
@@ -117,6 +127,17 @@ var Level = Juicy.State.extend({
       }
       if (this.slow)
          dt /= 3;
+
+      if (this._shake && this._shake.time > 0) {
+         console.log(Math.sin(this._shake.time * 6));
+         this.game.canvas.style.left = (this._shake.strength * Math.sin(this._shake.time * 64)) + 'px';
+
+         this._shake.time -= dt;
+
+         if (this._shake.time <= 0) {
+            this.game.canvas.style.left = '0px';
+         }
+      }
 
       if (this.flash) {
          this.flash -= dt;

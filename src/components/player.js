@@ -130,6 +130,8 @@ Juicy.Component.create('Player', {
             physics.bounceBack(enemy.transform.position.x, this.entity.transform.position.x, 1.0);
             this.hitSound.play();
             this.doingRecoil = true;
+
+            this.entity.scene.shake();
          }
       }
    }
