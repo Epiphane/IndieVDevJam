@@ -15,6 +15,15 @@ Juicy.Component.create('GUI', {
 
         this.bookPreview = new Juicy.Components.Image(entity);
         this.bookPreview.setImage('./img/book.png');
+
+        this.heart_full = new Juicy.Components.Image(entity);
+        this.heart_full.setImage('./img/heart.png');
+        this.heart_half = new Juicy.Components.Image(entity);
+        this.heart_half.setImage('./img/heart_half.png');
+        this.heart_empty = new Juicy.Components.Image(entity);
+        this.heart_empty.setImage('./img/heart_empty.png');
+
+        this.health = this.maxhealth = 0;
     },
     
     render: function(context) {
@@ -27,6 +36,23 @@ Juicy.Component.create('GUI', {
             }
         }
         */
+
+        var x = GAME_WIDTH / 2 - 40 * this.maxhealth;
+        for (var i = 0; i < this.maxhealth; i ++) {
+            if (i < this.health) {
+                if (i + 0.5 === this.health) {
+                    this.heart_half.render(context, x, 10);
+                }
+                else {
+                    this.heart_full.render(context, x, 10);
+                }
+            }
+            else {
+                this.heart_empty.render(context, x, 10);
+            }
+
+            x += 40;
+        }
 
         for (var i = 0; i < this.powerbars.length; i ++) {
             var barWidth = this.powerbars[i].mana * 5;
@@ -47,6 +73,11 @@ Juicy.Component.create('GUI', {
         this.powerbars = bars;
 
         this.bookPreview.setTint(color);
+    },
+
+    setHealth: function(hp, max) {
+        this.health = hp;
+        this.maxhealth = max;
     },
     
     updateScore: function(score) {

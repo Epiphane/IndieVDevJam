@@ -5,6 +5,8 @@ Juicy.Component.create('Booklet', {
         this.hitSound = newBuzzSound( "audio/fx_bookhit", {
             formats: [ "wav"]
         });
+    
+        this.damage = 30;
     },
 
     setPowers: function(powers) {
@@ -13,7 +15,11 @@ Juicy.Component.create('Booklet', {
         this.entity.getComponent('Box').fillStyle = Powerup.getColor(powers);
     },
 
-    deathParticles: function(posX) {
+    hasPowerup: function(name) {
+        return this.powers.indexOf(Powerup[name]) >= 0;
+    },
+
+    deathParticles: function(posX, neg) {
         var self = this;
 
         this.entity.scene.particles.getComponent('ParticleManager').spawnParticles("255, 0, 0, ", 0.15, 8, function(particle, ndx) {
@@ -22,7 +28,7 @@ Juicy.Component.create('Booklet', {
         function(particle) {
             particle.x = posX;
             particle.y = self.entity.transform.position.y + self.entity.transform.height/2 - 0.07;
-            particle.dx = -self.dx * (Math.random() * 0.8 + 0.2) * 9;
+            particle.dx = (neg ? 1 : -1) * 50 * (Math.random() * 0.8 + 0.2) * 9;
             particle.dy = (Math.random() - 0.5) * 10;
             particle.startLife = 30;
             particle.life = particle.startLife;
@@ -59,7 +65,6 @@ Juicy.Component.create('Booklet', {
             // Moving left
             var top = tileManager.raycast(transform.position.x, transform.position.y, this.dx * dt, 0);
             var bot = tileManager.raycast(transform.position.x, transform.position.y + transform.height, this.dx * dt, 0);
-
             if (Math.abs(top.dx) > Math.abs(bot.dx)) ray = bot;
             else ray = top;
         }
@@ -67,23 +72,14 @@ Juicy.Component.create('Booklet', {
 
         this.life -= dt;
         if (Math.abs(ray.dx) < 0.1 || this.life < 0) {
-            if (this.dx < 0) {
-                this.deathParticles(this.entity.transform.position.x);//-ray.dx);   
-            }
-            else {
-                this.deathParticles(this.entity.transform.position.x + 1);      
-            }
-
-            this.entity.dead = true;
+            this.die(null);
             return;
         }
 
         var enemies = this.entity.scene.enemies;
         for (var i = 0; i < enemies.length; i ++) {
             if (this.entity.transform.testCollision(enemies[i].transform)) {
-                enemies[i].getComponent('Enemy').health -= 30;
-                this.hitSound.play();
-                this.entity.dead = true;
+                this.die(enemies[i], enemies[i].getComponent('Enemy'));
                 return;
             }
         }
@@ -92,14 +88,63 @@ Juicy.Component.create('Booklet', {
         for (var i = 0; i < objects.length; i ++) {
             if (this.entity !== objects[i] && this.entity.transform.testCollision(objects[i].transform)) {
                 if (objects[i].getComponent('Destructible')) {
-                    objects[i].getComponent('Destructible').health -= 30;
-
-                    this.deathParticles(objects[i].transform.width);
-                    this.hitSound.play();
-                    this.entity.dead = true;
+                    this.die(objects[i], objects[i].getComponent('Destructible'));
                     return;
                 }
             }
         }
+    },
+
+    die: function(objectHit, componentWithHealth) {
+        if (objectHit) {
+            this.deathParticles(objectHit.transform.width, this.dx < 0);
+
+            if (this.hasPowerup('SLOW')) {
+                var phys = objectHit.getComponent('Enemy');
+                if (phys) {
+                    phys.slow = 1;
+                }
+            }
+        }
+        else {
+            if (this.dx < 0) {
+                this.deathParticles(this.entity.transform.position.x, true);//-ray.dx);   
+            }
+            else {
+                this.deathParticles(this.entity.transform.position.x + 0.8, false);      
+            }
+        }
+
+        var damage = 30;
+        if (this.hasPowerup('DAMAGE')) {
+            damage += 15;
+        }
+
+        if (componentWithHealth && !this.hasPowerup('EXPLODE')) {
+            componentWithHealth.health -= damage;
+        }
+
+        if (this.hasPowerup('EXPLODE')) {
+            var radius = 3;
+
+            var dist = this.entity.transform.distanceTo(this.entity.scene.player.transform);
+            if (dist < radius) {
+                var player = this.entity.scene.player.getComponent('Player');
+                player.bounceBack(this.entity, 1.0);
+            }
+
+            var enemies = this.entity.scene.enemies;
+            for (var i = 0; i < enemies.length; i ++) {
+                var dist = this.entity.transform.distanceTo(enemies[i].transform);
+                if (dist < radius) {
+                    var enemy = enemies[i].getComponent('Enemy');
+                    enemy.bounceBack(this.dx, - Math.random() * 20 - 20, 1.0);
+                    enemy.health -= damage / 2;
+                }
+            }
+        }
+
+        this.hitSound.play();
+        this.entity.dead = true;
     }
 });

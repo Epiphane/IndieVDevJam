@@ -27,13 +27,18 @@
 <body>
 
    <!-- Main stage for rendering game scenes -->
-   <div id="machine">
-      <div id="screen">
+   <div id="machine" class="full-screen">
+      <div id="game" class="screen">
          <canvas id="game-canvas"></canvas>
       </div>
 
       <div id="controls">
          <button id="mute"><i class="fa fa-volume-off"></i></button>
+      </div>
+   </div>
+   <div id="shop" class="full-screen">
+      <div id="shop-container" class="screen">
+         <canvas id="shop-canvas"></canvas>
       </div>
    </div>
 
@@ -57,15 +62,19 @@
    <script src="src/components/particles.js"></script>
    <script src="src/components/score.js"></script>
    <script src="src/components/player.js"></script>
-   <script src="src/components/patrolling.js"></script>
    <script src="src/components/physics.js"></script>
+   <script src="src/components/patrolling.js"></script>
    <script src="src/components/level_tiles.js"></script>
+   <script src="src/components/upgrade_scroll.js"></script>
    <script src="src/scenes/pause.js"></script>
+   <script src="src/scenes/upgrades.js"></script>
    <script src="src/scenes/level.js"></script>
+   <script src="src/scenes/game_over.js"></script>
    <script src="src/scenes/game_screen.js"></script>
    <script src="src/scenes/title_screen.js"></script>
    <script src="src/scenes/level.js"></script>
 
+   <script src="src/transition_manager.js"></script>
    <script src="src/sound_manager.js"></script>
    <script src="main.js"></script>
 

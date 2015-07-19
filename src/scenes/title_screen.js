@@ -1,91 +1,56 @@
 
 var TitleScreen = Juicy.Scene.extend({
 constructor: function() {
-      this.pic = new Juicy.Entity(this, ['Image', 'Button', 'Animations']);
-      this.pic.transform.position.x = GAME_WIDTH/2;
-      this.pic.transform.position.y = GAME_HEIGHT/2;
-      this.pic.getComponent('Image').setImage('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSxLS2z0JOP62RuEwe2WPgsRmy-n6oPyeqIl0kWWfosylUBDDXL6FEVfACx'); 
-      this.music = newBuzzSound( "audio/music_spellbound", {
-         formats: [ "mp3"]
-      });
-	// TODO: button graphic or something
+        this.pic = new Juicy.Entity(this, ['Image', 'Button', 'Animations']);
+        this.pic.transform.position.x = GAME_WIDTH/2;
+        this.pic.transform.position.y = GAME_HEIGHT/2;
+        this.pic.getComponent('Image').setImage('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSxLS2z0JOP62RuEwe2WPgsRmy-n6oPyeqIl0kWWfosylUBDDXL6FEVfACx'); 
+        this.music = newBuzzSound( "audio/music_spellbound", {
+            formats: [ "mp3"]
+        });
+	//  TODO: button graphic or something
+    
+        this.pic.getComponent('Button').action = function() {
+            // This refers to the Button Component here
+            this.entity.getComponent('Animations').abortAll();
+    
+            this.entity.getComponent('Animations').play(yScaleAnimation(0.8, 15, 0.5, 0.8), "hold_on_tight");
+            this.entity.getComponent('Animations').play(xScaleAnimation(0.8, 15, 0.5, 0.8), "here_we_go");
+    
+            var FREEDOM_SPIN = rotateAnimation(0, 8 * PI, 0.5, 0.5, 0.5);
+            var INTENSIFFFFY = WOWOWOWOWOW(12.0, 12.0, 0.8);
+    
+            var startGame = customFunctionAnimation(function() {
+                buzz.all().stop();
+                Game.setState(new Level());
+            }, 0);
+    
+            FREEDOM_SPIN.nextAnimation = INTENSIFFFFY;
+            INTENSIFFFFY.nextAnimation = startGame;
+    
+            this.entity.getComponent('Animations').play(FREEDOM_SPIN, "wow");
+        };
+    },
 
-   },
+    init: function() {
+        var self = this;
 
-   // init is called whenever the state is swapped to.
-   // For example: CurrentGame.setState(NEW_STATE)
-   // calls NEW_STATE.init()
-   // You can start referencing this.game at this point
-   init: function() {
-      var self = this;
+        this.music.play().loop();
+    },
 
-      this.music.play().loop();
+    click: function(x, y) {
+        this.pic.getComponent('Button').checkMouseClick(x, y);
+    },
 
-      this.game.input.on('mousemove', function(evt) {
-	 var mouse = self.game.getCanvasCoords(evt);
-	 self.pic.getComponent('Button').checkMouseOver(mouse);
-      });
+    update: function(dt, input) {
+        this.pic.update(dt);
 
-      this.game.input.on('mousedown', function(evt) {
-	 self.pic.getComponent('Button').checkMouseClick();
-      });
+        // this.pic.getComponent('Button').checkMouseOver(this.game.mouse);
 
-      this.game.input.on('mouseup', function(evt) {
-	 self.pic.getComponent('Button').checkMouseUp();
-      });
+        return this.pic.getComponent('Animations').done;
+    },
 
-      // Define a callback to be used whenever 'W', 'A', 'S', or 'D' is pressed
-      // These keys are defined in main.js
-      this.game.input.on('key', ['W', 'A', 'S', 'D'], function(key) {
-
-         // Notice I use self instead of this. `this` refers to god knows what
-         // since we're in a different function scope, so we want to refer to 
-         // our actual state variable
-         self.myCustomFunction(key);
-      });
-   },
-
-
-   // click is called whenever the scene gets clicked on
-   // x and y are always scaled, so they will be from [0, GAME_WIDTH] and [0, GAME_HEIGHT]
-   click: function(x, y) {
-      this.pic.getComponent('Button').checkMouseClick(x, y);
-   },
-
-
-   // This is the function we call earlier. It's totally custom
-   // and added as a member function to GameScreen
-   myCustomFunction: function(input) {
-      this.lastButton = input;
-
-
-      // this.updated is interesting. it tells the engine whether anything
-      // has changed since the last frame. If it's false, then nothing is
-      // re-rendered. It's good for keeping the game less heavy on simple stuff
-      // like the title screen, which doesn't change often.
-      this.updated = true;
-   },
-
-
-   // update() is called every friggin' frame. This is your typical
-   // update loop function. dt = time in seconds
-   update: function(dt, input) {
-      this.pic.update(dt);
-
-      return this.pic.getComponent('Animations').done;
-   },
-
-
-   // FINALLY. render() draws whatever you want to draw.
-   render: function(context) {
-      // This calls render() on every component in this.dude.
-      // Everything is transformed relative to the player, so if
-      // your dude is at x=1000, then everything will be drawn
-      // at x=1000 with no extra work on your part!
-      this.pic.render(context);
-
-   
-      // Draw our text
-      // this.title.draw(context, this.game.width / 2, 100);
-   }
+    render: function(context) {
+        this.pic.render(context);
+    }
 });

@@ -1,8 +1,11 @@
 var GAME_HEIGHT = 600;
 var GAME_WIDTH = 800;
 
+var ShopCanvas = document.getElementById('shop-canvas');
+var GameCanvas = document.getElementById('game-canvas');
+
 // function(Juicy) {
-   var Game = new Juicy.Game(document.getElementById('game-canvas'), GAME_WIDTH, GAME_HEIGHT);
+   var Game = new Juicy.Game(GameCanvas, GAME_WIDTH, GAME_HEIGHT);
    Game.setInput(new Juicy.Input(document, {
       LEFT: 37,
       UP: 38,
@@ -18,6 +21,7 @@ var GAME_WIDTH = 800;
    }));
 
    document.addEventListener('DOMContentLoaded', function() {
+      TransitionManager.toMachine(true);
       Game.setState(new TitleScreen()).run();
    }, false);
 // });

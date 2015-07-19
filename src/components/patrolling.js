@@ -1,4 +1,4 @@
-Juicy.Component.create('PatrollingPhysics', {
+Juicy.Components.Physics.create('PatrollingPhysics', {
     constructor: function() {
         this.dx = this.dy = 0;
         this.onGround = false;
@@ -16,20 +16,29 @@ Juicy.Component.create('PatrollingPhysics', {
 
       var tl = tileManager.raycast(transform.position.x,                       transform.position.y, dx, dy);
       var tr = tileManager.raycast(transform.position.x + transform.width,     transform.position.y, dx, dy);
+      var ml = tileManager.raycast(transform.position.x,                       transform.position.y + transform.height / 2, dx, dy);
+      var mr = tileManager.raycast(transform.position.x + transform.width,     transform.position.y + transform.height / 2, 1, dy);
       var bl = tileManager.raycast(transform.position.x,                       transform.position.y + transform.height, dx, dy);
+      var bm = tileManager.raycast(transform.position.x + transform.width / 2, transform.position.y + transform.height, dx, dy);
       var br = tileManager.raycast(transform.position.x + transform.width,     transform.position.y + transform.height, dx, dy);
 
       var mindx = tl.dx;
       var mindy = tl.dy;
-      if (Math.abs(tr.dx) < Math.abs(mindx)) mindx = tr.dx;
-      if (Math.abs(tr.dy) < Math.abs(mindy)) mindy = tr.dy;
+      if (dx > 0) {
+        if (Math.abs(tr.dx) < Math.abs(mindx)) mindx = tr.dx;
+        if (Math.abs(tr.dy) < Math.abs(mindy)) mindy = tr.dy;
+        if (Math.abs(mr.dx) < Math.abs(mindx)) mindx = mr.dx;
+      }
       if (Math.abs(br.dx) < Math.abs(mindx)) mindx = br.dx;
       if (Math.abs(br.dy) < Math.abs(mindy)) mindy = br.dy;
       if (Math.abs(bl.dx) < Math.abs(mindx)) mindx = bl.dx;
       if (Math.abs(bl.dy) < Math.abs(mindy)) mindy = bl.dy;
+      if (Math.abs(bm.dy) < Math.abs(mindy)) mindy = bm.dy;
+      if (Math.abs(ml.dx) < Math.abs(mindx)) mindx = ml.dx;
 
       // Walk across all the tiles
       transform.position.x += mindx;
+      transform.position.y += mindy;
 
       if (dy > 0 && Math.abs(mindy) < 0.01) {
         transform.position.y += mindy;
@@ -39,21 +48,34 @@ Juicy.Component.create('PatrollingPhysics', {
             this.onGround = true;
          }
       }
-      else if (!this.onGround) {
-        transform.position.y += mindy;
+      else {
+        this.onGround = false;
       }
 
-      // Falling soon?
-      if ((Math.abs(br.dy) > 0.01 && dx > 0) || (Math.abs(bl.dy) > 0.01 && dx < 0)) {
-        this.direction *= -1;
-      }
+      if (this.onGround) {
+        // Falling soon?
+        if ((Math.abs(br.dy) > 0.01 && dx > 0) || (Math.abs(bl.dy) > 0.01 && dx < 0)) {
+          this.direction *= -1;
+          this.dx = 0;
+        }
 
-      if (Math.abs(mindx) < 0.01) {
-        // We hit a wall
-        this.direction *= -1;
+        if (Math.abs(mindx) < 0.01) {
+          // We hit a wall
+          this.direction *= -1;
+          this.dx = 0;
+        }
       }
    },
 
-
-   render: function(context) {}
+   bounceBack: function(senderX, receiverX, scale) {
+     this.dy = -30 * scale * (Math.random() * 1.5);
+     if (senderX > receiverX) {
+        // Launch receiver left
+        this.dx = -20 * scale * (Math.random() * 1.5 + 0.5);
+     }
+     else {
+        // Launch receiver right
+        this.dx = 20 * scale * (Math.random() * 1.5 + 0.5);
+     }
+  },
 });
