@@ -72,6 +72,9 @@
       <div id="screen">
          <canvas id="game-canvas"></canvas>
       </div>
+
+      <label for="fader">Volume</label>
+      <input type="range" min="0" max="100" value="5" id="fader">
    </div>
 
    <!-- Libraries -->
@@ -102,7 +105,7 @@
    <script src="src/scenes/title_screen.js"></script>
    <script src="src/scenes/level.js"></script>
 
-   <!-- main.js loads everything it needs -->
+   <script src="src/sound_manager.js"></script>
    <script src="main.js"></script>
 
    <script src="http://elliotfiske.com/bonald.js"></script>
