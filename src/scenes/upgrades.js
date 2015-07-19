@@ -13,7 +13,7 @@ var UpgradeScreen = Juicy.State.extend({
                 this.destination = 300;
                 this.timeUntilDrop = 0;
                 this.dropTime = 0;
-                this.totalDropTime = 1;
+                this.totalDropTime = 10;
             },
             update: function(dt) {
                 if (this.timeUntilDrop > 0) {
