@@ -9,6 +9,9 @@ Juicy.Component.create('LevelTiles', {
    WALL: 'X',
    ENEMYSPAWN: 'E',
    BOOK: '%',
+   PLAYER: '^',
+   SHRINE: '&',
+   SPAWNABLE: /%|E|\^|&/,
    getTile: function(x, y) {
       var sector_x = Math.floor(x / this.SECTION_WIDTH);
       var sector_y = Math.floor(y / this.SECTION_HEIGHT);
@@ -107,7 +110,7 @@ Juicy.Component.create('LevelTiles', {
             if (step_dx > 0)
                x = Math.ceil(x) - 0.1;
             else
-               x = Math.floor(x);
+               x = Math.floor(x) + 0.1;
 
             hit_x = true;
          }
@@ -140,10 +143,6 @@ Juicy.Component.create('LevelTiles', {
                context.fillStyle = 'green';
                context.fillRect(i, j, 1, 1);
             }
-            if (this.getTile(i, j) === this.BOOK) {
-               context.fillStyle = 'yellow';
-               context.fillRect(i, j, 1, 1);
-            }
          }
       }
    },
@@ -151,6 +150,7 @@ Juicy.Component.create('LevelTiles', {
       var limitedUses = {
          spawn: 1,
          treasure: 1,
+         goal: 0
       };
 
       this.tiles = []; // Array of room configurations
@@ -171,33 +171,39 @@ Juicy.Component.create('LevelTiles', {
                   type = keys[Juicy.rand(keys.length)];                  
                }
             }
+            if (i === width - 1 && j === height - 1) {
+               type = 'goal';
+            }
 
             var config = this.sections[type];
             var cfg = this.parse(config, i === 0, i === width - 1, j === height - 1);
 
-            // Get enemy spawns
-            var spawn = cfg.indexOf(this.ENEMYSPAWN);
+            // Get spawns
+            var spawn = config.search(this.SPAWNABLE);
             var found = spawn;
-            while (spawn >= 0) {
+            while (found >= 0) {
                var x = i * this.SECTION_WIDTH + spawn % this.SECTION_WIDTH;
                var y = j * this.SECTION_HEIGHT + Math.floor(spawn / this.SECTION_WIDTH);
 
-               this.spawns.push({ x: x, y: y });
+               var sptype = '';
+               if (cfg[spawn] === this.ENEMYSPAWN)
+                  sptype = 'enemy';
+               if (cfg[spawn] === this.BOOK)
+                  sptype = 'book';
+               if (cfg[spawn] === this.PLAYER)
+                  sptype = 'player';
+               if (cfg[spawn] === this.SHRINE)
+                  sptype = 'shrine';
+
+               this.spawns.push({
+                  type: sptype,
+                  x: x,
+                  y: y 
+               });
 
                cfg[spawn] = this.EMPTY;
-               spawn = cfg.indexOf(this.ENEMYSPAWN);
-            }
-
-            // Get the player spawn
-            if (type === 'spawn') {
-               var ind = cfg.indexOf('^');
-
-               this.spawn = {
-                  x: ind % this.SECTION_WIDTH,
-                  y: Math.floor(ind / this.SECTION_HEIGHT)
-               };
-
-               cfg[ind] = this.EMPTY;
+               found = config.substring(spawn + 1).search(this.SPAWNABLE);
+               spawn += found + 1;
             }
 
             // Register that we've used this type of room
@@ -322,7 +328,7 @@ Juicy.Component.create('LevelTiles', {
               + '           ----     ' + '                    '
               + '         ------     ' + '                    '
               + '       -------      ' + '                    ',
-      room2:    '                    ' + '                    '
+      goal:     '                    ' + '                    '
               + '                    ' + '                    '
               + '                    ' + '                    '
               + '                    ' + '                    '
@@ -342,7 +348,7 @@ Juicy.Component.create('LevelTiles', {
               + '                    ' + '                    '
               + '            -----   ' + '   -----            '
               + '           -        ' + '        -           '
-              + '           -        ' + '        -           '
+              + '          -         ' + '&        -          '
               + '           -        ' + '        -           '
               + '            ----    ' + '    ----            '
               + '                    ' + '                    '

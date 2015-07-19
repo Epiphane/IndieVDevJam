@@ -72,5 +72,17 @@ Juicy.Component.create('Booklet', {
             return;
          }
       }
+
+      var objects = this.entity.scene.objects;
+      for (var i = 0; i < objects.length; i ++) {
+         if (this.entity !== objects[i] && this.entity.transform.testCollision(objects[i].transform)) {
+            if (objects[i].getComponent('Destructible')) {
+                objects[i].getComponent('Destructible').health -= 30;
+                
+                this.entity.dead = true;
+                return;
+            }
+         }
+      }
    }
 });

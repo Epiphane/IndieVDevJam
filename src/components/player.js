@@ -41,5 +41,18 @@ Juicy.Component.create('Player', {
 
          physics.dx -= this.direction * 2;
       }
+
+      // Test colliding with objects
+      var objects = this.entity.scene.objects;
+      for (var i = 0; i < objects.length; i ++) {
+         var object = objects[i];
+
+         if (this.entity.transform.testCollision(object.transform)) {
+            // Collided with this object. Test whether it matters
+            if (object.getComponent('Powerup')) {
+               objects[i].dead = true;
+            }
+         }
+      }
    }
 });

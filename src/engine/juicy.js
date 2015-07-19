@@ -521,8 +521,10 @@
 
          this.image = new Image();
          this.image.onload = function() {
-            entity.transform.width  = this.width;
-            entity.transform.height = this.height;
+            if (!entity.transform.width || !entity.transform.height) {
+               entity.transform.width  = this.width;
+               entity.transform.height = this.height;
+            }
 
             entity.scene.updated = true;
 

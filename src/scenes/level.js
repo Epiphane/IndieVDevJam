@@ -11,7 +11,6 @@ var Level = Juicy.State.extend({
       this.player.getComponent('Box').fillStyle = 'green';
 
       this.objects = [];
-
       this.enemies = [];
 
       this.particles = new Juicy.Entity(this, ['ParticleManager']);
@@ -30,28 +29,70 @@ var Level = Juicy.State.extend({
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
       this.levelTiles.build(3, 2);
 
-      this.player.transform.position.x = this.levelTiles.spawn.x - 1;
-      this.player.transform.position.y = this.levelTiles.spawn.y - 1;
+      var self = this;
 
       // Create enemies
       for (var i = 0; i < this.levelTiles.spawns.length; i ++) {
          var spawn = this.levelTiles.spawns[i];
 
-         var enemy = new Juicy.Entity(this, ['Box', 'Enemy', 'PatrollingPhysics', 'Animations']);
-         enemy.getComponent('Box').fillStyle = 'red';
-         enemy.transform.width = 1.4;
-         enemy.transform.position.y = spawn.y;
-         enemy.transform.position.x = spawn.x;
-         enemy.transform.height = 1.8;
-         if (Juicy.rand(2) === 1) {
-            enemy.getComponent('Enemy').direction = 1;
+         if (spawn.type === 'enemy') {
+            var enemy = new Juicy.Entity(this, ['Image', 'Enemy', 'PatrollingPhysics', 'Animations']);
+            enemy.getComponent('Image').setImage('./img/deck.png');
+            enemy.transform.width = 1.4;
+            enemy.transform.position.y = spawn.y;
+            enemy.transform.position.x = spawn.x;
+            enemy.transform.height = 1.8;
+            if (Juicy.rand(2) === 1) {
+               enemy.getComponent('Enemy').direction = 1;
+            }
+            else {
+               enemy.getComponent('Enemy').direction = -1;
+            }
+
+            this.enemies.push(enemy);
+         }
+         else if (spawn.type === 'book') {
+            var book = new Juicy.Entity(this, ['Image']);
+            book.getComponent('Image').setImage('./img/deck.png');
+            book.transform.width = 0.75;
+            book.transform.height = 1;
+            book.transform.position.y = spawn.y;
+            book.transform.position.x = spawn.x;
+
+            var power = new Juicy.Components.Powerup();
+            book.addComponent(power);
+
+            this.objects.push(book);
+         }
+         else if (spawn.type === 'player') {
+            this.player.transform.position.x = spawn.x;
+            this.player.transform.position.y = spawn.y;
+         }
+         else if (spawn.type === 'shrine') {
+            var shrine = new Juicy.Entity(this, ['Sprite']);
+            shrine.getComponent('Sprite').setSheet('./img/shrine.png', 256, 512);
+            shrine.transform.width = 3;
+            shrine.transform.height = 6;
+            shrine.transform.position.y = spawn.y - 1.85;
+            shrine.transform.position.x = spawn.x - 1;
+
+            var destructible = new Juicy.Components.Destructible(1000);
+            destructible.ondestroy = function() {
+               self.slow = true;
+               self.flash = 1;
+               shrine.getComponent('Sprite').runAnimation(1, 3, 0.5)
+                  .oncompleteanimation = function() {};
+            }
+            shrine.addComponent(destructible);
+
+            this.objects.push(shrine);
          }
          else {
-            enemy.getComponent('Enemy').direction = -1;
+            console.warn(spawn);
          }
-
-         this.enemies.push(enemy);
       }
+
+      // Create books
    },
    init: function() {
       var self = this;
@@ -63,6 +104,13 @@ var Level = Juicy.State.extend({
       this.objects.push(obj);
    },
    update: function(dt, input) {
+      if (this.slow)
+         dt /= 3;
+
+      if (this.flash) {
+         this.flash -= dt;
+      }
+
       this.player.update(dt);
       this.particles.update(dt);
 
@@ -131,22 +179,40 @@ var Level = Juicy.State.extend({
       context.scale(sc, sc);
       context.translate(-this.camera.x, -this.camera.y);
 
-      this.tileManager.render(context, this.camera.x, this.camera.y, GAME_WIDTH / this.tilesize, GAME_HEIGHT / this.tilesize);
+      var bounds = {
+         position: {
+            x: this.camera.x,
+            y: this.camera.y
+         },
+         width: GAME_WIDTH / this.tilesize,
+         height: GAME_HEIGHT / this.tilesize
+      };
 
-      this.player.render(context);
+      this.tileManager.render(context, bounds.position.x, bounds.position.y, bounds.width, bounds.height);
 
       for (var i = 0; i < this.objects.length; i ++) {
-         this.objects[i].render(context);
+         if (this.objects[i].transform.testCollision(bounds)) {
+            this.objects[i].render(context);
+         }
       }
 
       for (var i = 0; i < this.enemies.length; i ++) {
-         this.enemies[i].render(context);
+         if (this.enemies[i].transform.testCollision(bounds)) {
+            this.enemies[i].render(context);
+         }
       }
+
+      this.player.render(context);
 
       this.particles.render(context);
 
       context.restore();
       
       this.gui.render(context);
+      
+      if (this.flash) {
+         context.fillStyle = 'rgba(255, 255, 255, ' + this.flash + ')';
+         context.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+      }
    }
 });
