@@ -7,6 +7,7 @@ var Pause = Juicy.State.extend({
    },
    init: function() {
       var self = this;
+      this.prevState.music.setVolume(15);
       this.game.input.on('key', 'ESC', function() {
          self.game.setState(self.prevState);
       });

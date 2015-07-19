@@ -1,43 +1,58 @@
-Juicy.Component.create('Particles', {
-   constructor: function() {
-   },
+Juicy.Component.create('ParticleManager', {
+    constructor: function() {
+        this.pendingParticles = Array();
+        this.particles = Array();
+    },
 
-   setParticleType: function(image, howMany, updateParticle) {
-      this.particleImage = image;
-      this.howMany = howMany;
-      this.updateFunction = updateParticle;
-      this.particles = Array();
-      this.image = new Image();
-      this.image.src = ""
-   },
+    spawnParticles: function(image, size, howMany, timeToLive, initParticle, updateParticle) {
+        this.howMany = howMany;
+        this.updateFunction = updateParticle;
 
-   startParticles: function() {
-      for (var i = 0; i < this.howMany; i++) {
-         this.particles.push({
-            x: 0,
-            y: 0,
-            life: 60   
-         });
-      }
-   },
+        for (var i = 0; i < this.howMany; i++) {
+            var newParticle = {
+                life: 30,
+                init: initParticle,
+            };
+            this.pendingParticles.push(newParticle);
+            newParticle.timeToLive = timeToLive(newParticle, i);
+            newParticle.image = image;
+            newParticle.size = size;
+        }
+    },
 
-   update: function(dt, input) {
-      for (var i = this.particles.length - 1; i >= 0; i--) {
-         if (this.particles[i]) {
-            this.updateFunction(this.particles[i]);
-            if (this.particles[i].life < 0) {
-               this.particles = Array();
+    initParticle: function(currParticle) {
+        this.particles.push(currParticle);
+        currParticle.init(currParticle);
+    },
+
+    update: function(dt, input) {
+        for (var i = this.pendingParticles.length - 1; i >= 0; i--) {
+            var currParticle = this.pendingParticles[i];
+            if (currParticle.timeToLive < 0) {
+                this.initParticle(currParticle);
+                this.pendingParticles.splice(i, 1);
             }
-         }
-      }
-   },
+            currParticle.timeToLive--;
+        }
 
-   render: function(context) {
-      for (var i = 0; i < this.particles.length; i++) {
-         context.beginPath();
-         context.rect(this.particles[i].x, this.particles[i].y, 0.1, 0.1);
-         context.fillStyle = "red"; 
-         context.fill();
-      }
-   },
+        for (var i = this.particles.length - 1; i >= 0; i--) {
+            if (this.particles[i]) {
+                this.updateFunction(this.particles[i], i);
+                this.particles[i].life--;
+
+                if (this.particles[i].life < 0) {
+                    this.particles.splice(i, 1);
+                }
+            }
+        }
+    },
+
+    render: function(context) {
+        for (var i = 0; i < this.particles.length; i++) {
+            context.beginPath();
+            context.rect(this.particles[i].x, this.particles[i].y, this.particles[i].size, this.particles[i].size);
+            context.fillStyle = "rgba(" + this.particles[i].image + this.particles[i].alpha + 1 + ")"; 
+            context.fill();
+        }
+    },
 });

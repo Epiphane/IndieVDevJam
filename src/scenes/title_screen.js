@@ -1,11 +1,13 @@
 
 var TitleScreen = Juicy.Scene.extend({
 constructor: function() {
-      this.pic = new Juicy.Entity(this, ['Image', 'Button']);
+      this.pic = new Juicy.Entity(this, ['Image', 'Button', 'Animations']);
       this.pic.transform.position.x = GAME_WIDTH/2;
       this.pic.transform.position.y = GAME_HEIGHT/2;
-      this.pic.getComponent('Image').setImage('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSxLS2z0JOP62RuEwe2WPgsRmy-n6oPyeqIl0kWWfosylUBDDXL6FEVfACx');      
-
+      this.pic.getComponent('Image').setImage('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSxLS2z0JOP62RuEwe2WPgsRmy-n6oPyeqIl0kWWfosylUBDDXL6FEVfACx'); 
+      this.music = newBuzzSound( "audio/music_spellbound", {
+         formats: [ "mp3"]
+      });
 	// TODO: button graphic or something
 
    },
@@ -17,9 +19,19 @@ constructor: function() {
    init: function() {
       var self = this;
 
+      this.music.play().loop();
+
       this.game.input.on('mousemove', function(evt) {
 	 var mouse = self.game.getCanvasCoords(evt);
 	 self.pic.getComponent('Button').checkMouseOver(mouse);
+      });
+
+      this.game.input.on('mousedown', function(evt) {
+	 self.pic.getComponent('Button').checkMouseClick();
+      });
+
+      this.game.input.on('mouseup', function(evt) {
+	 self.pic.getComponent('Button').checkMouseUp();
       });
 
       // Define a callback to be used whenever 'W', 'A', 'S', or 'D' is pressed
@@ -58,13 +70,14 @@ constructor: function() {
    // update() is called every friggin' frame. This is your typical
    // update loop function. dt = time in seconds
    update: function(dt, input) {
+      this.pic.update(dt);
 
+      return this.pic.getComponent('Animations').done;
    },
 
 
    // FINALLY. render() draws whatever you want to draw.
    render: function(context) {
-
       // This calls render() on every component in this.dude.
       // Everything is transformed relative to the player, so if
       // your dude is at x=1000, then everything will be drawn

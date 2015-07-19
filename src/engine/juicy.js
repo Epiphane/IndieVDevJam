@@ -69,8 +69,8 @@
 
    Game.prototype.getCanvasCoords = function(evt) {
       var canvasRect = this.canvas.getBoundingClientRect();
-      var mx = evt.x || evt.clientX - canvasRect.left;
-      var my = evt.y || evt.clientY - canvasRect.top;
+      var mx = (evt.x || evt.clientX) - canvasRect.left;
+      var my = (evt.y || evt.clientY) - canvasRect.top;
 
       return {
          x: Math.floor(mx * this.width /  this.canvas.width), 
@@ -98,10 +98,16 @@
 
    Game.prototype.resize = function() {
       var parent = this.canvas.parentElement;
-      var width  = parent.width || parent.clientWidth;
+      var width  = parent.width  || parent.clientWidth;
+      var height = parent.height || parent.clientHeight;
 
       this.canvas.width  = width;
       this.canvas.height = width * this.height / this.width;
+      if (this.canvas.height > height) {
+         this.canvas.height = height;
+         this.canvas.width = height * this.width / this.height;
+      }
+
       this.scale = {
          x: this.canvas.width  / this.width,
          y: this.canvas.height / this.height
@@ -279,6 +285,9 @@
       }
    };
    Entity.prototype.getComponent = function(name) {
+      if (!this.components[name])
+        return null;
+
       if (this.dt) {
          if (this.updated[name] === 1)
             throw 'Circular component dependency: ' + name + '<>';
@@ -309,6 +318,10 @@
       var pos = this.transform.position;
       context.translate(pos.x, pos.y);
       context.scale(this.transform.scale.x, this.transform.scale.y);
+      
+      if(this.components.Animations) {
+         this.components.Animations.transformCanvas(context);
+      }
 
       var args = Array.prototype.slice.call(arguments);
       if (args.length === 1) {
@@ -327,6 +340,7 @@
          }
 
       }
+      
       context.restore();
    };
 
@@ -375,6 +389,8 @@
       this.keyState = {};
       this.keyCallbacks = {};
 
+      this.eventListeners = {};
+
       // Reverse of KEYS
       this.CODES = {};
       for (var key in keys) {
@@ -388,6 +404,10 @@
 
    Input.prototype.clear = function() {
       this.keyCallbacks = {};
+
+      for (var key in this.eventListeners) {
+           
+      }
    }
 
    Input.prototype.setKeys = function(keys) {
@@ -505,10 +525,21 @@
       constructor: function(entity) {
          var self = this;
 
+         this.tint = false;
+         this.tintOverlay = document.createElement('canvas');
+
          this.image = new Image();
          this.image.onload = function() {
-            entity.transform.width  = this.width;
-            entity.transform.height = this.height;
+            if (!entity.transform.width || !entity.transform.height) {
+               entity.transform.width  = this.width;
+               entity.transform.height = this.height;
+            }
+
+            entity.scene.updated = true;
+
+            if (self.tint) {
+               self.applyTint();
+            }
 
             if (self.onload)
                self.onload(this);
@@ -516,14 +547,47 @@
 
          entity.setImage = this.setImage.bind(this);
       },
-      setImage: function(url) {
-         this.image.src = url;
+      setTint: function(tint) {
+         this.tint = tint;
+
+         if (this.image.complete) {
+            this.applyTint();
+         }
 
          return this;
+      },
+      setImage: function(url, tint) {
+         this.image.src = url;
+         this.tint = tint || this.tint;
+
+         return this;
+      },
+      applyTint: function() {
+         // Create an offscreen buffer
+         this.tintOverlay.width = this.image.width;
+         this.tintOverlay.height = this.image.height;
+
+         var context = this.tintOverlay.getContext('2d');
+
+         // Fill offscreen buffer with tint color
+         context.fillStyle = this.tint;
+         context.fillRect(0, 0, this.image.width, this.image.height);
+      
+         // destination atop makes a result with an alpha channel identical to fg,
+         // but with all pixels retaining their original color *as far as I can tell*
+         context.globalCompositeOperation = "destination-atop";
+         context.globalAlpha = 0.75;
+         context.drawImage(this.image, 0, 0);
+         context.globalAlpha = 1;
       },
       render: function(context) {
          arguments[0] = this.image;
          context.drawImage.apply(context, arguments);
+
+         if (this.tint) {
+            arguments[0] = this.tintOverlay;
+            context.drawImage.apply(context, arguments);
+         }
       }
    });
 
@@ -532,6 +596,9 @@
          this.fillStyle = 'white';
       },
       render: function(context, x, y, w, h) {
+
+	 context.save();
+
          context.fillStyle = this.fillStyle;
          // var transform = this.entity.transform;
          // var pos = transform.getPosition();
@@ -540,6 +607,8 @@
          //                  w || sc.x * transform.width, 
          //                  h || sc.y * transform.height);
          context.fillRect(x, y, w, h);
+
+	 context.restore();
       }
    });
 
@@ -551,6 +620,14 @@
          this.width = this.height = 0;
       
          this.children = [];
+      },
+      testCollision: function(other) {
+         var isLeft  = other.position.x >= this.position.x + this.width;
+         var isRight = other.position.x + other.width <= this.position.x;
+         var isAbove = other.position.y >= this.position.y + this.height;
+         var isBelow = other.position.y + other.height <= this.position.y;
+
+         return !isLeft && !isRight && !isAbove && !isBelow;
       },
       contains: function(x, y) {
          var pos = this.getPosition();
@@ -678,3 +755,5 @@
 
    return Juicy;
 });
+
+var PI = 3.1415926535;
