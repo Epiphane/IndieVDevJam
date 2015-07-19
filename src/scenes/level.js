@@ -59,7 +59,7 @@ var Level = Juicy.State.extend({
             book.transform.position.y = spawn.y;
             book.transform.position.x = spawn.x;
 
-            var power = new Juicy.Components.Powerup();
+            var power = new Juicy.Components.Powerup(this.player.getComponent('Player').availablePowerups());
             book.addComponent(power);
 
             this.objects.push(book);

@@ -3,6 +3,37 @@ Juicy.Component.create('Player', {
       this.direction = 1;
       this.firingRate = 0.1;
       this.cooldown = 0;
+
+      this.powerups = {};
+   },
+   availablePowerups: function() {
+      return ['fire', 'ice', 'explosive'];
+   },
+   setPowerup: function(name, mana) {
+      if (this.powerups[name] && this.powerups[name] >= mana) {
+         return;
+      }
+      else {
+         this.powerups[name] = mana;
+      }
+   },
+   throwBook: function() {
+      var booklet = new Booklet(this.entity.scene);
+      booklet.transform.position.x = this.entity.transform.position.x;
+      booklet.transform.position.y = this.entity.transform.position.y + (this.entity.transform.height - booklet.transform.height) / 2;
+
+      var powers = Object.keys(this.powerups);
+      for (var i = 0; i < powers.length; i ++) {
+         this.powerups[powers[i]] --;
+         if (this.powerups[powers[i]] <= 0)
+            delete this.powerups[powers[i]];
+      }
+
+      var comp = booklet.getComponent('Booklet');
+      comp.dx = this.direction * 100;
+      comp.setPowers(powers);
+
+      this.entity.scene.addObject(booklet);
    },
    update: function(dt, input) {
       var speed = 16;
@@ -30,12 +61,7 @@ Juicy.Component.create('Player', {
       if (this.cooldown > 0)
          this.cooldown -= dt;
       if (input.keyDown('SPACE') && this.cooldown <= 0) {
-         var booklet = new Booklet(this.entity.scene);
-         booklet.transform.position.x = this.entity.transform.position.x;
-         booklet.transform.position.y = this.entity.transform.position.y + (this.entity.transform.height - booklet.transform.height) / 2;
-         booklet.getComponent('Booklet').dx = this.direction * 100;
-
-         this.entity.scene.addObject(booklet);
+         this.throwBook();
 
          this.cooldown = this.firingRate;
 
@@ -49,7 +75,10 @@ Juicy.Component.create('Player', {
 
          if (this.entity.transform.testCollision(object.transform)) {
             // Collided with this object. Test whether it matters
-            if (object.getComponent('Powerup')) {
+            var powerup = object.getComponent('Powerup');
+            if (powerup) {
+               this.setPowerup(powerup.power, powerup.mana);
+
                objects[i].dead = true;
             }
          }
