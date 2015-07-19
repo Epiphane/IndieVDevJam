@@ -30,8 +30,11 @@ var Level = Juicy.State.extend({
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
       this.levelTiles.build(3, 2);
 
-      this.music = new buzz.sound( "audio/music_burning_books", {
+      this.music = newBuzzSound( "audio/music_burning_books", {
          formats: [ "mp3"]
+      });
+      this.shrineDeathSound = newBuzzSound( "audio/fx_shrine_ded", {
+         formats: [ "wav"]
       });
 
       // Screen Shaking
@@ -92,6 +95,8 @@ var Level = Juicy.State.extend({
 
             var destructible = new Juicy.Components.Destructible(1000);
             destructible.ondestroy = function() {
+               buzz.all().stop();
+               self.shrineDeathSound.play();
                self.slow = true;
                self.flash = 1;
                shrine.getComponent('Sprite').runAnimation(1, 3, 0.5)
@@ -113,7 +118,6 @@ var Level = Juicy.State.extend({
       });
       this.music.play()
          .loop()
-         .setVolume(75)
    },
    shake: function(time, strength) {
       this._shake = {
