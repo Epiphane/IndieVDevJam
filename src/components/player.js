@@ -97,7 +97,7 @@ Juicy.Component.create('Player', {
 
          if (this.entity.transform.testCollision(enemy.transform)) {
             // Collided with enemy, have slight bouceback
-            physics.bounceBack(enemy.getComponent('PatrollingPhysics').direction, 1.0);
+            physics.bounceBack(enemy.transform.position.x, this.entity.transform.position.x, 1.0);
             this.doingRecoil = true;
          }
       }

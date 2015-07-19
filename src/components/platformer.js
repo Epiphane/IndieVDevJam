@@ -162,12 +162,18 @@ Juicy.Component.create('Physics', {
       }
    },
 
-   bounceBack: function(direction, scale) {
-      this.dy = -80 * (scale / 2.0);
-      this.dx = direction * 240 * scale;
-            
-      ga('send', 'event', 'player', 'touched-enemy', 'non-upgraded');
-    },
+   bounceBack: function(senderX, receiverX, scale) {
+     this.dy = -20 * scale;
+     if (senderX > receiverX) {
+        // Launch receiver left
+        this.dx = -200 * scale;
+     }
+     else {
+        // Launch receiver right
+        this.dx = 200 * scale;
+     }
+     ga('send', 'event', 'player', 'touched-enemy', 'non-upgraded');
+  },
 
 
    render: function(context) {}
