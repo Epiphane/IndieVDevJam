@@ -85,15 +85,15 @@ Juicy.Component.create('Player', {
          if (input.keyDown('RIGHT')) {
             physics.dx = speed;
          }
+         
+         if (physics.dx !== 0)
+            this.direction = physics.dx > 0 ? 1 : -1;
       }
       else {
          if (physics.onGround) {
             this.doingRecoil = false;
          }
       }
-
-      if (physics.dx !== 0)
-         this.direction = physics.dx > 0 ? 1 : -1;
    
       if (this.cooldown > 0)
          this.cooldown -= dt;
