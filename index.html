@@ -27,7 +27,7 @@
 <body>
 
    <!-- Main stage for rendering game scenes -->
-   <div id="machine">
+   <div id="machine" class="full-screen">
       <div id="screen">
          <canvas id="game-canvas"></canvas>
       </div>
@@ -35,6 +35,9 @@
       <div id="controls">
          <button id="mute"><i class="fa fa-volume-off"></i></button>
       </div>
+   </div>
+   <div id="shop" class="full-screen">
+   ABD
    </div>
 
    <!-- Libraries -->
@@ -66,6 +69,7 @@
    <script src="src/scenes/title_screen.js"></script>
    <script src="src/scenes/level.js"></script>
 
+   <script src="src/transition_manager.js"></script>
    <script src="src/sound_manager.js"></script>
    <script src="main.js"></script>
 

@@ -135,7 +135,7 @@ var Level = Juicy.State.extend({
       if (this.slow)
          dt /= 3;
 
-      if (this._shake && this._shake.time > 0) {
+      if (this._shake && this._shake.time > -0.5) {
          this.game.canvas.style.left = (this._shake.strength * Math.sin(this._shake.time * 64)) + 'px';
 
          this._shake.time -= dt;
@@ -146,13 +146,16 @@ var Level = Juicy.State.extend({
       }
 
       if (this.flash !== false) {
-         this.flash -= dt;
+         if (this.flash > 0 && this.flash - dt <= 0) {
+            TransitionManager.toShop();
 
-         if (this.flash < -2) {
-            this.game.setState(new UpgradeScreen(this.player));
-
-            return;
+            var self = this;
+            TransitionManager.onComplete = function() {
+               self.game.setState(new UpgradeScreen(this.player));
+            }
          }
+
+         this.flash -= dt;
       }
 
       this.player.update(dt);
