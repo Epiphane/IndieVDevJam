@@ -1,7 +1,7 @@
 var newBuzzSound = (function() {
     // Handle volume changes
     var muter = document.getElementById('mute');
-    var gameMuted = localStorage.getItem('mute') || false;
+    var gameMuted = localStorage.getItem('mute') ? localStorage.getItem('mute') === 'true' : false;
 
     // Set the graphic
     var i = muter.children[0];
@@ -19,11 +19,11 @@ var newBuzzSound = (function() {
         gameMuted = !gameMuted;
 
         if (gameMuted) {
-            i.setAttribute('class', 'fa fa-volume-up');
+            i.setAttribute('class', 'fa fa-volume-off');
             buzz.all().mute();
         }
         else {
-            i.setAttribute('class', 'fa fa-volume-off');
+            i.setAttribute('class', 'fa fa-volume-up');
             buzz.all().unmute();
         }
 
