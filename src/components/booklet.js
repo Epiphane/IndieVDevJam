@@ -12,13 +12,13 @@ Juicy.Component.create('Booklet', {
       },
        function(particle) {
           particle.x = posX;
-          particle.y = self.entity.transform.position.y;
-          particle.dx = -self.dx * (Math.random() * 0.8 + 0.2) * 9;
+          particle.y = self.entity.transform.position.y + self.entity.transform.height/2;
+          particle.dx = -self.dx * (Math.random() * 0.8 + 0.2);
           particle.dy = (Math.random() - 0.5) * 10;
           particle.startLife = 30;
           particle.life = particle.startLife;
       }, function(particle) {
-          particle.x += particle.dx * 0.01;
+          particle.x += particle.dx * 0.001;
           particle.y += particle.dy * 0.01;
           particle.dx *= 0.9;
           particle.dy *= 0.9;
@@ -59,6 +59,13 @@ Juicy.Component.create('Booklet', {
 
       this.life -= dt;
       if (Math.abs(ray.dx) < 0.1 || this.life < 0) {
+         if (this.dx < 0) {
+            this.deathParticles(this.entity.transform.position.x);//-ray.dx);   
+         }
+         else {
+            this.deathParticles(this.entity.transform.position.x + 1);      
+         }
+            
          this.entity.dead = true;
          return;
       }
