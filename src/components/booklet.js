@@ -5,12 +5,18 @@ Juicy.Component.create('Booklet', {
         this.hitSound = newBuzzSound( "audio/fx_bookhit", {
             formats: [ "wav"]
         });
+    
+        this.damage = 30;
     },
 
     setPowers: function(powers) {
         this.powers = powers;
 
         this.entity.getComponent('Box').fillStyle = Powerup.getColor(powers);
+    },
+
+    hasPowerup: function(name) {
+        return this.powers.indexOf(Powerup[name]) >= 0;
     },
 
     deathParticles: function(posX, neg) {
@@ -66,25 +72,14 @@ Juicy.Component.create('Booklet', {
 
         this.life -= dt;
         if (Math.abs(ray.dx) < 0.1 || this.life < 0) {
-            if (this.dx < 0) {
-                this.deathParticles(this.entity.transform.position.x - ray.dx, true);//-ray.dx);   
-            }
-            else {
-                this.deathParticles(this.entity.transform.position.x + 0.8, false);      
-            }
-            this.entity.dead = true;
+            this.die(null);
             return;
         }
 
         var enemies = this.entity.scene.enemies;
         for (var i = 0; i < enemies.length; i ++) {
             if (this.entity.transform.testCollision(enemies[i].transform)) {
-                
-                this.deathParticles(enemies[i].transform.width, this.dx < 0);
-            
-                enemies[i].getComponent('Enemy').health -= 30;
-                this.hitSound.play();
-                this.entity.dead = true;
+                this.die(enemies[i], enemies[i].getComponent('Enemy'));
                 return;
             }
         }
@@ -93,14 +88,43 @@ Juicy.Component.create('Booklet', {
         for (var i = 0; i < objects.length; i ++) {
             if (this.entity !== objects[i] && this.entity.transform.testCollision(objects[i].transform)) {
                 if (objects[i].getComponent('Destructible')) {
-                    objects[i].getComponent('Destructible').health -= 30;
-
-                    this.deathParticles(objects[i].transform.width);
-                    this.hitSound.play();
-                    this.entity.dead = true;
+                    this.die(objects[i], objects[i].getComponent('Destructible'));
                     return;
                 }
             }
         }
+    },
+
+    die: function(objectHit, componentWithHealth) {
+        if (objectHit) {
+            this.deathParticles(objectHit.transform.width, this.dx < 0);
+
+            if (this.hasPowerup('SLOW')) {
+                var phys = objectHit.getComponent('PatrollingPhysics');
+                if (phys) {
+                    phys.slow = 1;
+                }
+            }
+        }
+        else {
+            if (this.dx < 0) {
+                this.deathParticles(this.entity.transform.position.x - ray.dx, true);//-ray.dx);   
+            }
+            else {
+                this.deathParticles(this.entity.transform.position.x + 0.8, false);      
+            }
+        }
+
+        if (componentWithHealth) {
+            if (this.hasPowerup('DAMAGE')) {
+                componentWithHealth.health -= 45;
+            }
+            else {
+                componentWithHealth.health -= 30;
+            }
+        }
+
+        this.hitSound.play();
+        this.entity.dead = true;
     }
 });

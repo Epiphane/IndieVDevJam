@@ -15,6 +15,9 @@ var Powerup = Juicy.Component.create('Powerup', {
         ice_explosive: '#ff6c00',
         fire_ice_explosive: '#000000'
     },
+    SLOW: 'ice',
+    DAMAGE: 'fire', 
+    EXPLODE: 'explosive',
     getColor: function(powers) {
         var has = function(power) {
             return powers.indexOf(power) >= 0;

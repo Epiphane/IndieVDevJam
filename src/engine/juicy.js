@@ -512,7 +512,9 @@
       if (protoProps)
          combine(child.prototype, protoProps);
 
-      child.__super__ = parent.prototype;
+      child.prototype.__super__ = parent.prototype;
+
+      child.extend = extend;
 
       return child;
    };

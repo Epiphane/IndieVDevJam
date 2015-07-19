@@ -1,12 +1,19 @@
-Juicy.Component.create('PatrollingPhysics', {
+Juicy.Components.Physics.create('PatrollingPhysics', {
     constructor: function() {
         this.dx = this.dy = 0;
         this.onGround = false;
 
         this.direction = 1;
+        this.slow = 0;
     },
 
     update: function(dt, input) {
+      if (this.slow > 0) {
+        dt /= 2;
+
+        this.slow -= dt
+      }
+
       var tileManager = this.entity.scene.tileManager.getComponent('LevelTiles');
 
       var transform = this.entity.transform;
@@ -54,6 +61,8 @@ Juicy.Component.create('PatrollingPhysics', {
       }
    },
 
-
-   render: function(context) {}
+    bounceBack: function(dx, dy, scale) {
+        this.dy = dy * scale;
+        this.dx = dx * scale;
+    },
 });
