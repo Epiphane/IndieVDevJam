@@ -28,6 +28,13 @@ Juicy.Component.create('LevelTiles', {
          self.tile2rdy = true;
          self.renderCanvas();
       };
+      
+      this.bg = new Image();
+      this.bg.src = 'img/bg.png';
+      this.bg.onload = function() {
+         self.bgRdy = true;
+         self.renderCanvas();
+      }
       this.imageCanvas = document.createElement('canvas');
       this.imageReady = false;
    },
@@ -35,7 +42,8 @@ Juicy.Component.create('LevelTiles', {
    imagesLoaded: function() {
       if(
          this.tile1rdy &&
-         this.tile2rdy
+         this.tile2rdy &&
+         this.bgRdy
       ) {
          return true;
       }
@@ -239,23 +247,37 @@ Juicy.Component.create('LevelTiles', {
          return;
       }
       
+      var context = this.imageCanvas.getContext('2d');
+      
+      // background image!
+      context.drawImage(this.bg, 0, 0);
+      
+      // tiles!
+      
       x = 0;
       y = 0;
       w = 40;
       h = 30;
-      
-      var context = this.imageCanvas.getContext('2d');
 
       for (var i = x; i < this.width; i ++) {
          for (var j = y; j < this.height; j ++) {
             if (this.getTile(i, j) === this.PLATFORM || this.getTile(i, j) === this.WALL) {
-               var rand = Math.floor((Math.random() * 2) + 1);
+               var rand = Math.floor((Math.random() * 5) + 1);
                var img;
                switch (rand) {
                   case 1:
-                     img = this.tileImg2;
+                     img = this.tileImg;
                      break;
                   case 2: 
+                     img = this.tileImg;
+                     break;
+                  case 3: 
+                     img = this.tileImg;
+                     break;
+                  case 4: 
+                     img = this.tileImg;
+                     break;
+                  case 5: 
                      img = this.tileImg2;
                      break;
                }
