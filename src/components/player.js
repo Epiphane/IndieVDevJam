@@ -3,6 +3,7 @@ Juicy.Component.create('Player', {
       this.direction = 1;
       this.firingRate = 0.1;
       this.cooldown = 0;
+      this.doingRecoil = false;
 
       this.powerups = {};
    },
@@ -45,14 +46,20 @@ Juicy.Component.create('Player', {
       physics.dx = 0;
       physics.dy += 240 * dt;
 
-      if (input.keyDown('UP')) {
-         physics.jump();
+      if (!this.doingRecoil)
+      {
+         if (input.keyDown('UP')) {
+            physics.jump();
+         }
+         if (input.keyDown('LEFT')) {
+            physics.dx = -speed;
+         }  
+         if (input.keyDown('RIGHT')) {
+            physics.dx = speed;
+         }
       }
-      if (input.keyDown('LEFT')) {
-         physics.dx = -speed;
-      }
-      if (input.keyDown('RIGHT')) {
-         physics.dx = speed;
+      else {
+         this.entity.update(dt, 'Physics');
       }
 
       if (physics.dx !== 0)
@@ -82,6 +89,21 @@ Juicy.Component.create('Player', {
                objects[i].dead = true;
             }
          }
+      }
+
+      var enemies = this.entity.scene.enemies;
+      for (var i = 0; i < enemies.length; i++) {
+         var enemy = enemies[i];
+
+         if (this.entity.transform.testCollision(enemy.transform)) {
+            // Collided with enemy, have slight bouceback
+            physics.bounceBack(enemy.direction, 1.0);
+            this.doingRecoil = true;
+         }
+      }
+
+      if (physics.onGround) {
+         this.doingRecoil = false;
       }
    }
 });
