@@ -21,49 +21,8 @@
 </script>
 
    <link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
-   <style>
-   /* following code make sure user won't see selection in the app */
-   body, canvas, div {
-      -moz-user-select: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
-      -khtml-user-select: none;
-      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-   }
-   /* default styles for body */
-   body, html {
-      padding:0;
-      margin: 0;
-      background: #5d3c25;
-      height: 100%;
-      width: 100%;
-
-      overflow: hidden;
-   }
-   #machine {
-      background: url('./img/machine.png');
-      background-size: 1365px 1024px;
-      width: 1024px;
-      height: 768px;
-
-      width: 1365px;
-      height: 1024px;
-
-      margin: 0 auto;
-   }
-   #machine #screen {
-      width: 800px;
-      height: 600px;
-
-      margin: 0 auto;
-      padding-top: 70px;
-   }
-   canvas, #game-canvas {
-      background: #000;
-
-      position: relative;
-   }
-   </style>
+   <link href='style.css' rel='stylesheet' type='text/css'>
+   <link href='css/font-awesome.css' rel='stylesheet' type='text/css'>
 </head>
 <body>
 
@@ -73,8 +32,10 @@
          <canvas id="game-canvas"></canvas>
       </div>
 
-      <label for="fader">Volume</label>
-      <input type="range" min="0" max="100" value="5" id="fader">
+      <div id="controls">
+         <button id="mute"><i class="fa fa-volume-off"></i></button>
+         <input type="range" min="0" max="100" value="5" id="fader">
+      </div>
    </div>
 
    <!-- Libraries -->
