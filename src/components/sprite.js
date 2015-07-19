@@ -14,6 +14,8 @@ Juicy.Component.create('Sprite', {
     this.first_sprite = 0;
     this.last_sprite = 0;
 
+    this.scale = 1;
+
     this.image = new Image();
     this.image.onload = function() {
         self.sheet_width   = this.width / self.sprite_width;
@@ -93,6 +95,7 @@ Juicy.Component.create('Sprite', {
         var dheight = arguments[8] || arguments[4] || this.entity.transform.height;
 
         context.drawImage(this.image, sx, sy, this.sprite_width, this.sprite_height,
+//                                       dx, dy, dwidth * this.scale, dheight * this.scale);
                                       dx, dy, dwidth, dheight);
         context.restore();
     }
