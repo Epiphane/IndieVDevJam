@@ -79,6 +79,8 @@ Juicy.Component.create('Booklet', {
             if (objects[i].getComponent('Destructible')) {
                 objects[i].getComponent('Destructible').health -= 30;
                 
+                this.deathParticles(objects[i].transform.width);
+                
                 this.entity.dead = true;
                 return;
             }
