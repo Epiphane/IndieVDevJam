@@ -318,6 +318,10 @@
       var pos = this.transform.position;
       context.translate(pos.x, pos.y);
       context.scale(this.transform.scale.x, this.transform.scale.y);
+      
+      if(this.components.Animations) {
+         this.components.Animations.transformCanvas(context);
+      }
 
       var args = Array.prototype.slice.call(arguments);
       if (args.length === 1) {
@@ -336,6 +340,7 @@
          }
 
       }
+      
       context.restore();
    };
 
@@ -537,11 +542,8 @@
       render: function(context) {
          arguments[0] = this.image;
 
-	 var animator = this.entity.getComponent('Animations');
+	
 	 context.save();
-	 if (animator) {
-	    animator.transformCanvas(context);
-	 }
 
          context.drawImage.apply(context, arguments);
 	 context.restore();
@@ -554,11 +556,7 @@
       },
       render: function(context, x, y, w, h) {
 
-	 var animator = this.entity.getComponent('Animations');
 	 context.save();
-	 if (animator) {
-	    animator.transformCanvas(context);
-	 }
 
          context.fillStyle = this.fillStyle;
          // var transform = this.entity.transform;

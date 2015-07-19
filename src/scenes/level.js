@@ -1,7 +1,10 @@
 var Level = Juicy.State.extend({
    tilesize: 20,
    constructor: function() {
-      this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics', 'Animations', 'Upgrades']);
+      this.gui = new Juicy.Entity(this, ['GUI', 'Animations']);
+      this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics', 'Animations', 'Score']);
+      
+      this.player.getComponent('Score').setGui(this.gui.getComponent('GUI'));
       this.player.transform.width = 1.4;
       this.player.transform.height = 1.8;
 
@@ -204,7 +207,9 @@ var Level = Juicy.State.extend({
       this.particles.render(context);
 
       context.restore();
-
+      
+      this.gui.render(context);
+      
       if (this.flash) {
          context.fillStyle = 'rgba(255, 255, 255, ' + this.flash + ')';
          context.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
