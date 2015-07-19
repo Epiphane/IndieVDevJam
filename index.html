@@ -34,9 +34,29 @@
    body, html {
       padding:0;
       margin: 0;
-      background: #666;
+      background: #5d3c25;
       height: 100%;
       width: 100%;
+
+      overflow: hidden;
+   }
+   #machine {
+      background: url('./img/machine.png');
+      background-size: 1365px 1024px;
+      width: 1024px;
+      height: 768px;
+
+      width: 1365px;
+      height: 1024px;
+
+      margin: 0 auto;
+   }
+   #machine #screen {
+      width: 800px;
+      height: 600px;
+
+      margin: 0 auto;
+      padding-top: 70px;
    }
    canvas, #game-canvas {
       background: #000;
@@ -46,7 +66,11 @@
 <body>
 
    <!-- Main stage for rendering game scenes -->
-   <canvas id="game-canvas"></canvas>
+   <div id="machine">
+      <div id="screen">
+         <canvas id="game-canvas"></canvas>
+      </div>
+   </div>
 
    <!-- Libraries -->
    <script src="src/engine/juicy.js"></script>

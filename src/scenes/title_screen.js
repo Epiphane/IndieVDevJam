@@ -19,6 +19,7 @@ constructor: function() {
 
       this.game.input.on('mousemove', function(evt) {
 	 var mouse = self.game.getCanvasCoords(evt);
+    console.log(mouse);
 	 self.pic.getComponent('Button').checkMouseOver(mouse);
       });
 
