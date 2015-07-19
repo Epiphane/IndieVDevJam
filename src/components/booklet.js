@@ -6,7 +6,7 @@ Juicy.Component.create('Booklet', {
 
   
 
-    deathParticles: function(posX) {
+    deathParticles: function(posX, neg) {
         var self = this;
 
         this.entity.scene.particles.getComponent('ParticleManager').spawnParticles("255, 0, 0, ", 0.15, 8, function(particle, ndx) {
@@ -15,7 +15,7 @@ Juicy.Component.create('Booklet', {
         function(particle) {
             particle.x = posX;
             particle.y = self.entity.transform.position.y + self.entity.transform.height/2 - 0.07;
-            particle.dx = -self.dx * (Math.random() * 0.8 + 0.2) * 9;
+            particle.dx = (neg ? 1 : -1) * 50 * (Math.random() * 0.8 + 0.2) * 9;
             particle.dy = (Math.random() - 0.5) * 10;
             particle.startLife = 30;
             particle.life = particle.startLife;
@@ -61,10 +61,10 @@ Juicy.Component.create('Booklet', {
       this.life -= dt;
       if (Math.abs(ray.dx) < 0.1 || this.life < 0) {
          if (this.dx < 0) {
-            this.deathParticles(this.entity.transform.position.x);//-ray.dx);   
+            this.deathParticles(this.entity.transform.position.x - ray.dx, true);//-ray.dx);   
          }
          else {
-            this.deathParticles(this.entity.transform.position.x + 1);      
+            this.deathParticles(this.entity.transform.position.x + 0.8, false);      
          }
             
          this.entity.dead = true;
@@ -87,7 +87,7 @@ Juicy.Component.create('Booklet', {
             if (objects[i].getComponent('Destructible')) {
                 objects[i].getComponent('Destructible').health -= 30;
                 
-                this.deathParticles(objects[i].transform.width);
+                this.deathParticles(objects[i].transform.width, this.dx < 0);
                 
                 this.entity.dead = true;
                 return;
