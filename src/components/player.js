@@ -4,6 +4,15 @@ Juicy.Component.create('Player', {
       this.firingRate = 0.1;
       this.cooldown = 0;
       this.doingRecoil = false;
+      this.jumpSound = new buzz.sound( "audio/fx_jump", {
+         formats: [ "wav"]
+      });
+      this.hitSound = new buzz.sound( "audio/fx_playerdmg", {
+         formats: [ "wav"]
+      });
+      this.powerupSound = new buzz.sound( "audio/fx_powerup", {
+         formats: [ "wav"]
+      });
 
       this.powerups = {};
    },
@@ -65,6 +74,9 @@ Juicy.Component.create('Player', {
       {
          physics.dx = 0;
          if (input.keyDown('UP')) {
+            if (physics.onGround) {
+               this.jumpSound.play();
+            }
             physics.jump();
          }
          if (input.keyDown('LEFT')) {
@@ -103,7 +115,7 @@ Juicy.Component.create('Player', {
             var powerup = object.getComponent('Powerup');
             if (powerup) {
                this.setPowerup(powerup.power, powerup.mana);
-
+               this.powerupSound.play();
                objects[i].dead = true;
             }
          }
@@ -116,6 +128,7 @@ Juicy.Component.create('Player', {
          if (this.entity.transform.testCollision(enemy.transform)) {
             // Collided with enemy, have slight bouceback
             physics.bounceBack(enemy.transform.position.x, this.entity.transform.position.x, 1.0);
+            this.hitSound.play();
             this.doingRecoil = true;
          }
       }

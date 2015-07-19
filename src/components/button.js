@@ -73,6 +73,7 @@ Juicy.Component.create('Button', {
             var INTENSIFFFFY = WOWOWOWOWOW(12.0, 12.0, 0.8);
             
             var startGame = customFunctionAnimation(function() {
+                buzz.all().stop();
                 Game.setState(new Level());
             }, 0);
 
