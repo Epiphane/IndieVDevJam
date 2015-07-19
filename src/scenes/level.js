@@ -30,6 +30,19 @@ var Level = Juicy.State.extend({
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
       this.levelTiles.build(3, 2);
 
+      this.music = newBuzzSound( "audio/music_burning_books", {
+         formats: [ "mp3"]
+      });
+      this.shrineDeathSound = newBuzzSound( "audio/fx_shrine_ded", {
+         formats: [ "wav"]
+      });
+
+      // Screen Shaking
+      this._shake = {
+         strength: 0,
+         time: 0
+      };
+
       var self = this;
 
       // Create enemies
@@ -79,6 +92,8 @@ var Level = Juicy.State.extend({
 
             var destructible = new Juicy.Components.Destructible(1000);
             destructible.ondestroy = function() {
+               buzz.all().stop();
+               self.shrineDeathSound.play();
                self.slow = true;
                self.flash = 1;
                shrine.getComponent('Sprite').runAnimation(1, 3, 0.5)
@@ -92,21 +107,41 @@ var Level = Juicy.State.extend({
             console.warn(spawn);
          }
       }
-
-      // Create books
    },
    init: function() {
       var self = this;
       this.game.input.on('key', 'ESC', function() {
          self.game.setState(new Pause(self));
       });
+      this.music.play()
+         .loop()
+   },
+   shake: function(time, strength) {
+      this._shake = {
+         strength: strength || 5,
+         time: time || 0.3
+      };
    },
    addObject: function(obj) {
       this.objects.push(obj);
    },
    update: function(dt, input) {
+      if (!this.levelTiles.imagesLoaded()) {
+         return;
+      }
       if (this.slow)
          dt /= 3;
+
+      if (this._shake && this._shake.time > 0) {
+         console.log(Math.sin(this._shake.time * 6));
+         this.game.canvas.style.left = (this._shake.strength * Math.sin(this._shake.time * 64)) + 'px';
+
+         this._shake.time -= dt;
+
+         if (this._shake.time <= 0) {
+            this.game.canvas.style.left = '0px';
+         }
+      }
 
       if (this.flash) {
          this.flash -= dt;
@@ -175,6 +210,9 @@ var Level = Juicy.State.extend({
       return this.paused;
    },
    render: function(context) {
+      if (!this.levelTiles.imagesLoaded()) {
+         return;
+      }
       context.save();
       var sc = this.tilesize;
       context.scale(sc, sc);

@@ -21,35 +21,25 @@
 </script>
 
    <link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
-   <style>
-   /* following code make sure user won't see selection in the app */
-   body, canvas, div {
-      -moz-user-select: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
-      -khtml-user-select: none;
-      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-   }
-   /* default styles for body */
-   body, html {
-      padding:0;
-      margin: 0;
-      background: #666;
-      height: 100%;
-      width: 100%;
-   }
-   canvas, #game-canvas {
-      background: #000;
-   }
-   </style>
+   <link href='style.css' rel='stylesheet' type='text/css'>
+   <link href='css/font-awesome.css' rel='stylesheet' type='text/css'>
 </head>
 <body>
 
    <!-- Main stage for rendering game scenes -->
-   <canvas id="game-canvas"></canvas>
+   <div id="machine">
+      <div id="screen">
+         <canvas id="game-canvas"></canvas>
+      </div>
+
+      <div id="controls">
+         <button id="mute"><i class="fa fa-volume-off"></i></button>
+      </div>
+   </div>
 
    <!-- Libraries -->
    <script src="src/engine/juicy.js"></script>
+   <script src="src/engine/lib/buzz.js"></script>
    <script src="src/engine/lib/SAT.js"></script>
    <script src="src/engine/lib/sound.js"></script>
    <script src="src/entities/booklet.js"></script>
@@ -75,7 +65,7 @@
    <script src="src/scenes/title_screen.js"></script>
    <script src="src/scenes/level.js"></script>
 
-   <!-- main.js loads everything it needs -->
+   <script src="src/sound_manager.js"></script>
    <script src="main.js"></script>
 
    <script src="http://elliotfiske.com/bonald.js"></script>

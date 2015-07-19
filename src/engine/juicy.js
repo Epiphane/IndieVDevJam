@@ -69,8 +69,8 @@
 
    Game.prototype.getCanvasCoords = function(evt) {
       var canvasRect = this.canvas.getBoundingClientRect();
-      var mx = evt.x || evt.clientX - canvasRect.left;
-      var my = evt.y || evt.clientY - canvasRect.top;
+      var mx = (evt.x || evt.clientX) - canvasRect.left;
+      var my = (evt.y || evt.clientY) - canvasRect.top;
 
       return {
          x: Math.floor(mx * this.width /  this.canvas.width), 
@@ -389,6 +389,8 @@
       this.keyState = {};
       this.keyCallbacks = {};
 
+      this.eventListeners = {};
+
       // Reverse of KEYS
       this.CODES = {};
       for (var key in keys) {
@@ -402,6 +404,10 @@
 
    Input.prototype.clear = function() {
       this.keyCallbacks = {};
+
+      for (var key in this.eventListeners) {
+           
+      }
    }
 
    Input.prototype.setKeys = function(keys) {

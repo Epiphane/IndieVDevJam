@@ -1,10 +1,17 @@
 Juicy.Component.create('Booklet', {
-   constructor: function() {
-      this.dx = 0;
-      this.life = 2;
-   },
+    constructor: function() {
+        this.dx = 0;
+        this.life = 2;
+        this.hitSound = newBuzzSound( "audio/fx_bookhit", {
+            formats: [ "wav"]
+        });
+    },
 
-  
+    setPowers: function(powers) {
+        this.powers = powers;
+
+        this.entity.getComponent('Box').fillStyle = Powerup.getColor(powers);
+    },
 
     deathParticles: function(posX, neg) {
         var self = this;
@@ -34,65 +41,66 @@ Juicy.Component.create('Booklet', {
         });
     },
 
-   update: function(dt, input) {
-      var tileManager = this.entity.scene.tileManager.getComponent('LevelTiles');
+    update: function(dt, input) {
+        var tileManager = this.entity.scene.tileManager.getComponent('LevelTiles');
 
-      var transform = this.entity.transform;
+        var transform = this.entity.transform;
 
-      var ray;
-      if (this.dx > 0) {
-         // Moving right
-         var top = tileManager.raycast(transform.position.x + transform.width, transform.position.y, this.dx * dt, 0);
-         var bot = tileManager.raycast(transform.position.x + transform.width, transform.position.y + transform.height, this.dx * dt, 0);
+        var ray;
+        if (this.dx > 0) {
+            // Moving right
+            var top = tileManager.raycast(transform.position.x + transform.width, transform.position.y, this.dx * dt, 0);
+            var bot = tileManager.raycast(transform.position.x + transform.width, transform.position.y + transform.height, this.dx * dt, 0);
 
-         if (Math.abs(top.dx) > Math.abs(bot.dx)) ray = bot;
-         else ray = top;
-      }
-      else {
-         // Moving left
-         var top = tileManager.raycast(transform.position.x, transform.position.y, this.dx * dt, 0);
-         var bot = tileManager.raycast(transform.position.x, transform.position.y + transform.height, this.dx * dt, 0);
-      
-         if (Math.abs(top.dx) > Math.abs(bot.dx)) ray = bot;
-         else ray = top;
-      }
-      transform.position.x += ray.dx;
+            if (Math.abs(top.dx) > Math.abs(bot.dx)) ray = bot;
+            else ray = top;
+        }
+        else {
+            // Moving left
+            var top = tileManager.raycast(transform.position.x, transform.position.y, this.dx * dt, 0);
+            var bot = tileManager.raycast(transform.position.x, transform.position.y + transform.height, this.dx * dt, 0);
+            if (Math.abs(top.dx) > Math.abs(bot.dx)) ray = bot;
+            else ray = top;
+        }
+        transform.position.x += ray.dx;
 
-      this.life -= dt;
-      if (Math.abs(ray.dx) < 0.1 || this.life < 0) {
-         if (this.dx < 0) {
-            this.deathParticles(this.entity.transform.position.x - ray.dx, true);//-ray.dx);   
-         }
-         else {
-            this.deathParticles(this.entity.transform.position.x + 0.8, false);      
-         }
-            
-         this.entity.dead = true;
-         return;
-      }
-
-      var enemies = this.entity.scene.enemies;
-      for (var i = 0; i < enemies.length; i ++) {
-         if (this.entity.transform.testCollision(enemies[i].transform)) {
-            enemies[i].getComponent('Enemy').health -= 30;
-            
+        this.life -= dt;
+        if (Math.abs(ray.dx) < 0.1 || this.life < 0) {
+            if (this.dx < 0) {
+                this.deathParticles(this.entity.transform.position.x - ray.dx, true);//-ray.dx);   
+            }
+            else {
+                this.deathParticles(this.entity.transform.position.x + 0.8, false);      
+            }
             this.entity.dead = true;
             return;
-         }
-      }
+        }
 
-      var objects = this.entity.scene.objects;
-      for (var i = 0; i < objects.length; i ++) {
-         if (this.entity !== objects[i] && this.entity.transform.testCollision(objects[i].transform)) {
-            if (objects[i].getComponent('Destructible')) {
-                objects[i].getComponent('Destructible').health -= 30;
+        var enemies = this.entity.scene.enemies;
+        for (var i = 0; i < enemies.length; i ++) {
+            if (this.entity.transform.testCollision(enemies[i].transform)) {
                 
-                this.deathParticles(objects[i].transform.width, this.dx < 0);
-                
+                this.deathParticles(enemies[i].transform.width, this.dx < 0);
+            
+                enemies[i].getComponent('Enemy').health -= 30;
+                this.hitSound.play();
                 this.entity.dead = true;
                 return;
             }
-         }
-      }
-   }
+        }
+
+        var objects = this.entity.scene.objects;
+        for (var i = 0; i < objects.length; i ++) {
+            if (this.entity !== objects[i] && this.entity.transform.testCollision(objects[i].transform)) {
+                if (objects[i].getComponent('Destructible')) {
+                    objects[i].getComponent('Destructible').health -= 30;
+
+                    this.deathParticles(objects[i].transform.width);
+                    this.hitSound.play();
+                    this.entity.dead = true;
+                    return;
+                }
+            }
+        }
+    }
 });

@@ -5,7 +5,9 @@ constructor: function() {
       this.pic.transform.position.x = GAME_WIDTH/2;
       this.pic.transform.position.y = GAME_HEIGHT/2;
       this.pic.getComponent('Image').setImage('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSxLS2z0JOP62RuEwe2WPgsRmy-n6oPyeqIl0kWWfosylUBDDXL6FEVfACx'); 
-
+      this.music = newBuzzSound( "audio/music_spellbound", {
+         formats: [ "mp3"]
+      });
 	// TODO: button graphic or something
 
    },
@@ -16,6 +18,8 @@ constructor: function() {
    // You can start referencing this.game at this point
    init: function() {
       var self = this;
+
+      this.music.play().loop();
 
       this.game.input.on('mousemove', function(evt) {
 	 var mouse = self.game.getCanvasCoords(evt);

@@ -3,6 +3,16 @@ Juicy.Component.create('Player', {
       this.direction = 1;
       this.firingRate = 0.1;
       this.cooldown = 0;
+      this.doingRecoil = false;
+      this.jumpSound = newBuzzSound( "audio/fx_jump", {
+         formats: [ "wav"]
+      });
+      this.hitSound = newBuzzSound( "audio/fx_playerdmg", {
+         formats: [ "wav"]
+      });
+      this.powerupSound = newBuzzSound( "audio/fx_powerup", {
+         formats: [ "wav"]
+      });
 
       this.powerups = {};
    },
@@ -34,7 +44,7 @@ Juicy.Component.create('Player', {
    throwBook: function() {
       var booklet = new Booklet(this.entity.scene);
       booklet.transform.position.x = this.entity.transform.position.x;
-      booklet.transform.position.y = this.entity.transform.position.y + (this.entity.transform.height - booklet.transform.height) / 2;
+      booklet.transform.position.y = this.entity.transform.position.y + 0.1;
 
       var powers = Object.keys(this.powerups);
       for (var i = 0; i < powers.length; i ++) {
@@ -45,7 +55,7 @@ Juicy.Component.create('Player', {
 
       var comp = booklet.getComponent('Booklet');
       comp.dx = this.direction * 100;
-//       comp.setPowers(powers);
+      comp.setPowers(powers);
 
       this.entity.scene.addObject(booklet);
 
@@ -58,21 +68,32 @@ Juicy.Component.create('Player', {
       if (!physics)
          return;
       
-      physics.dx = 0;
       physics.dy += 240 * dt;
 
-      if (input.keyDown('UP')) {
-         physics.jump();
+      if (!this.doingRecoil)
+      {
+         physics.dx = 0;
+         if (input.keyDown('UP')) {
+            if (physics.onGround) {
+               this.jumpSound.play();
+            }
+            physics.jump();
+         }
+         if (input.keyDown('LEFT')) {
+            physics.dx = -speed;
+         }  
+         if (input.keyDown('RIGHT')) {
+            physics.dx = speed;
+         }
+         
+         if (physics.dx !== 0)
+            this.direction = physics.dx > 0 ? 1 : -1;
       }
-      if (input.keyDown('LEFT')) {
-         physics.dx = -speed;
+      else {
+         if (physics.onGround) {
+            this.doingRecoil = false;
+         }
       }
-      if (input.keyDown('RIGHT')) {
-         physics.dx = speed;
-      }
-
-      if (physics.dx !== 0)
-         this.direction = physics.dx > 0 ? 1 : -1;
    
       if (this.cooldown > 0)
          this.cooldown -= dt;
@@ -94,9 +115,23 @@ Juicy.Component.create('Player', {
             var powerup = object.getComponent('Powerup');
             if (powerup) {
                this.setPowerup(powerup.power, powerup.mana);
-
+               this.powerupSound.play();
                objects[i].dead = true;
             }
+         }
+      }
+
+      var enemies = this.entity.scene.enemies;
+      for (var i = 0; i < enemies.length; i++) {
+         var enemy = enemies[i];
+
+         if (this.entity.transform.testCollision(enemy.transform)) {
+            // Collided with enemy, have slight bouceback
+            physics.bounceBack(enemy.transform.position.x, this.entity.transform.position.x, 1.0);
+            this.hitSound.play();
+            this.doingRecoil = true;
+
+            this.entity.scene.shake();
          }
       }
    }

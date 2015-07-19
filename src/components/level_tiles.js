@@ -11,7 +11,27 @@ Juicy.Component.create('LevelTiles', {
    BOOK: '%',
    PLAYER: '^',
    SHRINE: '&',
+   SPIKE: 'M',
+   HEART: 'H',
    SPAWNABLE: /%|E|\^|&/,
+   constructor: function() {
+      this.loadImages();
+   },
+   
+   imagesLoaded: function() {
+      if(
+         this.tile1rdy &&
+         this.tile2rdy &&
+         this.bgRdy &&
+         this.spikeRdy &&
+         this.heartRdy
+      ) {
+         return true;
+      }
+      
+      return false;
+   },
+   
    getTile: function(x, y) {
       var sector_x = Math.floor(x / this.SECTION_WIDTH);
       var sector_y = Math.floor(y / this.SECTION_HEIGHT);
@@ -128,23 +148,7 @@ Juicy.Component.create('LevelTiles', {
       };
    },
    render: function(context, x, y, w, h) {
-      x = Math.floor(x);
-      y = Math.floor(y);
-      w = Math.ceil(w);
-      h = Math.ceil(h);
-
-      for (var i = x; i <= x + w && i < this.width; i ++) {
-         for (var j = y; j <= y + h && j < this.height; j ++) {
-            if (this.getTile(i, j) === this.PLATFORM) {
-               context.fillStyle = 'blue';
-               context.fillRect(i, j, 1, 1);
-            }
-            if (this.getTile(i, j) === this.WALL) {
-               context.fillStyle = 'green';
-               context.fillRect(i, j, 1, 1);
-            }
-         }
-      }
+      context.drawImage(this.imageCanvas, 0, 0, this.width, this.height);
    },
    build: function(width, height) {
       var limitedUses = {
@@ -156,6 +160,9 @@ Juicy.Component.create('LevelTiles', {
       this.tiles = []; // Array of room configurations
       this.width = width * this.SECTION_WIDTH;
       this.height = height * this.SECTION_HEIGHT;
+      
+      this.imageCanvas.width = this.width * 20;
+      this.imageCanvas.height = this.height * 20;
 
       this.spawns = [];
 
@@ -215,6 +222,66 @@ Juicy.Component.create('LevelTiles', {
          }
       }
    },
+   
+   renderCanvas: function() {
+      if(!this.imagesLoaded()) {
+         return;
+      }
+      
+      var context = this.imageCanvas.getContext('2d');
+      
+      // background image!
+      context.drawImage(this.bg, 0, 0);
+      
+      // tiles!
+      
+      x = 0;
+      y = 0;
+      w = 40;
+      h = 30;
+
+      for (var i = x; i < this.width; i ++) {
+         for (var j = y; j < this.height; j ++) {
+            switch (this.getTile(i, j)) {
+               case this.PLATFORM:
+                  this.renderNormalTile(context, i * 20, j * 20, 20, 20);
+                  break;
+               case this.WALL:
+                  this.renderNormalTile(context, i * 20, j * 20, 20, 20);
+                  break;
+               case this.SPIKE:
+                  this.renderSpike(context, i * 20, j * 20, 20, 20);
+                  break;
+               case this.HEART:
+                  this.renderHeart(context, i * 20, j * 20, 20, 20);
+                  break;
+            }
+         }
+      }
+   },
+   
+   renderNormalTile: function(context, x, y, width, height) {
+      var rand = Math.floor((Math.random() * 9) + 1);
+      var img;
+      switch (rand) {
+         case 1: 
+            img = this.tileImg2;
+            break;
+         default:
+            img = this.tileImg;
+            break;
+      }
+      context.drawImage(img, x, y, width, height);
+   },
+   
+   renderSpike: function(context, x, y, width, height) {
+      context.drawImage(this.spikeImg, x, y, width, height);
+   },
+   
+   renderHeart: function(context, x, y, width, height) {
+      context.drawImage(this.heartImg, x, y, width, height);
+   },
+   
    parse: function(config, leftWall, rightWall, bottomWall) {
       if (config.length !== this.SECTION_HEIGHT * this.SECTION_WIDTH)
          throw "Section length is not the right size.";
@@ -256,20 +323,20 @@ Juicy.Component.create('LevelTiles', {
            + '-----------                             '
            + '------ ---                              '
            + '-----------                             '
-           + '--  ------                              '
+           + '--  ------M                             '
            + '-- --------                    E E      '
-           + '------ ------                           '
+           + '------ ------M                          '
            + '-----  -------            --------------'
            + '----------                              '
            + '                                        '
            + '                                        '
            + '                                        '
            + '--------                                '
-           + '-----                                   ',
+           + '-----         MMMMM                     ',
       treasure: 'X-------------------' + '---------------     '
               + 'X                  -' + '        ------X     '
               + 'X                  -' + '          --- X     '
-              + '                   -' + '              X     '
+              + '          H        -' + '              X     '
               + '          --       -' + '             -X     '
               + '          --       -' + '              X     '
               + '                   -' + '              X     '
@@ -288,14 +355,14 @@ Juicy.Component.create('LevelTiles', {
               + 'X                   ' + '                   X'
               + 'X                   ' + '                   X'
               + 'X                   ' + '          -        X'
-              + 'X                   ' + '                   X'
+              + 'X        M          ' + '                   X'
               + 'X      -----     -  ' + '   --              X'
               + 'X                   ' + '                   X'
               + 'X                   ' + '                   X'
               + 'X                   ' + '                    '
               + 'X                   ' + '                    '
               + 'X                   ' + '                    '
-              + 'X    % % % % % %    ' + '                    '
+              + 'X M  % % % % % %  M ' + '                    '
               + 'X-------------------' + '-------------------X',
       room1:    '-----               ' + '                    '
               + '-----               ' + '                    '
@@ -359,5 +426,47 @@ Juicy.Component.create('LevelTiles', {
               + '  XXX    E      ----' + '-----    E   XXX    '
               + '  XXX         ------' + '------       XXX    '
               + '--------------------' + '--------------------'
+   },
+   
+   // hidden down here so you dont have to see my sloppy code :)
+   loadImages: function() {
+      var self = this;
+      
+      this.tileImg = new Image();
+      this.tileImg.src = 'img/tile.png';
+      this.tileImg.onload = function() {
+         self.tile1rdy = true;
+         self.renderCanvas();
+      }
+      
+      this.tileImg2 = new Image();
+      this.tileImg2.src = 'img/tile2.png';
+      this.tileImg2.onload = function() {
+         self.tile2rdy = true;
+         self.renderCanvas();
+      };
+      
+      this.bg = new Image();
+      this.bg.src = 'img/bg.png';
+      this.bg.onload = function() {
+         self.bgRdy = true;
+         self.renderCanvas();
+      }
+      
+      this.spikeImg = new Image();
+      this.spikeImg.src = 'img/spike.png';
+      this.spikeImg.onload = function() {
+         self.spikeRdy = true;
+         self.renderCanvas();
+      }
+      
+      this.heartImg = new Image();
+      this.heartImg.src = 'img/heart.png';
+      this.heartImg.onload = function() {
+         self.heartRdy = true;
+         self.renderCanvas();
+      }
+      
+      this.imageCanvas = document.createElement('canvas');
    }
 });
