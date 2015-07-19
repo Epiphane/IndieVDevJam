@@ -519,6 +519,9 @@
       constructor: function(entity) {
          var self = this;
 
+         this.tint = false;
+         this.tintOverlay = document.createElement('canvas');
+
          this.image = new Image();
          this.image.onload = function() {
             if (!entity.transform.width || !entity.transform.height) {
@@ -528,25 +531,57 @@
 
             entity.scene.updated = true;
 
+            if (self.tint) {
+               self.applyTint();
+            }
+
             if (self.onload)
                self.onload(this);
          }
 
          entity.setImage = this.setImage.bind(this);
       },
-      setImage: function(url) {
-         this.image.src = url;
+      setTint: function(tint) {
+         this.tint = tint;
+
+         if (this.image.complete) {
+            this.applyTint();
+         }
 
          return this;
       },
+      setImage: function(url, tint) {
+         this.image.src = url;
+         this.tint = tint || this.tint;
+
+         return this;
+      },
+      applyTint: function() {
+         // Create an offscreen buffer
+         this.tintOverlay.width = this.image.width;
+         this.tintOverlay.height = this.image.height;
+
+         var context = this.tintOverlay.getContext('2d');
+
+         // Fill offscreen buffer with tint color
+         context.fillStyle = this.tint;
+         context.fillRect(0, 0, this.image.width, this.image.height);
+      
+         // destination atop makes a result with an alpha channel identical to fg,
+         // but with all pixels retaining their original color *as far as I can tell*
+         context.globalCompositeOperation = "destination-atop";
+         context.globalAlpha = 0.75;
+         context.drawImage(this.image, 0, 0);
+         context.globalAlpha = 1;
+      },
       render: function(context) {
          arguments[0] = this.image;
-
-	
-	 context.save();
-
          context.drawImage.apply(context, arguments);
-	 context.restore();
+
+         if (this.tint) {
+            arguments[0] = this.tintOverlay;
+            context.drawImage.apply(context, arguments);
+         }
       }
    });
 

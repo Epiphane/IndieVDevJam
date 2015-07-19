@@ -20,8 +20,6 @@ Juicy.Component.create('Physics', {
             if (animator) {
                 animator.play(xScaleAnimation(0.4, 1.0, 0.5, 0.2), "horizontal_squish");
             }
-            
-         ga('send', 'event', 'player', 'jump', 'non-upgraded');
 
          var self = this;
 
@@ -104,29 +102,7 @@ Juicy.Component.create('Physics', {
           var upgrades = this.entity.getComponent('Upgrades');
             if (this.onGround == false && upgrades) {
                if (upgrades.heavy) {
-                      var self = this;
-
-                      this.entity.scene.particles.getComponent('ParticleManager').spawnParticles("0, 255, 0, ", 0.3, 8, function(particle, ndx) {
-                          return 0;
-                      },
-                       function(particle) {
-                          particle.x = self.entity.transform.position.x + self.entity.transform.width/2;
-                          particle.y = self.entity.transform.position.y + self.entity.transform.height;
-                          particle.dx = Math.random() * 50 - 25;
-                          particle.startLife = 30;
-                          particle.life = particle.startLife;
-                      }, function(particle) {
-                          particle.x += particle.dx * 0.01;
-                          particle.dx *= 0.9;
-
-                          if (particle.life > particle.startLife) {
-                              particle.alpha = 1;
-                          }
-                          else {
-                              particle.alpha = particle.life / particle.startLife;
-                          }
-                      });
-                    
+                     this.doImpactParticles();
             }
          }
 
@@ -175,6 +151,30 @@ Juicy.Component.create('Physics', {
      ga('send', 'event', 'player', 'touched-enemy', 'non-upgraded');
   },
 
+   doImpactParticles: function() {
+        var self = this;
+
+        this.entity.scene.particles.getComponent('ParticleManager').spawnParticles("0, 255, 0, ", 0.3, 8, function(particle, ndx) {
+            return 0;
+        },
+         function(particle) {
+            particle.x = self.entity.transform.position.x + self.entity.transform.width/2;
+            particle.y = self.entity.transform.position.y + self.entity.transform.height;
+            particle.dx = Math.random() * 50 - 25;
+            particle.startLife = 30;
+            particle.life = particle.startLife;
+        }, function(particle) {
+            particle.x += particle.dx * 0.01;
+            particle.dx *= 0.9;
+ 
+            if (particle.life > particle.startLife) {
+                particle.alpha = 1;
+            }
+            else {
+                particle.alpha = particle.life / particle.startLife;
+            }
+       });
+   },
 
    render: function(context) {}
 });
