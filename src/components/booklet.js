@@ -108,7 +108,7 @@ Juicy.Component.create('Booklet', {
         }
         else {
             if (this.dx < 0) {
-                this.deathParticles(this.entity.transform.position.x - ray.dx, true);//-ray.dx);   
+                this.deathParticles(this.entity.transform.position.x, true);//-ray.dx);   
             }
             else {
                 this.deathParticles(this.entity.transform.position.x + 0.8, false);      

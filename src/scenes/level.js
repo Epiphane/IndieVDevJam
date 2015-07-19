@@ -1,7 +1,7 @@
 var Level = Juicy.State.extend({
    tilesize: 20,
    constructor: function() {
-      this.player = new Juicy.Entity(this, ['Box', 'Player', 'Physics', 'Animations', 'Score', 'Upgrades']);
+      this.player = new Juicy.Entity(this, ['Sprite', 'Player', 'Physics', 'Animations', 'Score', 'Upgrades']);
       this.gui = new Juicy.Entity(this, ['GUI', 'Animations']);
       this.player.getComponent('Score').setGui(this.gui.getComponent('GUI'));
       var name = 'lol name here'; // set the name from a textbox before the game or some shiiiii
@@ -9,7 +9,7 @@ var Level = Juicy.State.extend({
       this.player.transform.width = 1.4;
       this.player.transform.height = 1.8;
 
-      this.player.getComponent('Box').fillStyle = 'green';
+      this.player.getComponent('Sprite').setSheet('./img/shrine.png', 256, 512);
 
       this.objects = [];
       this.enemies = [];
