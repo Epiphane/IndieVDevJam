@@ -139,14 +139,14 @@ Juicy.Component.create('Physics', {
    },
 
    bounceBack: function(senderX, receiverX, scale) {
-     this.dy = -20 * scale;
+     this.dy = -30 * scale;
      if (senderX > receiverX) {
         // Launch receiver left
-        this.dx = -200 * scale;
+        this.dx = -20 * scale;
      }
      else {
         // Launch receiver right
-        this.dx = 200 * scale;
+        this.dx = 20 * scale;
      }
      ga('send', 'event', 'player', 'touched-enemy', 'non-upgraded');
   },

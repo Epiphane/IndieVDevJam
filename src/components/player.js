@@ -59,11 +59,11 @@ Juicy.Component.create('Player', {
       if (!physics)
          return;
       
-      physics.dx = 0;
       physics.dy += 240 * dt;
 
       if (!this.doingRecoil)
       {
+         physics.dx = 0;
          if (input.keyDown('UP')) {
             physics.jump();
          }
@@ -75,7 +75,9 @@ Juicy.Component.create('Player', {
          }
       }
       else {
-         this.entity.update(dt, 'Physics');
+         if (physics.onGround) {
+            this.doingRecoil = false;
+         }
       }
 
       if (physics.dx !== 0)
@@ -116,10 +118,6 @@ Juicy.Component.create('Player', {
             physics.bounceBack(enemy.transform.position.x, this.entity.transform.position.x, 1.0);
             this.doingRecoil = true;
          }
-      }
-
-      if (physics.onGround) {
-         this.doingRecoil = false;
       }
    }
 });
