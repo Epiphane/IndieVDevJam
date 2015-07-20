@@ -2,8 +2,8 @@ Juicy.Component.create('Enemy', {
    constructor: function() {
       this.direction = 1;
 
-      this.health = 100;
-      this.speed = 8;
+      this.health = 75;
+      this.speed = 7;
       this.slow = 0;
 
       this.doingRecoil = false;

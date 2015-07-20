@@ -146,6 +146,15 @@ Juicy.Component.create('Player', {
          this.hide = Math.floor(this.invincible * 10) % 2 === 1;
       }
       else {
+         if (physics.touchingSpike) {
+            this.takeDamage(1);
+            this.bounceBack({
+               transform: {
+                  position: { x: this.entity.transform.position.x - this.direction }
+               }
+            });
+         }
+         
          var enemies = this.entity.scene.enemies;
          for (var i = 0; i < enemies.length; i++) {
             var enemy = enemies[i];

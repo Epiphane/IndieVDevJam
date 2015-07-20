@@ -1,21 +1,25 @@
 var Level = Juicy.State.extend({
    tilesize: 20,
-   constructor: function(player) {
+   constructor: function(player, levelNum) {
+      this.levelNum = levelNum || 1;
+      this.maxLevels = 4;
       this.gui = new Juicy.Entity(this, ['GUI', 'Animations']);
       if (player) {
          this.player = player;
+
          this.player.scene = this;
          this.player.getComponent('Score').setGui(this.gui.getComponent('GUI'));
       }
       else {
          this.player = new Juicy.Entity(this, ['Sprite', 'Player', 'Physics', 'Animations', 'Score', 'Upgrades']);
 
-         var name = 'lol name here'; // set the name from a textbox before the game or some shiiiii
          this.player.getComponent('Score').setGui(this.gui.getComponent('GUI'));
          this.player.getComponent('Score').setName(name);
          this.player.transform.width = 1.4;
          this.player.transform.height = 1.8;
       }
+
+      var name = window.name; // set the name from a textbox before the game or some shiiiii
 
       this.player.getComponent('Sprite').setSheet('./art/wizz-sheet.png', 21 * 3, 31 * 3);
       this.player.getComponent('Sprite').scale = 1.5;
@@ -40,11 +44,12 @@ var Level = Juicy.State.extend({
 
       this.tileManager = new Juicy.Entity(this, ['LevelTiles']);
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
-      this.levelTiles.build(2, 1);
+      this.levelTiles.build(2+this.levelNum, 1+this.levelNum);
 
       var songs = [newBuzzSound("audio/music_footnote",{formats: [ "mp3"]}),
                    newBuzzSound( "audio/music_burning_books",{formats: [ "mp3"]}),
                    newBuzzSound( "audio/music_quickdraw",{formats: [ "mp3"]})];
+
       this.shrineDeathSound = newBuzzSound( "audio/fx_explode", {
          formats: [ "wav"]
       });
@@ -82,6 +87,10 @@ var Level = Juicy.State.extend({
             enemy.transform.position.y = spawn.y;
             enemy.transform.position.x = spawn.x;
             enemy.transform.height = 1.8;
+            // Enemy health and speed based on level
+            enemy.getComponent('Enemy').health += (25 * this.levelNum);
+            enemy.getComponent('Enemy').speed += this.levelNum;
+
             if (Juicy.rand(2) === 1) {
                enemy.getComponent('Enemy').direction = 1;
             }
@@ -139,8 +148,7 @@ var Level = Juicy.State.extend({
       this.game.input.on('key', 'ESC', function() {
          self.game.setState(new Pause(self));
       });
-      this.music.play()
-         .loop();
+      this.music.play().loop();
 
       this.player.getComponent('Player').updateGUI();
    },
@@ -172,16 +180,22 @@ var Level = Juicy.State.extend({
 
       if (this.flash !== false) {
          if (this.flash > -1.5 && this.flash - dt <= -1.5) {
-            TransitionManager.toShop();
+            // If on level 10, end game
+            if (this.levelNum === this.maxLevels) {
+               this.game.setState(new GameOverScreen(this.player));
+            }
+            else {
+               TransitionManager.toShop();
 
-            this.game.setCanvas(ShopCanvas);
-            this.game.setState(new UpgradeScreen(this.player));
-      ga('send', 'pageview', 'upgradescreen', 'Upgrade Screen');
-            this.game.pause();
+               this.game.setCanvas(ShopCanvas);
+               this.game.setState(new UpgradeScreen(this.player, this.levelNum));
+               this.game.pause();
+               ga('send', 'pageview', 'upgradescreen', 'Upgrade Screen');
 
-            var self = this;
-            TransitionManager.onComplete = function() {
-               self.game.run();
+               var self = this;
+               TransitionManager.onComplete = function() {
+                  self.game.run();
+               }
             }
          }
 
