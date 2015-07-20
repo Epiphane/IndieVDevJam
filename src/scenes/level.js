@@ -43,6 +43,9 @@ var Level = Juicy.State.extend({
       var songs = [newBuzzSound("audio/music_footnote",{formats: [ "mp3"]}),
                    newBuzzSound( "audio/music_burning_books",{formats: [ "mp3"]}),
                    newBuzzSound( "audio/music_quickdraw",{formats: [ "mp3"]})];
+      this.shrineDeathSound = newBuzzSound( "audio/fx_explode", {
+         formats: [ "wav"]
+      });
 
       this.music = songs[Juicy.rand(3)];
 
