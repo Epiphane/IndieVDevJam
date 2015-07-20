@@ -20,7 +20,7 @@ Juicy.Component.create('Player', {
       this.health = 4;
       this.maxhealth = 4;
 
-      this.speed = 10;
+      this.speed = 14;
       this.damage = 30;
    },
    takeDamage: function(damage) {
@@ -86,7 +86,7 @@ Juicy.Component.create('Player', {
       if (!physics)
          return;
 
-      if (true) {
+      if (this.aura) {
         var enemies = this.entity.scene.enemies;
         for (var i = 0; i < enemies.length; i ++) {
             if (this.entity.transform.distanceTo(enemies[i].transform) < 20) {
