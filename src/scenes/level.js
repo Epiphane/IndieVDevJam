@@ -70,10 +70,12 @@ var Level = Juicy.State.extend({
             var enemy = new Juicy.Entity(this, ['Sprite', 'Enemy', 'PatrollingPhysics', 'Animations']);
 
 
-            enemy.getComponent('Sprite').setSheet('./art/wizz-sheet.png', 15*3, 20*3);
-            enemy.getComponent('Sprite').scale = 1.5;
+            enemy.getComponent('Sprite').setSheet('./art/enemy-sheet.png', 15, 20);
+            enemy.getComponent('Sprite').scale = 1;
             enemy.getComponent('Sprite').last_sprite = 3;
             enemy.getComponent('Sprite').repeat = true;
+            enemy.getComponent('Sprite').runAnimation(0,3,0.25,true);
+
       
 
             enemy.transform.width = 1.4;
