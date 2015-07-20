@@ -2,17 +2,26 @@
 var TitleScreen = Juicy.Scene.extend({
 constructor: function() {
         this.pic = new Juicy.Entity(this, ['Image', 'Button', 'Animations']);
-        this.pic.transform.position.x = GAME_WIDTH/2;
-        this.pic.transform.position.y = GAME_HEIGHT/2;
-        this.pic.getComponent('Image').setImage('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSxLS2z0JOP62RuEwe2WPgsRmy-n6oPyeqIl0kWWfosylUBDDXL6FEVfACx'); 
+        this.pic.transform.position.x = GAME_WIDTH/2 + 50;
+        this.pic.transform.position.y = GAME_HEIGHT/2 + 100;
+        this.pic.getComponent('Image').setImage('./img/button2.png'); 
         this.music = newBuzzSound( "audio/music_spellbound", {
             formats: [ "mp3"]
         });
+
+        this.bg = new Juicy.Entity(this, ['Image']);
+        this.bg.transform.width = GAME_WIDTH;
+        this.bg.transform.height = GAME_HEIGHT;
+        this.bg.getComponent('Image').setImage('./img/title.png');
         
         
 	//  TODO: button graphic or something
-    
+        var self = this;
         this.pic.getComponent('Button').action = function() {
+            self.pic.setImage('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSxLS2z0JOP62RuEwe2WPgsRmy-n6oPyeqIl0kWWfosylUBDDXL6FEVfACx');
+            self.pic.transform.width = 144;
+            self.pic.transform.height = 90;
+
             // This refers to the Button Component here
             this.entity.getComponent('Animations').abortAll();
     
@@ -55,6 +64,7 @@ constructor: function() {
     },
 
     render: function(context) {
+        this.bg.render(context);
         this.pic.render(context);
     }
 });

@@ -201,6 +201,8 @@ Juicy.Component.create('LevelTiles', {
                   sptype = 'player';
                if (cfg[spawn] === this.SHRINE)
                   sptype = 'shrine';
+               if (cfg[spawn] === this.HEART)
+                  sptype = 'heart';
 
                this.spawns.push({
                   type: sptype,
@@ -362,7 +364,7 @@ Juicy.Component.create('LevelTiles', {
               + 'X                   ' + '                    '
               + 'X                   ' + '                    '
               + 'X                   ' + '                    '
-              + 'X M  % % % % % %  M ' + '                    '
+              + 'X M               M ' + '                    '
               + 'X-------------------' + '-------------------X',
       room1:    '-----               ' + '                    '
               + '-----               ' + '                    '

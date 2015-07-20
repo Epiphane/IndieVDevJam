@@ -113,6 +113,16 @@ var Level = Juicy.State.extend({
 
             this.objects.push(book);
          }
+         else if (spawn.type === 'heart') {
+            var heart = new Juicy.Entity(this, ['Image', 'Heart']);
+            heart.getComponent('Image').setImage('./img/heart.png');
+            heart.transform.width = 0.75;
+            heart.transform.height = 1;
+            heart.transform.position.y = spawn.y;
+            heart.transform.position.x = spawn.x;
+
+            this.objects.push(heart);
+         }
          else if (spawn.type === 'player') {
             this.player.transform.position.x = spawn.x;
             this.player.transform.position.y = spawn.y;
