@@ -4,6 +4,7 @@ Juicy.Component.create('Player', {
       this.firingRate = 0.1;
       this.cooldown = 0;
       this.doingRecoil = false;
+      this.invincible = 0;
       this.jumpSound = newBuzzSound( "audio/fx_jump", {
          formats: [ "wav"]
       });
@@ -15,9 +16,24 @@ Juicy.Component.create('Player', {
       });
 
       this.powerups = {};
+
+      this.health = 4;
+      this.maxhealth = 4;
+
+      this.speed = 10;
+      this.damage = 30;
    },
-   availablePowerups: function() {
-      return ['fire', 'ice', 'explosive'];
+   takeDamage: function(damage) {
+      damage = damage || 0.5;
+
+      this.health -= damage;
+      this.invincible = 2;
+
+      if (this.health <= 0) {
+         this.entity.dead = true;
+      }
+
+      this.updateGUI();
    },
    updateGUI: function() {
       var bars = [];
@@ -30,6 +46,7 @@ Juicy.Component.create('Player', {
       }
 
       this.entity.scene.gui.getComponent('GUI').setPowerBars(bars, Powerup.getColor(powers));
+      this.entity.scene.gui.getComponent('GUI').setHealth(this.health, this.maxhealth);
    },
    setPowerup: function(name, mana) {
       if (this.powerups[name] && this.powerups[name] >= mana) {
@@ -54,6 +71,7 @@ Juicy.Component.create('Player', {
       }
 
       var comp = booklet.getComponent('Booklet');
+      comp.damage = this.damage;
       comp.dx = this.direction * 100;
       comp.setPowers(powers);
 
@@ -62,7 +80,7 @@ Juicy.Component.create('Player', {
       this.updateGUI();
    },
    update: function(dt, input) {
-      var speed = 16;
+      var speed = this.speed;
 
       var physics = this.entity.getComponent('Physics');
       if (!physics)
@@ -81,9 +99,11 @@ Juicy.Component.create('Player', {
          }
          if (input.keyDown('LEFT')) {
             physics.dx = -speed;
+            this.entity.getComponent('Sprite').flipped = false;
          }  
          if (input.keyDown('RIGHT')) {
             physics.dx = speed;
+            this.entity.getComponent('Sprite').flipped = true;
          }
          
          if (physics.dx !== 0)
@@ -114,25 +134,34 @@ Juicy.Component.create('Player', {
             // Collided with this object. Test whether it matters
             var powerup = object.getComponent('Powerup');
             if (powerup) {
-               this.setPowerup(powerup.power, powerup.mana);
+               this.setPowerup(powerup.power, this.entity.getComponent('Upgrades').mana);
                this.powerupSound.play();
                objects[i].dead = true;
             }
          }
       }
 
-      var enemies = this.entity.scene.enemies;
-      for (var i = 0; i < enemies.length; i++) {
-         var enemy = enemies[i];
+      if (this.invincible > 0) {
+         this.invincible -= dt;
+         this.hide = Math.floor(this.invincible * 10) % 2 === 1;
+      }
+      else {
+         var enemies = this.entity.scene.enemies;
+         for (var i = 0; i < enemies.length; i++) {
+            var enemy = enemies[i];
 
-         if (this.entity.transform.testCollision(enemy.transform)) {
-            // Collided with enemy, have slight bouceback
-            this.bounceBack(enemy, this.entity.transform.position.x, 1.0);
-            this.hitSound.play();
+            if (this.entity.transform.testCollision(enemy.transform)) {
+               // Collided with enemy, have slight bouceback
+               this.bounceBack(enemy, this.entity.transform.position.x, 1.0);
+               this.hitSound.play();
+               this.takeDamage(0.5);
 
-            this.entity.scene.shake();
+               this.entity.scene.shake();
+            }
          }
       }
+
+      this.entity.getComponent('Sprite').advanceAnimation(physics.dx);
    },
 
    bounceBack: function(sender) {

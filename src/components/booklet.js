@@ -5,8 +5,6 @@ Juicy.Component.create('Booklet', {
         this.hitSound = newBuzzSound( "audio/fx_bookhit", {
             formats: [ "wav"]
         });
-    
-        this.damage = 30;
     },
 
     setPowers: function(powers) {
@@ -32,11 +30,13 @@ Juicy.Component.create('Booklet', {
             particle.dy = (Math.random() - 0.5) * 10;
             particle.startLife = 30;
             particle.life = particle.startLife;
-        }, function(particle) {
-            particle.x += particle.dx * 0.0003;
-            particle.y += particle.dy * 0.01;
+        }, function(particle,ndx,dt) {
+            particle.x += particle.dx * 0.0003;// * dt;
+            particle.y += particle.dy * 0.01;// * dt;
             particle.dx *= 0.9;
             particle.dy *= 0.9;
+
+//             console.log(dt);
 
             if (particle.life > particle.startLife) {
                 particle.alpha = 1;
@@ -115,7 +115,7 @@ Juicy.Component.create('Booklet', {
             }
         }
 
-        var damage = 30;
+        var damage = this.damage;
         if (this.hasPowerup('DAMAGE')) {
             damage += 15;
         }

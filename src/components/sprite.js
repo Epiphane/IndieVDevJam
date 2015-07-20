@@ -14,6 +14,11 @@ Juicy.Component.create('Sprite', {
     this.first_sprite = 0;
     this.last_sprite = 0;
 
+    this.scale = 1;
+    this.flipped = false;
+    this.nextFrame = 100;
+    this.maxNextFrame = 100;
+
     this.image = new Image();
     this.image.onload = function() {
         self.sheet_width   = this.width / self.sprite_width;
@@ -52,6 +57,18 @@ Juicy.Component.create('Sprite', {
 
         return this; // Enable chaining
     },
+
+    advanceAnimation: function(dt) {
+        this.nextFrame -= dt;
+
+        if (this.nextFrame < 0) {
+            this.nextFrame = this.maxNextFrame;
+            this.sprite ++;
+
+            this.goNextFrame();
+        }
+    },
+
     animating: function() {
         return (this.frametime >= 0 && (this.repeat || this.sprite <= this.last_sprite));
     },
@@ -60,28 +77,38 @@ Juicy.Component.create('Sprite', {
             this.timeleft -= dt;
 
             if (this.timeleft <= 0) {
-                this.sprite ++;
-
-                this.timeleft = this.frametime;
-
-                if (this.sprite > this.last_sprite) {
-                    if (this.repeat)
-                        this.sprite = this.first_sprite;
-                    else {
-                        this.sprite = this.last_sprite;
-                        this.frametime = -1;
-                        if (this.oncompleteanimation) 
-                            this.oncompleteanimation();
-                    }
-                }
+               this.goNextFrame();
             }
         }
     },
+
+    goNextFrame: function() {
+        this.sprite ++;
+
+        this.timeleft = this.frametime;
+
+        if (this.sprite > this.last_sprite) {
+            if (this.repeat)
+                this.sprite = this.first_sprite;
+            else {
+                this.sprite = this.last_sprite;
+                this.frametime = -1;
+                if (this.oncompleteanimation) 
+                    this.oncompleteanimation();
+            }
+        }
+    }, 
+
     render: function(context) {
         var animator = this.entity.getComponent('Animations');
         context.save();
         if (animator) {
             animator.transformCanvas(context);
+        }
+
+        if (this.flipped) {
+            context.translate(this.entity.transform.width, 0);
+            context.scale(-1, 1);
         }
 
         var sx = (this.sprite % this.sheet_width) * this.sprite_width;
@@ -92,8 +119,17 @@ Juicy.Component.create('Sprite', {
         var dwidth = arguments[7] || arguments[3] || this.entity.transform.width;
         var dheight = arguments[8] || arguments[4] || this.entity.transform.height;
 
-        context.drawImage(this.image, sx, sy, this.sprite_width, this.sprite_height,
+        var scaleAdjustX = (dwidth * this.scale - dwidth) / 2;
+        var scaleAdjustY = (dheight * this.scale - dheight) * 3;
+        
+        if (this.scale == 1) {
+             context.drawImage(this.image, sx, sy, this.sprite_width, this.sprite_height,
                                       dx, dy, dwidth, dheight);
+        }
+        else {
+            context.drawImage(this.image, sx - scaleAdjustX, sy - scaleAdjustY, this.sprite_width, this.sprite_height,
+                                      dx - 0.5, dy - scaleAdjustY/3 + 0.125, dwidth * this.scale, dheight * this.scale);            
+        }
         context.restore();
     }
 });
