@@ -19,6 +19,8 @@ var Level = Juicy.State.extend({
 
       this.player.getComponent('Sprite').setSheet('./art/wizz-sheet.png', 21 * 3, 31 * 3);
       this.player.getComponent('Sprite').scale = 1.5;
+      this.player.getComponent('Sprite').last_sprite = 3;
+      this.player.getComponent('Sprite').repeat = true;
       
 
       this.objects = [];
