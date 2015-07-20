@@ -45,7 +45,7 @@ var Level = Juicy.State.extend({
 
       this.tileManager = new Juicy.Entity(this, ['LevelTiles']);
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
-      this.levelTiles.build(2+this.levelNum, 1+this.levelNum);
+      this.levelTiles.build(1+this.levelNum, this.levelNum);
 
       var songs = [newBuzzSound("audio/music_footnote",{formats: [ "mp3"]}),
                    newBuzzSound( "audio/music_burning_books",{formats: [ "mp3"]}),
