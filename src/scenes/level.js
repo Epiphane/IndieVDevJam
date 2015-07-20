@@ -38,12 +38,11 @@ var Level = Juicy.State.extend({
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
       this.levelTiles.build(3, 2);
 
-      this.music = newBuzzSound( "audio/music_burning_books", {
-         formats: [ "mp3"]
-      });
-      this.shrineDeathSound = newBuzzSound( "audio/fx_shrine_ded", {
-         formats: [ "wav"]
-      });
+      var songs = [newBuzzSound("audio/music_footnote",{formats: [ "mp3"]}),
+                   newBuzzSound( "audio/music_burning_books",{formats: [ "mp3"]}),
+                   newBuzzSound( "audio/music_quickdraw",{formats: [ "mp3"]})];
+
+      this.music = songs[Juicy.rand(3)];
 
       // Screen Shaking
       this._shake = {
