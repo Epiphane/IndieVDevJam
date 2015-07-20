@@ -25,6 +25,9 @@ var GameCanvas = document.getElementById('game-canvas');
    var playButton = document.getElementById('go');
    playButton.addEventListener('click', startGame);
 
+   var guestButton = document.getElementById('guest');
+   guestButton.addEventListener('click', startGame);
+
    function startGame() {
       // storing it in window for now, YOLO
       window.name = document.getElementById('username').value;
