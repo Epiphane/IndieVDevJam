@@ -50,7 +50,7 @@ Juicy.Component.create('Upgrades', {
                 desc: "Jump",
                 desc2: "Higher",
                 get: function() {
-                    this.entity.getComponent('Physics').jumpPower = -90
+                    this.entity.getComponent('Physics').jumpPower -= 20;
                 }
             },
             {
