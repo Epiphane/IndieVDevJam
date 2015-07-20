@@ -26,6 +26,15 @@ Juicy.Component.create('ParticleManager', {
     },
 
     update: function(dt, input) {
+        // I don't trust that other dt, it's shady
+//         var nextTime = new Date().getTime();
+//         var updated  = false;
+//         var realDT = (nextTime - this.lastTime) / 1000;
+//         this.lastTime = nextTime;
+
+//         console.log("dt: " + dt + " realDT: " + realDT);
+        var realDT = dt;
+
         for (var i = this.pendingParticles.length - 1; i >= 0; i--) {
             var currParticle = this.pendingParticles[i];
             if (currParticle.timeToLive < 0) {
@@ -37,7 +46,7 @@ Juicy.Component.create('ParticleManager', {
 
         for (var i = this.particles.length - 1; i >= 0; i--) {
             if (this.particles[i]) {
-                this.updateFunction(this.particles[i], i);
+                this.updateFunction(this.particles[i], i, realDT);
                 this.particles[i].life--;
 
                 if (this.particles[i].life < 0) {
