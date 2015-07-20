@@ -5,8 +5,6 @@ Juicy.Component.create('Booklet', {
         this.hitSound = newBuzzSound( "audio/fx_bookhit", {
             formats: [ "wav"]
         });
-    
-        this.damage = 30;
     },
 
     setPowers: function(powers) {
@@ -115,7 +113,7 @@ Juicy.Component.create('Booklet', {
             }
         }
 
-        var damage = 30;
+        var damage = this.damage;
         if (this.hasPowerup('DAMAGE')) {
             damage += 15;
         }

@@ -11,14 +11,15 @@ var UpgradeScreen = Juicy.State.extend({
 
         var self = this;
         var createScroll = function(name, tint, waitTime, x) {
+            var info = upgrades.nextUpgrade(name);
+            if (!info) {
+                return false;
+            }
+
             var scroll = new Juicy.Entity(self, ['Image', 'UpgradeScroll']);
             scroll.transform.position.x = x;
-            if (name === 'magic')
-                scroll.getComponent('UpgradeScroll').setUpgradeInfo(upgrades.nextMagicUpgrade());
-            if (name === 'agility')
-                scroll.getComponent('UpgradeScroll').setUpgradeInfo(upgrades.nextAgilityUpgrade());
-            if (name === 'power')
-                scroll.getComponent('UpgradeScroll').setUpgradeInfo(upgrades.nextPowerUpgrade());
+
+            scroll.getComponent('UpgradeScroll').setUpgradeInfo(info);
             scroll.getComponent('UpgradeScroll').timeUntilDrop = waitTime;
             scroll.getComponent('Image').setImage('./img/upgrade_scroll.png');
             scroll.getComponent('Image').opacity = 0;
@@ -30,12 +31,7 @@ var UpgradeScreen = Juicy.State.extend({
             button.getComponent('Image').setImage('./img/button.png');
             button.getComponent('Button').action = function() {
                 // This refers to the Button Component here
-                if (name === 'magic')
-                    upgrades.getNextMagicUpgrade();
-                if (name === 'agility')
-                    upgrades.getNextAgilityUpgrade();
-                if (name === 'power')
-                    upgrades.getNextPowerUpgrade();
+                upgrades.getNextUpgrade(name);
 
                 fade = customFunctionAnimation(function() {
                     button.getComponent('Image').opacity = 1 - this.currTime;
@@ -73,22 +69,27 @@ var UpgradeScreen = Juicy.State.extend({
         this.game.setCanvas(ShopCanvas);
     },
     click: function(x, y) {
-        this.magic  .button.getComponent('Button').checkMouseClick(x, y);
-        this.agility.button.getComponent('Button').checkMouseClick(x, y);
-        this.power  .button.getComponent('Button').checkMouseClick(x, y);
+        if (this.magic) this.magic  .button.getComponent('Button').checkMouseClick(x, y);
+        if (this.agility) this.agility.button.getComponent('Button').checkMouseClick(x, y);
+        if (this.power) this.power  .button.getComponent('Button').checkMouseClick(x, y);
     },
     update: function(dt) {
-        this.magic  .scroll.update(dt);
-        this.agility.scroll.update(dt);
-        this.power  .scroll.update(dt);
-
-        this.magic  .button.update(dt);
-        this.agility.button.update(dt);
-        this.power  .button.update(dt);
+        if (this.magic) {
+            this.magic.scroll.update(dt);
+            this.magic.button.update(dt);
+        }
+        if (this.agility) {
+            this.agility.scroll.update(dt);
+            this.agility.button.update(dt);
+        }
+        if (this.power) {
+            this.power.scroll.update(dt);
+            this.power.button.update(dt);
+        }
     },
     render: function(context) {
-        this.magic  .scroll.render(context);
-        this.agility.scroll.render(context);
-        this.power  .scroll.render(context);
+        if (this.magic)   this.magic  .scroll.render(context);
+        if (this.agility) this.agility.scroll.render(context);
+        if (this.power)   this.power  .scroll.render(context);
     }
 });
