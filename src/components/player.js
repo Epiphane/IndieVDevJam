@@ -27,10 +27,13 @@ Juicy.Component.create('Player', {
       damage = damage || 0.5;
 
       this.health -= damage;
-      this.invincible = 2;
 
-      if (this.health <= 0) {
-         this.entity.dead = true;
+      if (damage >= 0) {
+         this.invincible = 2;
+
+         if (this.health <= 0) {
+            this.entity.dead = true;
+         }
       }
 
       this.updateGUI();
