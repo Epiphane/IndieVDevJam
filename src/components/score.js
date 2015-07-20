@@ -73,7 +73,6 @@ Juicy.Component.create('Score', {
 				amount += value;
 			}
 		}
-		
 		this.incrementScore(amount);
 		this.events_since_last_check.length = 0; // Boom, Roasted
 	},
@@ -101,14 +100,15 @@ Juicy.Component.create('Score', {
 	// will hit api
 	submitScore: function() {
 		var self = this;
-		// temp 
-		self.score = 100;
+		// we cached these in window on login lol
+		self.name = window.name;
+		self.token = window.token;
 		
 		GJAPI.request('scores/add', {
 			score: self.score,
 			sort: 1,
 			username: self.name,
-			user_token: self.user_token,
+			user_token: self.token,
 			extra_data: self.extra_data
 		}, function(data) {
 			console.log(data);

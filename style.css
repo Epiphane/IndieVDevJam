@@ -39,6 +39,30 @@ body, html {
 
   margin: 0 auto;
 }
+
+#player-info {
+   position: relative;
+   top: -350px;
+}
+
+#player-info input, #player-info button {
+   display: block;
+   margin: auto;
+   margin-bottom: 10px;
+   padding: 10px;
+}
+
+#player-info button {
+   padding: 10px 20px;
+}
+
+#warning {
+   font-family: sans-serif;
+   color: #ccc;
+   text-align: center;
+   font-size: 16px;
+   margin-top: 150px;
+}
 .screen {
   width: 800px;
   height: 600px;
