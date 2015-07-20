@@ -20,7 +20,7 @@ Juicy.Component.create('Player', {
       this.health = 4;
       this.maxhealth = 4;
 
-      this.speed = 15;
+      this.speed = 14;
       this.damage = 30;
    },
    takeDamage: function(damage) {
@@ -85,6 +85,17 @@ Juicy.Component.create('Player', {
       var physics = this.entity.getComponent('Physics');
       if (!physics)
          return;
+
+      if (this.aura) {
+        var enemies = this.entity.scene.enemies;
+        for (var i = 0; i < enemies.length; i ++) {
+            if (this.entity.transform.distanceTo(enemies[i].transform) < 20) {
+                  console.log(this.entity.transform.distanceTo(enemies[i].transform));
+
+                  enemies[i].getComponent('Enemy').health -= ((20 - this.entity.transform.distanceTo(enemies[i].transform)) * 0.035);
+            }
+        }
+      }
       
       physics.dy += 240 * dt;
 
@@ -138,6 +149,12 @@ Juicy.Component.create('Player', {
                this.powerupSound.play();
                objects[i].dead = true;
             }
+
+            var heart = object.getComponent('Heart');
+            if (heart) {
+               this.takeDamage(-1);
+               objects[i].dead = true;
+            }
          }
       }
 
@@ -154,7 +171,7 @@ Juicy.Component.create('Player', {
                }
             });
          }
-         
+
          var enemies = this.entity.scene.enemies;
          for (var i = 0; i < enemies.length; i++) {
             var enemy = enemies[i];

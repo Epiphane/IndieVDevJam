@@ -2,13 +2,14 @@ var Level = Juicy.State.extend({
    tilesize: 20,
    constructor: function(player, levelNum) {
       this.levelNum = levelNum || 1;
-      this.maxLevels = 4;
+      this.maxLevels = 6;
       this.gui = new Juicy.Entity(this, ['GUI', 'Animations']);
       if (player) {
          this.player = player;
 
          this.player.scene = this;
          this.player.getComponent('Score').setGui(this.gui.getComponent('GUI'));
+         this.gui.getComponent('GUI').updateScore(this.player.getComponent('Score').score);
       }
       else {
          this.player = new Juicy.Entity(this, ['Sprite', 'Player', 'Physics', 'Animations', 'Score', 'Upgrades']);
@@ -44,7 +45,7 @@ var Level = Juicy.State.extend({
 
       this.tileManager = new Juicy.Entity(this, ['LevelTiles']);
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
-      this.levelTiles.build(2+this.levelNum, 1+this.levelNum);
+      this.levelTiles.build(1+this.levelNum, this.levelNum);
 
       var songs = [newBuzzSound("audio/music_footnote",{formats: [ "mp3"]}),
                    newBuzzSound( "audio/music_burning_books",{formats: [ "mp3"]}),
@@ -113,6 +114,16 @@ var Level = Juicy.State.extend({
 
             this.objects.push(book);
          }
+         else if (spawn.type === 'heart') {
+            var heart = new Juicy.Entity(this, ['Image', 'Heart']);
+            heart.getComponent('Image').setImage('./img/heart.png');
+            heart.transform.width = 0.75;
+            heart.transform.height = 1;
+            heart.transform.position.y = spawn.y;
+            heart.transform.position.x = spawn.x;
+
+            this.objects.push(heart);
+         }
          else if (spawn.type === 'player') {
             this.player.transform.position.x = spawn.x;
             this.player.transform.position.y = spawn.y;
@@ -133,6 +144,7 @@ var Level = Juicy.State.extend({
                self.flash = 1;
                shrine.getComponent('Sprite').runAnimation(1, 3, 0.5)
                   .oncompleteanimation = function() {};
+               self.player.getComponent('Score').eventOccurred('destroyShrine');
             }
             shrine.addComponent(destructible);
 

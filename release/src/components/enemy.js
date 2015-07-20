@@ -16,8 +16,15 @@ Juicy.Component.create('Enemy', {
       }
 
       if (this.health <= 0) {
+          var scoreComponent =  this.entity.scene.player.getComponent('Score');
+          scoreComponent.eventOccurred('killedEnemy');
+          var scoreDisplayEntity = new Juicy.Entity(this.entity.scene, ['ScoreDisplay']);
+          var scoreDisplayComponent = scoreDisplayEntity.getComponent('ScoreDisplay');
+          this.entity.scene.objects.push(scoreDisplayEntity); // lets display those dank points
+          scoreDisplayComponent.setText('+' + scoreComponent.events['killedEnemy']);
+          scoreDisplayComponent.setPosition(this.entity.transform.position.x, this.entity.transform.position.y, false);
+          
           this.entity.dead = true;
-          this.entity.scene.player.getComponent('Score').eventOccurred('killedEnemy');
       }
 
       var physics = this.entity.getComponent('PatrollingPhysics');

@@ -26,7 +26,16 @@ Juicy.Component.create('Upgrades', {
                 get: function() {
                     this.mana += 10;
                 }
-            }
+            },
+            {
+                title: "Combos +",
+                desc: "Longer combo",
+                desc2: "window",
+                get: function() {
+                    this.entity.getComponent('Score').combo_duration = 2000;
+                }
+
+            },
         ],
         agility: [
             {
