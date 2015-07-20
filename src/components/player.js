@@ -19,6 +19,9 @@ Juicy.Component.create('Player', {
 
       this.health = 4;
       this.maxhealth = 4;
+
+      this.speed = 10;
+      this.damage = 30;
    },
    takeDamage: function(damage) {
       damage = damage || 0.5;
@@ -31,9 +34,6 @@ Juicy.Component.create('Player', {
       }
 
       this.updateGUI();
-   },
-   availablePowerups: function() {
-      return ['fire', 'ice', 'explosive'];
    },
    updateGUI: function() {
       var bars = [];
@@ -71,6 +71,7 @@ Juicy.Component.create('Player', {
       }
 
       var comp = booklet.getComponent('Booklet');
+      comp.damage = this.damage;
       comp.dx = this.direction * 100;
       comp.setPowers(powers);
 
@@ -79,7 +80,7 @@ Juicy.Component.create('Player', {
       this.updateGUI();
    },
    update: function(dt, input) {
-      var speed = 16;
+      var speed = this.speed;
 
       var physics = this.entity.getComponent('Physics');
       if (!physics)
@@ -133,7 +134,7 @@ Juicy.Component.create('Player', {
             // Collided with this object. Test whether it matters
             var powerup = object.getComponent('Powerup');
             if (powerup) {
-               this.setPowerup(powerup.power, powerup.mana);
+               this.setPowerup(powerup.power, this.entity.getComponent('Upgrades').mana);
                this.powerupSound.play();
                objects[i].dead = true;
             }

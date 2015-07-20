@@ -38,7 +38,7 @@ var Level = Juicy.State.extend({
 
       this.tileManager = new Juicy.Entity(this, ['LevelTiles']);
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
-      this.levelTiles.build(3, 2);
+      this.levelTiles.build(2, 1);
 
       var songs = [newBuzzSound("audio/music_footnote",{formats: [ "mp3"]}),
                    newBuzzSound( "audio/music_burning_books",{formats: [ "mp3"]}),
@@ -85,7 +85,7 @@ var Level = Juicy.State.extend({
             book.transform.position.y = spawn.y;
             book.transform.position.x = spawn.x;
 
-            var power = new Juicy.Components.Powerup(this.player.getComponent('Player').availablePowerups());
+            var power = new Juicy.Components.Powerup(this.player.getComponent('Upgrades').availableBooks());
             book.addComponent(power);
 
             this.objects.push(book);
@@ -160,9 +160,13 @@ var Level = Juicy.State.extend({
          if (this.flash > -1.5 && this.flash - dt <= -1.5) {
             TransitionManager.toShop();
 
+            this.game.setCanvas(ShopCanvas);
+            this.game.setState(new UpgradeScreen(this.player));
+            this.game.pause();
+
             var self = this;
             TransitionManager.onComplete = function() {
-               self.game.setState(new UpgradeScreen(self.player));
+               self.game.run();
             }
          }
 

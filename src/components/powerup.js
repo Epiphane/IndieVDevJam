@@ -1,8 +1,6 @@
 var Powerup = Juicy.Component.create('Powerup', {
     constructor: function(powers) {
         this.power = powers[Juicy.rand(powers.length)];
-
-        this.mana = 40 + Juicy.rand(0, 6);
     }
 }, {
     colors: {
