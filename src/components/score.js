@@ -15,8 +15,7 @@ Juicy.Component.create('Score', {
 
 	events: {
 		'killedEnemy' : 10,
-		'died' : -100,
-		'destroyShrine' : 100
+		'destroyShrine' : 200
 	},
 	
 	update: function(dt, input) {
