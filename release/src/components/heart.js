@@ -1,1 +1,0 @@
-Juicy.Component.create('Heart', {});
