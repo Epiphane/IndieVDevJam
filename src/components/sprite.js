@@ -114,7 +114,6 @@ Juicy.Component.create('Sprite', {
 
         var sx = (this.sprite % this.sheet_width) * this.sprite_width;
         var sy = Math.floor(this.sprite / this.sheet_width) * this.sprite_height;
-        console.log(this.sprite);
 
         var dx = arguments[5] || arguments[1] || 0;
         var dy = arguments[6] || arguments[2] || 0;

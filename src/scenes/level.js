@@ -67,8 +67,15 @@ var Level = Juicy.State.extend({
          var spawn = this.levelTiles.spawns[i];
 
          if (spawn.type === 'enemy') {
-            var enemy = new Juicy.Entity(this, ['Image', 'Enemy', 'PatrollingPhysics', 'Animations']);
-            enemy.getComponent('Image').setImage('./img/deck.png');
+            var enemy = new Juicy.Entity(this, ['Sprite', 'Enemy', 'PatrollingPhysics', 'Animations']);
+
+
+            enemy.getComponent('Sprite').setSheet('./art/wizz-sheet.png', 15*3, 20*3);
+            enemy.getComponent('Sprite').scale = 1.5;
+            enemy.getComponent('Sprite').last_sprite = 3;
+            enemy.getComponent('Sprite').repeat = true;
+      
+
             enemy.transform.width = 1.4;
             enemy.transform.position.y = spawn.y;
             enemy.transform.position.x = spawn.x;
