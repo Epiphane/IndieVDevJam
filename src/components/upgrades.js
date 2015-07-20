@@ -33,7 +33,7 @@ Juicy.Component.create('Upgrades', {
                 title: "Agility +",
                 desc: "Move faster",
                 get: function() {
-                    this.entity.getComponent('Player').speed += 6;
+                    this.entity.getComponent('Player').speed += 4;
                 }
             },
             {
