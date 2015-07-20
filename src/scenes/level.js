@@ -9,6 +9,7 @@ var Level = Juicy.State.extend({
 
          this.player.scene = this;
          this.player.getComponent('Score').setGui(this.gui.getComponent('GUI'));
+         this.gui.getComponent('GUI').updateScore(this.player.getComponent('Score').score);
       }
       else {
          this.player = new Juicy.Entity(this, ['Sprite', 'Player', 'Physics', 'Animations', 'Score', 'Upgrades']);
@@ -44,7 +45,7 @@ var Level = Juicy.State.extend({
 
       this.tileManager = new Juicy.Entity(this, ['LevelTiles']);
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
-      this.levelTiles.build(2+this.levelNum, 1+this.levelNum);
+      this.levelTiles.build(1+this.levelNum, this.levelNum);
 
       var songs = [newBuzzSound("audio/music_footnote",{formats: [ "mp3"]}),
                    newBuzzSound( "audio/music_burning_books",{formats: [ "mp3"]}),
@@ -143,7 +144,6 @@ var Level = Juicy.State.extend({
                self.flash = 1;
                shrine.getComponent('Sprite').runAnimation(1, 3, 0.5)
                   .oncompleteanimation = function() {};
-               debugger;
                self.player.getComponent('Score').eventOccurred('destroyShrine');
             }
             shrine.addComponent(destructible);
