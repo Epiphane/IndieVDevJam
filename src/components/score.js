@@ -11,9 +11,6 @@ Juicy.Component.create('Score', {
 		this.time_since_last_update= 0;
 		this.event_happened_since_last_update= false;
 		this.gui = null; // set from level
-		
-		// temp
-		this.submitScore();
 	},
 
 	events: {
@@ -50,7 +47,9 @@ Juicy.Component.create('Score', {
 		// will fix if we ever need to
 		var comboEvents = {};
 		
-		var amount = 0; // aggregated amount to increase score by 
+		var amount = 0; // this is now just the combo bonus
+		
+		var combo = false;
 		
 		// combine combos
 		for (var i = 0; i < this.events_since_last_check.length; i++) {
@@ -67,14 +66,22 @@ Juicy.Component.create('Score', {
 			var value = this.events[event];
 			// how many times this event occurred this combo
 			if (count > 1) {
-				amount += value * count * this.combo_multiplier;
-			}
-			else {
-				amount += value;
+				var pre_bonus = value * count;
+				var post_bonus = pre_bonus * this.combo_multiplier;
+				amount += post_bonus - pre_bonus; // we only want to add the bonus amount here
+				combo = true;
 			}
 		}
 		this.incrementScore(amount);
 		this.events_since_last_check.length = 0; // Boom, Roasted
+		
+		if (combo) {
+			var scoreDisplayEntity = new Juicy.Entity(this.entity.scene, ['ScoreDisplay']);
+			var scoreDisplayComponent = scoreDisplayEntity.getComponent('ScoreDisplay');
+			this.entity.scene.objects.push(scoreDisplayEntity); // lets display those dank points
+			scoreDisplayComponent.setText('Combo! +' + amount);
+			scoreDisplayComponent.setPosition(0, 0, true);
+		}
 	},
 
 	// all you do is call this, the rest is black magic
@@ -82,6 +89,7 @@ Juicy.Component.create('Score', {
 		this.events_since_last_check.push(eventName);
 		this.event_happened_since_last_update = true;
 		
+		this.incrementScore(this.events[eventName]);
 		// we want to update gui for cool FX when an enemy is killed, so call that directly here
 		// flash the amount of points gained'
 		//this.gui.setFlash(this.events[eventName]); // yeahhh we should cache this and not repeat the lookup every time lol
