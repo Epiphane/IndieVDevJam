@@ -9,6 +9,8 @@ Juicy.Component.create('Physics', {
           right: false,
           left: false
         };
+
+        this.touchingSpike = false;
     },
 
     jump: function() {
@@ -135,6 +137,18 @@ Juicy.Component.create('Physics', {
         else this.collisions.below = true;
 
             this.dy = 0;
+      }
+
+      this.touchingSpike = false;
+      for (var i = 0; i < transform.width; i ++) {
+        for (var j = 0; j < transform.height; j ++) {
+          var x = Math.floor(transform.position.x + i);
+          var y = Math.floor(transform.position.y + j);
+
+          if (tileManager.getTile(x, y) === tileManager.SPIKE) {
+            this.touchingSpike = true;
+          }
+        }
       }
    },
 

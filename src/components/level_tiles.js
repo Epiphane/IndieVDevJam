@@ -44,7 +44,7 @@ Juicy.Component.create('LevelTiles', {
    },
    isTileBlocking: function(x, y) {
       if (x < 0 || x >= this.width || y < 0 || y >= this.height) return true;
-      return this.getTile(x, y) !== ' ';
+      return this.getTile(x, y) !== this.EMPTY && this.getTile(x, y) !== this.SPIKE;
    },
    getObstacles: function(x, y, w, h) {
       var obstacles = [];
