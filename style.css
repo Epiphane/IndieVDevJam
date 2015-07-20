@@ -17,17 +17,17 @@ body, html {
   overflow: hidden;
 }
 .full-screen {
-  width: 1229px;
+  width: 1133px;
   height: 768px;
 
   position: absolute;
 }
 #shop {
-  background: url('./img/machine2.png');
+  background: url('./img/shelves.png');
 
   margin: 0 auto;
 
-  left: 1229px;
+  left: 1133px;
 }
 #machine {
   background: url('./img/machine2.png');
