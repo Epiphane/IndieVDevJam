@@ -110,6 +110,7 @@ var Level = Juicy.State.extend({
             book.transform.position.x = spawn.x;
 
             var power = new Juicy.Components.Powerup(this.player.getComponent('Upgrades').availableBooks());
+            book.getComponent('Image').setTint(Powerup.getColor([power.power]));
             book.addComponent(power);
 
             this.objects.push(book);
