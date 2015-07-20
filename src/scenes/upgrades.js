@@ -1,6 +1,7 @@
 var UpgradeScreen = Juicy.State.extend({
-    constructor: function(player) {
+    constructor: function(player, levelNum) {
         this.player = player;
+        this.levelNum = levelNum;
 
         var itemStartY = -300;
         var itemWidth = 200;
@@ -47,7 +48,7 @@ var UpgradeScreen = Juicy.State.extend({
                 TransitionManager.onComplete = function() {
                     buzz.all().stop();
                     Game.setCanvas(GameCanvas);
-                    Game.setState(new Level(self.player));
+                    Game.setState(new Level(self.player, self.levelNum+1));
                 }
         
                 this.entity.getComponent('Animations').play(fade, "fadeOut");
