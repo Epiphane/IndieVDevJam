@@ -165,6 +165,7 @@ var Level = Juicy.State.extend({
 
             this.game.setCanvas(ShopCanvas);
             this.game.setState(new UpgradeScreen(this.player));
+      ga('send', 'pageview', 'upgradescreen', 'Upgrade Screen');
             this.game.pause();
 
             var self = this;
@@ -179,6 +180,8 @@ var Level = Juicy.State.extend({
       this.player.update(dt);
       if (this.player.dead) {
          this.game.setState(new GameOverScreen(this.player));
+         
+      ga('send', 'pageview', 'gameoverscreen', 'Game Over Screen');
       }
       this.particles.update(dt);
 
