@@ -63,6 +63,9 @@ Juicy.Component.create('Sprite', {
 
         if (this.nextFrame < 0) {
             this.nextFrame = this.maxNextFrame;
+            this.sprite ++;
+
+            this.goNextFrame();
         }
     },
 
@@ -74,23 +77,28 @@ Juicy.Component.create('Sprite', {
             this.timeleft -= dt;
 
             if (this.timeleft <= 0) {
-                this.sprite ++;
-
-                this.timeleft = this.frametime;
-
-                if (this.sprite > this.last_sprite) {
-                    if (this.repeat)
-                        this.sprite = this.first_sprite;
-                    else {
-                        this.sprite = this.last_sprite;
-                        this.frametime = -1;
-                        if (this.oncompleteanimation) 
-                            this.oncompleteanimation();
-                    }
-                }
+               this.goNextFrame();
             }
         }
     },
+
+    goNextFrame: function() {
+        this.sprite ++;
+
+        this.timeleft = this.frametime;
+
+        if (this.sprite > this.last_sprite) {
+            if (this.repeat)
+                this.sprite = this.first_sprite;
+            else {
+                this.sprite = this.last_sprite;
+                this.frametime = -1;
+                if (this.oncompleteanimation) 
+                    this.oncompleteanimation();
+            }
+        }
+    }, 
+
     render: function(context) {
         var animator = this.entity.getComponent('Animations');
         context.save();
