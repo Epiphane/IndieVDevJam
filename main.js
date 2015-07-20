@@ -19,6 +19,8 @@ var GameCanvas = document.getElementById('game-canvas');
       S: 83,
       D: 68,
    }));
+
+   TransitionManager.toMachine(true);
     
    var playButton = document.getElementById('go');
    playButton.addEventListener('click', startGame);
@@ -28,7 +30,6 @@ var GameCanvas = document.getElementById('game-canvas');
       window.name = document.getElementById('username').value;
       window.token = document.getElementById('token').value;
       document.getElementById('player-info').remove();
-      TransitionManager.toMachine(true);
       Game.setState(new TitleScreen()).run();
    }
 // });
