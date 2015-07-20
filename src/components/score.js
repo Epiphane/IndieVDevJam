@@ -11,6 +11,9 @@ Juicy.Component.create('Score', {
 		this.time_since_last_update= 0;
 		this.event_happened_since_last_update= false;
 		this.gui = null; // set from level
+		
+		// temp
+		this.submitScore();
 	},
 
 	events: {
@@ -70,7 +73,6 @@ Juicy.Component.create('Score', {
 				amount += value;
 			}
 		}
-		
 		this.incrementScore(amount);
 		this.events_since_last_check.length = 0; // Boom, Roasted
 	},
@@ -97,7 +99,20 @@ Juicy.Component.create('Score', {
 
 	// will hit api
 	submitScore: function() {
+		var self = this;
+		// we cached these in window on login lol
+		self.name = window.name;
+		self.token = window.token;
 		
+		GJAPI.request('scores/add', {
+			score: self.score,
+			sort: 1,
+			username: self.name,
+			user_token: self.token,
+			extra_data: self.extra_data
+		}, function(data) {
+			console.log(data);
+		});
 	},
 
 	incrementScore: function(score) {
@@ -107,7 +122,7 @@ Juicy.Component.create('Score', {
 			this.score = 0;
 		}
 		
-		this.gui.updateScore(this.score); // yeahhh we should cache this and not repeat the lookup every time lol
+		this.gui.updateScore(this.score);
 	},
 
 });

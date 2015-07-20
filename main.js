@@ -20,8 +20,16 @@ var GameCanvas = document.getElementById('game-canvas');
       D: 68,
    }));
 
-   document.addEventListener('DOMContentLoaded', function() {
-      TransitionManager.toMachine(true);
+   TransitionManager.toMachine(true);
+    
+   var playButton = document.getElementById('go');
+   playButton.addEventListener('click', startGame);
+
+   function startGame() {
+      // storing it in window for now, YOLO
+      window.name = document.getElementById('username').value;
+      window.token = document.getElementById('token').value;
+      document.getElementById('player-info').remove();
       Game.setState(new TitleScreen()).run();
-   }, false);
+   }
 // });

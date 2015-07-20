@@ -17,34 +17,53 @@ body, html {
   overflow: hidden;
 }
 .full-screen {
-  width: 1024px;
+  width: 1229px;
   height: 768px;
-
-  width: 1365px;
-  height: 1024px;
 
   position: absolute;
 }
 #shop {
-  background: url('./img/machine.png');
-  background-size: 1365px 1024px;
+  background: url('./img/machine2.png');
 
   margin: 0 auto;
 
-  left: 1365px;
+  left: 1229px;
 }
 #machine {
-  background: url('./img/machine.png');
-  background-size: 1365px 1024px;
+  background: url('./img/machine2.png');
 
   margin: 0 auto;
+}
+
+#player-info {
+   position: relative;
+   top: -350px;
+}
+
+#player-info input, #player-info button {
+   display: block;
+   margin: auto;
+   margin-bottom: 10px;
+   padding: 10px;
+}
+
+#player-info button {
+   padding: 10px 20px;
+}
+
+#warning {
+   font-family: sans-serif;
+   color: #ccc;
+   text-align: center;
+   font-size: 16px;
+   margin-top: 150px;
 }
 .screen {
   width: 800px;
   height: 600px;
 
-  margin: 0 auto;
-  padding-top: 70px;
+  margin: 0 0 0 210px;
+  padding-top: 20px;
 }
 #machine #controls {
   width: 800px;
@@ -59,9 +78,11 @@ canvas {
   height: 600px;
 
   position: relative;
+
+  box-shadow: 0 0 5px #ffffff;
 }
 
-#shop-container {
+/*#shop-container {
   width: 1000px;
   height: 750px;
 }
@@ -69,7 +90,7 @@ canvas {
 #shop-canvas {
   width: 1000px;
   height: 750px;
-}
+}*/
 
 #mute {
   display: inline-block;;
