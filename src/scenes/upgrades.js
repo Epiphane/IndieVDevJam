@@ -7,6 +7,8 @@ var UpgradeScreen = Juicy.State.extend({
         var itemWidth = 200;
         var itemPadding = 50;
 
+        this.gotPowerup = false;
+
         // Get player upgrades
         var upgrades = this.player.getComponent('Upgrades');
 
@@ -33,6 +35,14 @@ var UpgradeScreen = Juicy.State.extend({
             button.transform.position.x = 70;
             button.getComponent('Image').setImage('./img/button.png');
             button.getComponent('Button').action = function() {
+                if (self.gotPowerup) {
+                    console.log('ow');
+                    return;
+
+                }
+
+                self.gotPowerup = true;
+
                 // This refers to the Button Component here
                 upgrades.getNextUpgrade(name);
 

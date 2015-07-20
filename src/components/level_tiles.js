@@ -13,7 +13,7 @@ Juicy.Component.create('LevelTiles', {
    SHRINE: '&',
    SPIKE: 'M',
    HEART: 'H',
-   SPAWNABLE: /%|E|\^|&/,
+   SPAWNABLE: /%|E|H|\^|&/,
    constructor: function() {
       this.loadImages();
    },
@@ -318,7 +318,7 @@ Juicy.Component.create('LevelTiles', {
            + '--------- -                             '
            + '--------                                '
            + '----------                              '
-           + '----------                              '
+           + '----------        H                     '
            + '--  -------    ----------        E    E '
            + '--- -------                             '
            + '---- -------                ------------'
