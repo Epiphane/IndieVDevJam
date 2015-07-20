@@ -138,6 +138,12 @@ Juicy.Component.create('Player', {
                this.powerupSound.play();
                objects[i].dead = true;
             }
+
+            var heart = object.getComponent('Heart');
+            if (heart) {
+               this.takeDamage(-1);
+               objects[i].dead = true;
+            }
          }
       }
 
@@ -154,7 +160,7 @@ Juicy.Component.create('Player', {
                }
             });
          }
-         
+
          var enemies = this.entity.scene.enemies;
          for (var i = 0; i < enemies.length; i++) {
             var enemy = enemies[i];
