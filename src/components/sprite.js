@@ -128,7 +128,7 @@ Juicy.Component.create('Sprite', {
                                       dx, dy, dwidth, dheight);
         }
         else {
-            context.drawImage(this.image, sx - scaleAdjustX, sy - scaleAdjustY, this.sprite_width, this.sprite_height,
+            context.drawImage(this.image, sx, sy, this.sprite_width, this.sprite_height,
                                       dx - 0.5, dy - scaleAdjustY/3 + 0.125, dwidth * this.scale, dheight * this.scale);            
         }
         context.restore();
