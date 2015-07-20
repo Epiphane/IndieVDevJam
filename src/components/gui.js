@@ -1,8 +1,8 @@
 Juicy.Component.create('GUI', {
     constructor: function(entity) {
-        this.score = new Juicy.Text('Score: 0');
+        this.score = new Juicy.Text('Score: 0', '10pt Arial', 'yellow');
         this.flash = new Juicy.Text();
-        this.playerName = new Juicy.Text('');
+        this.playerName = new Juicy.Text('', '10pt Arial');
         this.flashTexts = [];
         this.nextAvailableIndex = 0; // for flash texts
         this.maxFlashTexts = 10;
@@ -27,8 +27,8 @@ Juicy.Component.create('GUI', {
     },
     
     render: function(context) {
-        this.score.draw(context, 10, 10, 50, 30);
-        this.playerName.draw(context, 10, 25, 60, 30);
+        this.score.draw(context, 10, 10);
+        this.playerName.draw(context, 10, 30);
         /*
         for (text in this.flashTexts) {
             if (text.text && text.text != "") {
@@ -67,6 +67,11 @@ Juicy.Component.create('GUI', {
         }
 
         this.bookPreview.render(context, GAME_WIDTH - 75, 10, 51, 53);
+        
+        // hacks on hacks to render this in gui and not world coords
+        if(this.combo) {
+           this.combo.draw(context, 100, 10);
+        }
     },
 
     setPowerBars: function(bars, color) {
@@ -87,10 +92,20 @@ Juicy.Component.create('GUI', {
     },
     
     setName: function(name) {
+      // hack cause we store it in window yolo
+      name = window.name;
         this.playerName.set({
             text: name
         })
     },
+    
+    setCombo: function(amount) {
+      this.combo = new Juicy.Text(amount, '10pt Arial', 'yellow');
+   },
+   
+   removeCombo: function() {
+      this.combo = null;
+   }
     
     /*
     // flash some text in the middle of the screen

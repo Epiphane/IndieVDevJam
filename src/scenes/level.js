@@ -143,6 +143,8 @@ var Level = Juicy.State.extend({
                self.flash = 1;
                shrine.getComponent('Sprite').runAnimation(1, 3, 0.5)
                   .oncompleteanimation = function() {};
+               debugger;
+               self.player.getComponent('Score').eventOccurred('destroyShrine');
             }
             shrine.addComponent(destructible);
 
