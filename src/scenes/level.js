@@ -1,13 +1,21 @@
 var Level = Juicy.State.extend({
    tilesize: 20,
-   constructor: function() {
-      this.player = new Juicy.Entity(this, ['Sprite', 'Player', 'Physics', 'Animations', 'Score', 'Upgrades']);
+   constructor: function(player) {
       this.gui = new Juicy.Entity(this, ['GUI', 'Animations']);
-      this.player.getComponent('Score').setGui(this.gui.getComponent('GUI'));
-      var name = 'lol name here'; // set the name from a textbox before the game or some shiiiii
-      this.player.getComponent('Score').setName(name);
-      this.player.transform.width = 1.4;
-      this.player.transform.height = 1.8;
+      if (player) {
+         this.player = player;
+         this.player.scene = this;
+         this.player.getComponent('Score').setGui(this.gui.getComponent('GUI'));
+      }
+      else {
+         this.player = new Juicy.Entity(this, ['Sprite', 'Player', 'Physics', 'Animations', 'Score', 'Upgrades']);
+
+         var name = 'lol name here'; // set the name from a textbox before the game or some shiiiii
+         this.player.getComponent('Score').setGui(this.gui.getComponent('GUI'));
+         this.player.getComponent('Score').setName(name);
+         this.player.transform.width = 1.4;
+         this.player.transform.height = 1.8;
+      }
 
       this.player.getComponent('Sprite').setSheet('./art/wizz-sheet.png', 21 * 3, 31 * 3);
       this.player.getComponent('Sprite').scale = 1.5;
@@ -32,12 +40,11 @@ var Level = Juicy.State.extend({
       this.levelTiles = this.tileManager.getComponent('LevelTiles');
       this.levelTiles.build(3, 2);
 
-      this.music = newBuzzSound( "audio/music_burning_books", {
-         formats: [ "mp3"]
-      });
-      this.shrineDeathSound = newBuzzSound( "audio/fx_shrine_ded", {
-         formats: [ "wav"]
-      });
+      var songs = [newBuzzSound("audio/music_footnote",{formats: [ "mp3"]}),
+                   newBuzzSound( "audio/music_burning_books",{formats: [ "mp3"]}),
+                   newBuzzSound( "audio/music_quickdraw",{formats: [ "mp3"]})];
+
+      this.music = songs[Juicy.rand(3)];
 
       // Screen Shaking
       this._shake = {
@@ -119,7 +126,9 @@ var Level = Juicy.State.extend({
          self.game.setState(new Pause(self));
       });
       this.music.play()
-         .loop()
+         .loop();
+
+      this.player.getComponent('Player').updateGUI();
    },
    shake: function(time, strength) {
       this._shake = {
@@ -161,6 +170,9 @@ var Level = Juicy.State.extend({
       }
 
       this.player.update(dt);
+      if (this.player.dead) {
+         this.game.setState(new GameOverScreen(this.player));
+      }
       this.particles.update(dt);
 
       var player_input = this.player.getComponent('Player');
@@ -254,7 +266,9 @@ var Level = Juicy.State.extend({
          }
       }
 
-      this.player.render(context);
+      if (!this.player.getComponent('Player').hide) {
+         this.player.render(context);
+      }
 
       this.particles.render(context);
 
