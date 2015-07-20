@@ -3,10 +3,13 @@ var GameOverScreen = Juicy.State.extend({
         buzz.all().stop();
         this.title = new Juicy.Text('Game Over Bro.', '40pt Arial', 'white', 'center');
         this.desc = new Juicy.Text('Press ESC to go back', '30pt Arial', 'white', 'center');
+        this.music = newBuzzSound("audio/music_gameover,man", {formats:["mp3"]});
     },
     init: function() {
         var self = this;
+        this.music.play();
         this.game.input.on('key', 'ESC', function() {
+            buzz.all().stop();
             self.game.setState(new TitleScreen());
         });
     },
