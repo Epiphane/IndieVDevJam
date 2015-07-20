@@ -23,6 +23,8 @@ var Level = Juicy.State.extend({
 
       this.player.getComponent('Sprite').setSheet('./art/wizz-sheet.png', 21 * 3, 31 * 3);
       this.player.getComponent('Sprite').scale = 1.5;
+      this.player.getComponent('Sprite').last_sprite = 3;
+      this.player.getComponent('Sprite').repeat = true;
       
 
       this.objects = [];
@@ -70,8 +72,17 @@ var Level = Juicy.State.extend({
          var spawn = this.levelTiles.spawns[i];
 
          if (spawn.type === 'enemy') {
-            var enemy = new Juicy.Entity(this, ['Image', 'Enemy', 'PatrollingPhysics', 'Animations']);
-            enemy.getComponent('Image').setImage('./img/deck.png');
+            var enemy = new Juicy.Entity(this, ['Sprite', 'Enemy', 'PatrollingPhysics', 'Animations']);
+
+
+            enemy.getComponent('Sprite').setSheet('./art/enemy-sheet.png', 15, 20);
+            enemy.getComponent('Sprite').scale = 1;
+            enemy.getComponent('Sprite').last_sprite = 3;
+            enemy.getComponent('Sprite').repeat = true;
+            enemy.getComponent('Sprite').runAnimation(0,3,0.25,true);
+
+      
+
             enemy.transform.width = 1.4;
             enemy.transform.position.y = spawn.y;
             enemy.transform.position.x = spawn.x;
@@ -169,7 +180,6 @@ var Level = Juicy.State.extend({
 
       if (this.flash !== false) {
          if (this.flash > -1.5 && this.flash - dt <= -1.5) {
-
             // If on level 10, end game
             if (this.levelNum === this.maxLevels) {
                this.game.setState(new GameOverScreen(this.player));
@@ -180,6 +190,7 @@ var Level = Juicy.State.extend({
                this.game.setCanvas(ShopCanvas);
                this.game.setState(new UpgradeScreen(this.player, this.levelNum));
                this.game.pause();
+               ga('send', 'pageview', 'upgradescreen', 'Upgrade Screen');
 
                var self = this;
                TransitionManager.onComplete = function() {
@@ -194,6 +205,8 @@ var Level = Juicy.State.extend({
       this.player.update(dt);
       if (this.player.dead) {
          this.game.setState(new GameOverScreen(this.player));
+         
+      ga('send', 'pageview', 'gameoverscreen', 'Game Over Screen');
       }
       this.particles.update(dt);
 

@@ -161,7 +161,7 @@ Juicy.Component.create('Player', {
          }
       }
 
-      this.entity.getComponent('Sprite').advanceAnimation(physics.dx);
+      this.entity.getComponent('Sprite').advanceAnimation(Math.abs(physics.dx));
    },
 
    bounceBack: function(sender) {

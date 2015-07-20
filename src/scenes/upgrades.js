@@ -49,6 +49,7 @@ var UpgradeScreen = Juicy.State.extend({
                     buzz.all().stop();
                     Game.setCanvas(GameCanvas);
                     Game.setState(new Level(self.player, self.levelNum+1));
+                    ga('send', 'pageview', 'playscreen', 'Play Screen');
                 }
         
                 this.entity.getComponent('Animations').play(fade, "fadeOut");

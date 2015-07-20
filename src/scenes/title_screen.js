@@ -25,6 +25,8 @@ constructor: function() {
             var startGame = customFunctionAnimation(function() {
                 buzz.all().stop();
                 Game.setState(new Level());
+                
+      ga('send', 'pageview', 'playscreen', 'Play Screen');
             }, 0);
     
             FREEDOM_SPIN.nextAnimation = INTENSIFFFFY;

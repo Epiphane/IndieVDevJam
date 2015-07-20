@@ -22,7 +22,7 @@ TransitionManager = (function() {
 
         window.scroll(scrollX, 0);
 
-        if (scrollX === dest || dx === 0) {
+        if (scrollX === dest || dx === 0 || window.scrollX !== scrollX) {
             TransitionManager.onComplete();
             TransitionManager.onComplete = function() {};
         }
