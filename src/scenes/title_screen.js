@@ -8,6 +8,8 @@ constructor: function() {
         this.music = newBuzzSound( "audio/music_spellbound", {
             formats: [ "mp3"]
         });
+        
+        
 	//  TODO: button graphic or something
     
         this.pic.getComponent('Button').action = function() {
@@ -19,7 +21,7 @@ constructor: function() {
     
             var FREEDOM_SPIN = rotateAnimation(0, 8 * PI, 0.5, 0.5, 0.5);
             var INTENSIFFFFY = WOWOWOWOWOW(12.0, 12.0, 0.8);
-    
+            
             var startGame = customFunctionAnimation(function() {
                 buzz.all().stop();
                 Game.setState(new Level());
