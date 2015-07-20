@@ -20,7 +20,7 @@ Juicy.Component.create('Player', {
       this.health = 4;
       this.maxhealth = 4;
 
-      this.speed = 10;
+      this.speed = 15;
       this.damage = 30;
    },
    takeDamage: function(damage) {

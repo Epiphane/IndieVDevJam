@@ -33,9 +33,25 @@ Juicy.Component.create('Upgrades', {
                 title: "Agility +",
                 desc: "Move faster",
                 get: function() {
+                    this.entity.getComponent('Player').speed += 4;
+                }
+            },
+            {
+                title: "KNEES",
+                desc: "Jump",
+                desc2: "Higher",
+                get: function() {
+                    this.entity.getComponent('Physics').jumpPower = -90
+                }
+            },
+            {
+                title: "Agility 2",
+                desc: "Move even",
+                desc2: "faster",
+                get: function() {
                     this.entity.getComponent('Player').speed += 6;
                 }
-            }
+            },
         ],
 
         power: [
@@ -46,10 +62,7 @@ Juicy.Component.create('Upgrades', {
                 get: function() {
                     this.entity.getComponent('Player').damage += 15;
                 }
-            }
-        ],
-
-        power: [
+            },
             {
                 title: "Pain Aura",
                 desc: "Hurts enemies",
@@ -57,9 +70,8 @@ Juicy.Component.create('Upgrades', {
                 get: function() {
                     this.entity.getComponent('Player').aura = true;
                 }
-
             }
-        ]
+        ],
 
     },
 
