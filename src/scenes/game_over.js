@@ -7,7 +7,7 @@ var GameOverScreen = Juicy.State.extend({
     },
     init: function() {
         var self = this;
-        this.music.play();
+        this.music.play().loop();
         this.game.input.on('key', 'ESC', function() {
             buzz.all().stop();
             self.game.setState(new TitleScreen());
