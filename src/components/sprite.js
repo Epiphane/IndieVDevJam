@@ -15,6 +15,9 @@ Juicy.Component.create('Sprite', {
     this.last_sprite = 0;
 
     this.scale = 1;
+    this.flipped = false;
+    this.nextFrame = 100;
+    this.maxNextFrame = 100;
 
     this.image = new Image();
     this.image.onload = function() {
@@ -54,6 +57,15 @@ Juicy.Component.create('Sprite', {
 
         return this; // Enable chaining
     },
+
+    advanceAnimation: function(dt) {
+        this.nextFrame -= dt;
+
+        if (this.nextFrame < 0) {
+            this.nextFrame = this.maxNextFrame;
+        }
+    },
+
     animating: function() {
         return (this.frametime >= 0 && (this.repeat || this.sprite <= this.last_sprite));
     },
@@ -86,6 +98,11 @@ Juicy.Component.create('Sprite', {
             animator.transformCanvas(context);
         }
 
+        if (this.flipped) {
+            context.translate(this.entity.transform.width, 0);
+            context.scale(-1, 1);
+        }
+
         var sx = (this.sprite % this.sheet_width) * this.sprite_width;
         var sy = Math.floor(this.sprite / this.sheet_width) * this.sprite_height;
 
@@ -94,9 +111,17 @@ Juicy.Component.create('Sprite', {
         var dwidth = arguments[7] || arguments[3] || this.entity.transform.width;
         var dheight = arguments[8] || arguments[4] || this.entity.transform.height;
 
-        context.drawImage(this.image, sx, sy, this.sprite_width, this.sprite_height,
-//                                       dx, dy, dwidth * this.scale, dheight * this.scale);
+        var scaleAdjustX = (dwidth * this.scale - dwidth) / 2;
+        var scaleAdjustY = (dheight * this.scale - dheight) * 3;
+        
+        if (this.scale == 1) {
+             context.drawImage(this.image, sx, sy, this.sprite_width, this.sprite_height,
                                       dx, dy, dwidth, dheight);
+        }
+        else {
+            context.drawImage(this.image, sx - scaleAdjustX, sy - scaleAdjustY, this.sprite_width, this.sprite_height,
+                                      dx - 0.5, dy - scaleAdjustY/3 + 0.125, dwidth * this.scale, dheight * this.scale);            
+        }
         context.restore();
     }
 });

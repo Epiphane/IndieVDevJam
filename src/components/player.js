@@ -81,9 +81,11 @@ Juicy.Component.create('Player', {
          }
          if (input.keyDown('LEFT')) {
             physics.dx = -speed;
+            this.entity.getComponent('Sprite').flipped = false;
          }  
          if (input.keyDown('RIGHT')) {
             physics.dx = speed;
+            this.entity.getComponent('Sprite').flipped = true;
          }
          
          if (physics.dx !== 0)

@@ -9,7 +9,9 @@ var Level = Juicy.State.extend({
       this.player.transform.width = 1.4;
       this.player.transform.height = 1.8;
 
-      this.player.getComponent('Sprite').setSheet('./art/wizz-sheet.png', 27 * 3, 33 * 3);
+      this.player.getComponent('Sprite').setSheet('./art/wizz-sheet.png', 21 * 3, 31 * 3);
+      this.player.getComponent('Sprite').scale = 1.5;
+      
 
       this.objects = [];
       this.enemies = [];
