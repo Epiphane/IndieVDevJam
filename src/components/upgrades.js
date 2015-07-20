@@ -51,7 +51,7 @@ Juicy.Component.create('Upgrades', {
 
         power: [
             {
-                title: "Flame Aura",
+                title: "Pain Aura",
                 desc: "Hurts enemies",
                 desc2: "near you",
                 get: function() {
