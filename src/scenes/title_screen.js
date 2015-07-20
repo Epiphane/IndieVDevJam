@@ -1,3 +1,4 @@
+var IntroPlayed = false;
 
 var TitleScreen = Juicy.Scene.extend({
 constructor: function() {
@@ -12,12 +13,23 @@ constructor: function() {
         this.bg = new Juicy.Entity(this, ['Image']);
         this.bg.transform.width = GAME_WIDTH;
         this.bg.transform.height = GAME_HEIGHT;
-        this.bg.getComponent('Image').setImage('./img/title.png');
+        if (IntroPlayed) {
+            this.bg.getComponent('Image').setImage('./img/title.png');
+        }
+        else {
+            this.bg.getComponent('Image').setImage('./img/intro.png');
+        }
         
         
 	//  TODO: button graphic or something
         var self = this;
         this.pic.getComponent('Button').action = function() {
+            if (!IntroPlayed) {
+                IntroPlayed = true;
+                self.bg.getComponent('Image').setImage('./img/title.png');
+                return;
+            }
+
             self.pic.setImage('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSxLS2z0JOP62RuEwe2WPgsRmy-n6oPyeqIl0kWWfosylUBDDXL6FEVfACx');
             self.pic.transform.width = 144;
             self.pic.transform.height = 90;

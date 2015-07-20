@@ -10,6 +10,8 @@ var UpgradeScreen = Juicy.State.extend({
         // Get player upgrades
         var upgrades = this.player.getComponent('Upgrades');
 
+        this.title = new Juicy.Text("Choose an upgrade", '40px Arial', 'white', 'center');
+
         var self = this;
         var createScroll = function(name, tint, waitTime, x) {
             var info = upgrades.nextUpgrade(name);
@@ -90,6 +92,8 @@ var UpgradeScreen = Juicy.State.extend({
         }
     },
     render: function(context) {
+        this.title.draw(context, GAME_WIDTH / 2, 50);
+
         if (this.magic)   this.magic  .scroll.render(context);
         if (this.agility) this.agility.scroll.render(context);
         if (this.power)   this.power  .scroll.render(context);
