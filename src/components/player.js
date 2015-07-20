@@ -85,6 +85,17 @@ Juicy.Component.create('Player', {
       var physics = this.entity.getComponent('Physics');
       if (!physics)
          return;
+
+      if (true) {
+        var enemies = this.entity.scene.enemies;
+        for (var i = 0; i < enemies.length; i ++) {
+            if (this.entity.transform.distanceTo(enemies[i].transform) < 20) {
+                  console.log(this.entity.transform.distanceTo(enemies[i].transform));
+
+                  enemies[i].getComponent('Enemy').health -= ((20 - this.entity.transform.distanceTo(enemies[i].transform)) * 0.035);
+            }
+        }
+      }
       
       physics.dy += 240 * dt;
 

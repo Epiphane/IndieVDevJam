@@ -37,6 +37,7 @@ Juicy.Component.create('Upgrades', {
                 }
             }
         ],
+
         power: [
             {
                 title: "Power +",
@@ -46,7 +47,20 @@ Juicy.Component.create('Upgrades', {
                     this.entity.getComponent('Player').damage += 15;
                 }
             }
+        ],
+
+        power: [
+            {
+                title: "Pain Aura",
+                desc: "Hurts enemies",
+                desc2: "near you",
+                get: function() {
+                    this.entity.getComponent('Player').aura = true;
+                }
+
+            }
         ]
+
     },
 
     update: function(dt, input) {
