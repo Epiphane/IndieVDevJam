@@ -167,6 +167,8 @@ var Level = Juicy.State.extend({
                    particle.y += particle.dy * 0.03;
                    particle.dy += 0.9;
 
+                   particle.image = Math.floor(Math.random() * 255.0)+ ", " + Math.floor(Math.random() * 255.0) + ", " + Math.floor(Math.random() * 255.0) + ", ";
+
                    if (particle.life > particle.startLife) {
                        particle.alpha = 1;
                    }
