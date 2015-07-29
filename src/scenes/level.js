@@ -156,10 +156,10 @@ var Level = Juicy.State.extend({
                    }
                },
                function(particle) {
-                   particle.x = shrine.transform.position.x + 0.8;// + shrine.width/2 * (Math.random() * 2);
-                   particle.y = shrine.transform.position.y + 0.4;// + shrine.transform.height + 0.7;
-                   particle.dx = Math.random() * 12 - 6;
-                   particle.dy = -17 + Math.random()*5;
+                   particle.x = shrine.transform.position.x + 0.8 + Math.random();// + shrine.width/2 * (Math.random() * 2);
+                   particle.y = shrine.transform.position.y + 0.4 + Math.random();// + shrine.transform.height + 0.7;
+                   particle.dx = Math.random() * 16 - 8;
+                   particle.dy = -27 + Math.random()*5;
                    particle.startLife = 100;
                    particle.life = particle.startLife;
                 }, function(particle) {
