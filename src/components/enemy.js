@@ -25,6 +25,33 @@ Juicy.Component.create('Enemy', {
           scoreDisplayComponent.setPosition(this.entity.transform.position.x, this.entity.transform.position.y, false);
           
           this.entity.dead = true;
+
+         this.entity.scene.player.getComponent('Player').killedEnemy();
+
+         var self = this;
+         
+         self.entity.scene.particles.getComponent('ParticleManager').spawnParticles("255, 0, 0, ", 0.5, 800, function(particle, ndx) {
+               return Math.random() * 2;
+         },
+         function(particle) {
+             particle.x = self.entity.transform.position.x + 0.8 + Math.random();
+             particle.y = self.entity.transform.position.y + 0.4 + Math.random();
+             particle.dx = Math.random() * 16 - 8;
+             particle.dy = -27 + Math.random()*5;
+             particle.startLife = 100;
+             particle.life = particle.startLife;
+          }, function(particle) {
+             particle.x += particle.dx * 0.03;
+             particle.y += particle.dy * 0.03;
+             particle.dy += 0.9;
+
+             if (particle.life > particle.startLife) {
+                 particle.alpha = 1;
+             }
+             else {
+                 particle.alpha = particle.life / particle.startLife;
+             }
+          });
       }
 
       var physics = this.entity.getComponent('PatrollingPhysics');

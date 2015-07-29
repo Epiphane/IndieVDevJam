@@ -19,6 +19,14 @@ Juicy.Component.create('Upgrades', {
 
     upgrades: {
         magic: [
+            { 
+                title: "Vampiric",
+                desc: "Kill 10 dudes,",
+                desc2: "get healed",
+                get: function() {
+                    this.entity.getComponent('Player').vampire = true;
+                }
+            },
            {
                 title: "Magic +",
                 desc: "More mana",
@@ -55,6 +63,19 @@ Juicy.Component.create('Upgrades', {
             
         ],
         agility: [
+
+
+            {
+                title: "Tiny",
+                desc: "Honey I shrunk",
+                desc2: "the wizard!",
+                get: function() {
+                    this.entity.getComponent('Player').tiny = true;
+                    this.entity.transform.width /= 2.1;
+                    this.entity.transform.height /= 2.1;
+                }
+            },
+
             {
                 title: "Agility +",
                 desc: "Move faster",
@@ -87,6 +108,14 @@ Juicy.Component.create('Upgrades', {
                 desc2: "per shot",
                 get: function() {
                     this.entity.getComponent('Player').damage += 15;
+                }
+            },
+
+            {
+                title: "Heavy Reading",
+                desc: "Bigger shots",
+                get: function() {
+                    this.entity.getComponent('Player').bigBooks = true;
                 }
             },
             {

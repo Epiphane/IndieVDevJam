@@ -30,6 +30,11 @@ Juicy.Component.create('Player', {
 
       this.auraTime = 0;
       this.roulette = 4;
+
+      this.tiny = false;
+      this.bigBooks = false;
+      this.vampire = false;
+      this.vampireKills = 0;
    },
    takeDamage: function(damage) {
       damage = damage || 0.5;
@@ -198,7 +203,12 @@ Juicy.Component.create('Player', {
       }
       else {
          if (physics.touchingSpike) {
-            this.takeDamage(1);
+            if (this.tiny) {
+                this.takeDamage(0.5);
+            }
+            else {
+                this.takeDamage(1);
+            }
             this.bounceBack({
                transform: {
                   position: { x: this.entity.transform.position.x - this.direction }
@@ -256,5 +266,15 @@ Juicy.Component.create('Player', {
       var physics = this.entity.getComponent('Physics');
       physics.bounceBack(sender.transform.position.x, this.entity.transform.position.x, 1.0);
       this.doingRecoil = true;
-   }
+   },
+
+   killedEnemy: function() {
+      if (this.vampire) {
+         this.vampireKills++;         
+         if (this.vampireKills >= 10) {
+            this.takeDamage(-0.5);
+            this.vampireKills = 0;
+         }
+      }
+   },
 });
