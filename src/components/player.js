@@ -29,6 +29,7 @@ Juicy.Component.create('Player', {
       this.bigHurt = false;
 
       this.auraTime = 0;
+      this.roulette = 4;
    },
    takeDamage: function(damage) {
       damage = damage || 0.5;
@@ -78,6 +79,7 @@ Juicy.Component.create('Player', {
       this.updateGUI();
    },
    throwBook: function() {
+
       var booklet = new Booklet(this.entity.scene);
       booklet.transform.position.x = this.entity.transform.position.x;
       booklet.transform.position.y = this.entity.transform.position.y + 0.1;
@@ -87,6 +89,16 @@ Juicy.Component.create('Player', {
          this.powerups[powers[i]] --;
          if (this.powerups[powers[i]] <= 0)
             delete this.powerups[powers[i]];
+      }
+
+      if (this.rouletteEnabled) {
+         this.roulette--;
+         if (this.roulette <= 0) {
+            var pows = ["ice", "fire", "explosive"];
+            this.roulette = 3;
+            var randPowerup = pows[Math.floor(Math.random() * pows.length)];
+            powers.push(randPowerup);
+         }
       }
 
       var comp = booklet.getComponent('Booklet');
@@ -99,6 +111,7 @@ Juicy.Component.create('Player', {
       this.entity.scene.addObject(booklet);
 
       this.updateGUI();
+
    },
    update: function(dt, input) {
       var speed = this.speed;

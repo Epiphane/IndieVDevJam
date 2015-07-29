@@ -130,7 +130,7 @@ var Level = Juicy.State.extend({
             this.player.transform.position.y = spawn.y;
          }
          else if (spawn.type === 'shrine') {
-            var shrine = new Juicy.Entity(this, ['Sprite']);
+            var shrine = new Juicy.Entity(this, ['Sprite', 'Animations']);
             shrine.getComponent('Sprite').setSheet('./img/shrine.png', 256, 512);
             shrine.transform.width = 3;
             shrine.transform.height = 6;

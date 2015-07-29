@@ -20,6 +20,14 @@ Juicy.Component.create('Upgrades', {
     upgrades: {
         magic: [
             {
+                title: "Roulette",
+                desc: "Every 3rd book",
+                desc2: "powered up",
+                get: function() {
+                    this.entity.getComponent('Player').rouletteEnabled = true;
+                }
+            },
+            {
                 title: "Magic +",
                 desc: "More mana",
                 desc2: "per book",
@@ -43,7 +51,8 @@ Juicy.Component.create('Upgrades', {
                 get: function() {
                     this.entity.getComponent('Player').health = 4;
                 }
-            }
+            },
+            
         ],
         agility: [
             {

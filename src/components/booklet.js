@@ -105,6 +105,9 @@ Juicy.Component.create('Booklet', {
                     phys.slow = 1;
                 }
             }
+
+            var shiggy = WOWOWOWOWOW(0.1, 0.1, 0.4);
+            objectHit.getComponent('Animations').play(shiggy, "ouch");
         }
         else {
             if (this.dx < 0) {
