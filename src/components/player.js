@@ -25,6 +25,10 @@ Juicy.Component.create('Player', {
 
       this.speed = 14;
       this.damage = 30;
+
+      this.bigHurt = false;
+
+      this.auraTime = 0;
    },
    takeDamage: function(damage) {
       damage = damage || 0.5;
@@ -86,7 +90,9 @@ Juicy.Component.create('Player', {
       }
 
       var comp = booklet.getComponent('Booklet');
-      comp.damage = this.damage;
+
+      comp.damage = this.damage * (this.bigHurt ? (4 - this.health)*0.7 : 1);
+
       comp.dx = this.direction * 100;
       comp.setPowers(powers);
 
@@ -215,6 +221,22 @@ Juicy.Component.create('Player', {
       }
 
       this.entity.getComponent('Sprite').advanceAnimation(Math.abs(physics.dx));
+   },
+
+   render: function(context) {
+      if (this.aura) {
+         context.beginPath();
+         context.arc(this.entity.transform.width/2, this.entity.transform.height/2, this.auraTime, 0, 2 * Math.PI, false);
+         context.lineWidth = 5;
+         context.strokeStyle = 'rgba(255, 0, 0, ' + (10-this.auraTime)/40 + ')';
+         context.stroke();
+
+         this.auraTime += 0.07;
+
+         if (this.auraTime > 10) {
+            this.auraTime = 0;
+         }
+      }
    },
 
    bounceBack: function(sender) {

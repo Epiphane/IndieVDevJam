@@ -75,7 +75,7 @@ Juicy.Component.create('Upgrades', {
             {
                 title: "Power +",
                 desc: "More damage",
-                desc2: "per book",
+                desc2: "per shot",
                 get: function() {
                     this.entity.getComponent('Player').damage += 15;
                 }
@@ -86,6 +86,14 @@ Juicy.Component.create('Upgrades', {
                 desc2: "near you",
                 get: function() {
                     this.entity.getComponent('Player').aura = true;
+                }
+            },
+            {
+                title: "Big Hurt",
+                desc: "Less Health,",
+                desc2: "More Damage",
+                get: function() {
+                    this.entity.getComponent('Player').bigHurt = true;
                 }
             },
             {

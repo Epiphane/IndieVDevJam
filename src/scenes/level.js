@@ -2,7 +2,7 @@ var Level = Juicy.State.extend({
    tilesize: 20,
    constructor: function(player, levelNum) {
       this.levelNum = levelNum || 1;
-      this.maxLevels = 10;
+      this.maxLevels = 11;
       this.gui = new Juicy.Entity(this, ['GUI', 'Animations']);
       if (player) {
          this.player = player;
