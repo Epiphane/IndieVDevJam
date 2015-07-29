@@ -37,6 +37,31 @@ var GameCanvas = document.getElementById('game-canvas');
    }
 // });
 
+// Attempt to log in the user if they have credentials
+(function() {
+   var loginXHR = new XMLHttpRequest();
+ 
+   loginXHR.open('GET', 'https://gamejolt.com/site-api/web/dash/token');
+ 
+   loginXHR.onreadystatechange = function(e) {
+      if (e.target.readyState === 4) {
+         var info = JSON.parse(e.target.response);
+
+         if (info.user) {
+            window.name = info.user.username;
+            window.token = info.payload.token;
+            document.getElementById('player-info').remove();
+            Game.setState(new TitleScreen()).run();
+         }
+         else {
+            document.getElementById('player-info').setAttribute('style', '');
+         }
+      }
+   }
+ 
+   loginXHR.send();
+})();
+
 window.addEventListener("keydown", function(e) {
     // space and arrow keys
     if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
