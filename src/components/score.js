@@ -113,7 +113,7 @@ Juicy.Component.create('Score', {
 		
 		GJAPI.request('scores/add', {
 			score: self.score,
-			sort: 1,
+			sort: self.score,
 			username: self.name,
 			user_token: self.token,
 			extra_data: self.extra_data

@@ -61,6 +61,10 @@ var UpgradeScreen = Juicy.State.extend({
                     buzz.all().stop();
                     Game.setCanvas(GameCanvas);
                     Game.setState(new Level(self.player, self.levelNum+1));
+                    //Check if player has medic perk
+                    if (upgrades.levels.magic >= 2) {
+                        self.player.health = 4;
+                    }
                     ga('send', 'pageview', 'playscreen', 'Play Screen');
                 }
         

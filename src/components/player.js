@@ -14,6 +14,9 @@ Juicy.Component.create('Player', {
       this.powerupSound = newBuzzSound( "audio/fx_powerup", {
          formats: [ "wav"]
       });
+      this.dodgeSound = newBuzzSound( "audio/fx_dodge", {
+         formats: [ "wav"]
+      });
 
       this.powerups = {};
 
@@ -27,12 +30,21 @@ Juicy.Component.create('Player', {
       damage = damage || 0.5;
 
       this.health -= damage;
+      if (this.dodge) {
+         if (Math.random() > 0.60) {
+            this.health += damage;
+            this.dodgeSound.play();
+         }
+      }
 
       if (damage >= 0) {
          this.invincible = 2;
 
          if (this.health <= 0) {
             this.entity.dead = true;
+         }
+         else if (this.health > 4) {
+            this.health = 4;
          }
       }
 
@@ -92,10 +104,10 @@ Juicy.Component.create('Player', {
       if (this.aura) {
         var enemies = this.entity.scene.enemies;
         for (var i = 0; i < enemies.length; i ++) {
-            if (this.entity.transform.distanceTo(enemies[i].transform) < 20) {
+            if (this.entity.transform.distanceTo(enemies[i].transform) < 10) {
                   console.log(this.entity.transform.distanceTo(enemies[i].transform));
 
-                  enemies[i].getComponent('Enemy').health -= ((20 - this.entity.transform.distanceTo(enemies[i].transform)) * 0.035);
+                  enemies[i].getComponent('Enemy').health -= ((15 - this.entity.transform.distanceTo(enemies[i].transform)) * 0.035);
             }
         }
       }
@@ -154,7 +166,7 @@ Juicy.Component.create('Player', {
             }
 
             var heart = object.getComponent('Heart');
-            if (heart) {
+            if (heart && this.health < 4) {
                this.takeDamage(-1);
                objects[i].dead = true;
             }
@@ -181,11 +193,23 @@ Juicy.Component.create('Player', {
 
             if (this.entity.transform.testCollision(enemy.transform)) {
                // Collided with enemy, have slight bouceback
-               this.bounceBack(enemy, this.entity.transform.position.x, 1.0);
-               this.hitSound.play();
-               this.takeDamage(0.5);
+               if (this.stomp) {
+                  if (this.entity.transform.position.y < enemies[i].transform.position.y-0.35) {
+                     enemies[i].getComponent('Enemy').health = 0;
+                  }
+                  else {
+                     this.takeDamage(0.5);
+                     this.hitSound.play();
+                     this.entity.scene.shake();
+                  }
+               }  
+               else {
+                  this.takeDamage(0.5);
+                  this.hitSound.play();
+                  this.entity.scene.shake();
+               }
 
-               this.entity.scene.shake();
+               this.bounceBack(enemy, this.entity.transform.position.x, 1.0);
             }
          }
       }
