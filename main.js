@@ -39,27 +39,28 @@ var GameCanvas = document.getElementById('game-canvas');
 
 // Attempt to log in the user if they have credentials
 (function() {
-   var loginXHR = new XMLHttpRequest();
- 
-   loginXHR.open('GET', 'https://gamejolt.com/site-api/web/dash/token');
- 
-   loginXHR.onreadystatechange = function(e) {
-      if (e.target.readyState === 4) {
-         var info = JSON.parse(e.target.response);
+   var params = window.location.search.substring(1).split("&");
 
-         if (info.user) {
-            window.name = info.user.username;
-            window.token = info.payload.token;
-            document.getElementById('player-info').remove();
-            Game.setState(new TitleScreen()).run();
-         }
-         else {
-            document.getElementById('player-info').setAttribute('style', '');
-         }
+   // loop through all parameters
+   for(var i = 0; i < params.length; ++i) {
+      // separate key from value
+      var pair = params[i].split("=");
+
+      if (pair[0] === 'gjapi_username') {
+         window.name = pair[1];
       }
+      else if (pair[0] === 'gjapi_token') {
+         window.token = pair[1];
+      }                  // append to array
    }
- 
-   loginXHR.send();
+
+   if (window.name && window.token) {
+      document.getElementById('player-info').remove();
+      Game.setState(new TitleScreen()).run();
+   }
+   else {
+      document.getElementById('player-info').setAttribute('style', '');
+   }
 })();
 
 window.addEventListener("keydown", function(e) {
