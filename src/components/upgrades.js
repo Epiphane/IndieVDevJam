@@ -24,7 +24,7 @@ Juicy.Component.create('Upgrades', {
                 desc: "More mana",
                 desc2: "per book",
                 get: function() {
-                    this.mana += 10;
+                    this.mana += 20;
                 }
             },
             {
@@ -36,6 +36,14 @@ Juicy.Component.create('Upgrades', {
                 }
 
             },
+            {
+                title: "Medic",
+                desc: "Fully heal",
+                desc2: "each level",
+                get: function() {
+                    this.entity.getComponent('Player').health = 4;
+                }
+            }
         ],
         agility: [
             {
@@ -54,11 +62,11 @@ Juicy.Component.create('Upgrades', {
                 }
             },
             {
-                title: "Agility 2",
-                desc: "Move even",
-                desc2: "faster",
+                title: "Ninja",
+                desc: "Chance to",
+                desc2: "take 0 damage",
                 get: function() {
-                    this.entity.getComponent('Player').speed += 6;
+                    this.entity.getComponent('Player').dodge = true;
                 }
             },
         ],
@@ -79,7 +87,15 @@ Juicy.Component.create('Upgrades', {
                 get: function() {
                     this.entity.getComponent('Player').aura = true;
                 }
-            }
+            },
+            {
+                title: "Stomp",
+                desc: "Land on enemies",
+                desc2: "to kill them",
+                get: function() {
+                    this.entity.getComponent('Player').stomp = true;
+                }
+            },
         ],
 
     },
