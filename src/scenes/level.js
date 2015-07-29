@@ -146,6 +146,35 @@ var Level = Juicy.State.extend({
                shrine.getComponent('Sprite').runAnimation(1, 3, 0.5)
                   .oncompleteanimation = function() {};
                self.player.getComponent('Score').eventOccurred('destroyShrine');
+
+               self.player.scene.particles.getComponent('ParticleManager').spawnParticles("100, 200, 200, ", 1.3,  800, function(particle, ndx) {
+                   if (ndx > 1) {
+                       return ndx - 1;
+                   }
+                   else {
+                       return 0;
+                   }
+               },
+               function(particle) {
+                   particle.x = shrine.transform.position.x + 0.8;// + shrine.width/2 * (Math.random() * 2);
+                   particle.y = shrine.transform.position.y + 0.4;// + shrine.transform.height + 0.7;
+                   particle.dx = Math.random() * 12 - 6;
+                   particle.dy = -17 + Math.random()*5;
+                   particle.startLife = 100;
+                   particle.life = particle.startLife;
+                }, function(particle) {
+                   particle.x += particle.dx * 0.03;
+                   particle.y += particle.dy * 0.03;
+                   particle.dy += 0.9;
+
+                   if (particle.life > particle.startLife) {
+                       particle.alpha = 1;
+                   }
+                   else {
+                       particle.alpha = particle.life / particle.startLife;
+                   }
+                });
+               
             }
             shrine.addComponent(destructible);
 

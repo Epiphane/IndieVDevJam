@@ -4,14 +4,15 @@ Juicy.Component.create('ParticleManager', {
         this.particles = Array();
     },
 
-    spawnParticles: function(image, size, howMany, timeToLive, initParticle, updateParticle) {
+    spawnParticles: function(image, size, howMany, timeToLive, initThisParticle, updateParticle) {
         this.howMany = howMany;
         this.updateFunction = updateParticle;
 
         for (var i = 0; i < this.howMany; i++) {
             var newParticle = {
                 life: 30,
-                init: initParticle,
+                init: initThisParticle,
+                updateFuncarino: updateParticle,
             };
             this.pendingParticles.push(newParticle);
             newParticle.timeToLive = timeToLive(newParticle, i);
@@ -46,7 +47,7 @@ Juicy.Component.create('ParticleManager', {
 
         for (var i = this.particles.length - 1; i >= 0; i--) {
             if (this.particles[i]) {
-                this.updateFunction(this.particles[i], i, realDT);
+                this.particles[i].updateFuncarino(this.particles[i], i, realDT);
                 this.particles[i].life--;
 
                 if (this.particles[i].life < 0) {
