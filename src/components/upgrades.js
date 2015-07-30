@@ -103,8 +103,9 @@ Juicy.Component.create('Upgrades', {
 
         power: [
             {
-                title: "Romance Novels",
-                desc: "Poison enemies",
+                title: "50 shades",
+                desc: "Makes enemies",
+                desc2: "sick",
                 get: function() {
                     this.entity.getComponent('Player').venomous = true;
                 }
