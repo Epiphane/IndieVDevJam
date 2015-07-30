@@ -38,14 +38,14 @@ Juicy.Component.create('Enemy', {
 
          var self = this;
          
-         self.entity.scene.particles.getComponent('ParticleManager').spawnParticles("255, 0, 0, ", 0.5, 800, function(particle, ndx) {
+         self.entity.scene.particles.getComponent('ParticleManager').spawnParticles("255, 0, 0, ", 0.5, 50, function(particle, ndx) {
                return Math.random() * 2;
          },
          function(particle) {
              particle.x = self.entity.transform.position.x + 0.8 + Math.random();
              particle.y = self.entity.transform.position.y + 0.4 + Math.random();
              particle.dx = Math.random() * 16 - 8;
-             particle.dy = -27 + Math.random()*5;
+             particle.dy = -21 + Math.random()*20;
              particle.startLife = 100;
              particle.life = particle.startLife;
           }, function(particle) {

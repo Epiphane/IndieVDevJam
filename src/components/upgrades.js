@@ -19,14 +19,6 @@ Juicy.Component.create('Upgrades', {
 
     upgrades: {
         magic: [
-            { 
-                title: "Vampiric",
-                desc: "Kill 10 dudes,",
-                desc2: "get healed",
-                get: function() {
-                    this.entity.getComponent('Player').vampire = true;
-                }
-            },
            {
                 title: "Magic +",
                 desc: "More mana",
@@ -35,12 +27,20 @@ Juicy.Component.create('Upgrades', {
                     this.mana += 20;
                 }
             },
+            { 
+                title: "Vampiric",
+                desc: "Kill 10 dudes,",
+                desc2: "get healed",
+                get: function() {
+                    this.entity.getComponent('Player').vampire = true;
+                }
+            },
             {
                 title: "Combos +",
                 desc: "Longer combo",
                 desc2: "window",
                 get: function() {
-                    this.entity.getComponent('Score').combo_duration = 2000;
+                    this.entity.getComponent('Score').combo_duration = 3000;
                 }
 
             },
@@ -63,17 +63,7 @@ Juicy.Component.create('Upgrades', {
             
         ],
         agility: [
-            {
-                title: "Tiny",
-                desc: "Honey I shrunk",
-                desc2: "the wizard!",
-                get: function() {
-                    this.entity.getComponent('Player').tiny = true;
-                    this.entity.transform.width /= 2.1;
-                    this.entity.transform.height /= 2.1;
-                    this.entity.getComponent('Physics').jumpPower -= 2;
-                }
-            },
+
 
             {
                 title: "Agility +",
@@ -82,6 +72,19 @@ Juicy.Component.create('Upgrades', {
                     this.entity.getComponent('Player').speed += 4;
                 }
             },
+
+            {
+                title: "Tiny",
+                desc: "Honey I shrunk",
+                desc2: "the wizard!",
+                get: function() {
+                    this.entity.getComponent('Player').tiny = true;
+                    this.entity.transform.width /= 2.1;
+                    this.entity.transform.height /= 2.1;
+                    this.entity.getComponent('Physics').jumpPower -= 3;
+                }
+            },
+
             {
                 title: "Ninja",
                 desc: "Chance to",
