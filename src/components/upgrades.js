@@ -63,8 +63,6 @@ Juicy.Component.create('Upgrades', {
             
         ],
         agility: [
-
-
             {
                 title: "Tiny",
                 desc: "Honey I shrunk",
@@ -73,6 +71,7 @@ Juicy.Component.create('Upgrades', {
                     this.entity.getComponent('Player').tiny = true;
                     this.entity.transform.width /= 2.1;
                     this.entity.transform.height /= 2.1;
+                    this.entity.getComponent('Physics').jumpPower -= 2;
                 }
             },
 
@@ -81,14 +80,6 @@ Juicy.Component.create('Upgrades', {
                 desc: "Move faster",
                 get: function() {
                     this.entity.getComponent('Player').speed += 4;
-                }
-            },
-            {
-                title: "KNEES",
-                desc: "Jump",
-                desc2: "Higher",
-                get: function() {
-                    this.entity.getComponent('Physics').jumpPower -= 20;
                 }
             },
             {
