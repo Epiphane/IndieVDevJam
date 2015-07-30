@@ -35,6 +35,7 @@ Juicy.Component.create('Player', {
       this.bigBooks = false;
       this.vampire = false;
       this.vampireKills = 0;
+      this.venomous = false;
    },
    takeDamage: function(damage) {
       damage = damage || 0.5;
@@ -109,6 +110,7 @@ Juicy.Component.create('Player', {
       var comp = booklet.getComponent('Booklet');
 
       comp.damage = this.damage * (this.bigHurt ? (4 - this.health)*0.7 : 1);
+      comp.poison = this.venomous;
 
       comp.dx = this.direction * 100;
       comp.setPowers(powers);

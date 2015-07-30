@@ -103,6 +103,14 @@ Juicy.Component.create('Upgrades', {
 
         power: [
             {
+                title: "Romance Novels",
+                desc: "Poison enemies",
+                get: function() {
+                    this.entity.getComponent('Player').venomous = true;
+                }
+            },
+            
+            {
                 title: "Power +",
                 desc: "More damage",
                 desc2: "per shot",
@@ -111,13 +119,6 @@ Juicy.Component.create('Upgrades', {
                 }
             },
 
-            {
-                title: "Heavy Reading",
-                desc: "Bigger shots",
-                get: function() {
-                    this.entity.getComponent('Player').bigBooks = true;
-                }
-            },
             {
                 title: "Pain Aura",
                 desc: "Hurts enemies",

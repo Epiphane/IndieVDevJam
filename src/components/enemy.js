@@ -15,6 +15,14 @@ Juicy.Component.create('Enemy', {
         speed /= 2;
       }
 
+     if (this.poison >= 0) {
+            this.health -= 0.4;
+            this.poison -= dt;
+            if (this.poison < 0) {
+                this.unpoison();
+            }
+        }
+
       if (this.health <= 0) {
           var scoreComponent =  this.entity.scene.player.getComponent('Score');
           scoreComponent.eventOccurred('killedEnemy');
@@ -71,5 +79,13 @@ Juicy.Component.create('Enemy', {
       physics.dx = dx * physics.direction;
       physics.dy = dy;
       this.doingRecoil = true;
-   }
+   },
+
+    poisonMe: function() {
+            this.entity.getComponent('Sprite').runAnimation(4,7,0.25,true);
+    },
+
+    unpoison: function() {
+            this.entity.getComponent('Sprite').runAnimation(0,3,0.25,true);
+    },
 });

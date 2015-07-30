@@ -106,6 +106,14 @@ Juicy.Component.create('Booklet', {
                 }
             }
 
+            if (this.poison) {
+                var phys = objectHit.getComponent('Enemy');
+                if (phys) {
+                    phys.poison = 3;
+                    phys.poisonMe();
+                }
+            }
+
             var shiggy = WOWOWOWOWOW(0.1, 0.1, 0.4);
             objectHit.getComponent('Animations').play(shiggy, "ouch");
         }
