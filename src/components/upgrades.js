@@ -96,14 +96,6 @@ Juicy.Component.create('Upgrades', {
         ],
 
         power: [
-            {
-                title: "50 shades",
-                desc: "Makes enemies",
-                desc2: "sick",
-                get: function() {
-                    this.entity.getComponent('Player').venomous = true;
-                }
-            },
             
             {
                 title: "Power +",
@@ -122,12 +114,22 @@ Juicy.Component.create('Upgrades', {
                     this.entity.getComponent('Player').aura = true;
                 }
             },
+
             {
                 title: "Big Hurt",
                 desc: "Less Health,",
                 desc2: "More Damage",
                 get: function() {
                     this.entity.getComponent('Player').bigHurt = true;
+                }
+            },
+
+            {
+                title: "50 shades",
+                desc: "Makes enemies",
+                desc2: "sick",
+                get: function() {
+                    this.entity.getComponent('Player').venomous = true;
                 }
             },
             {
